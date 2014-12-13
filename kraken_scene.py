@@ -6,27 +6,33 @@ import time
 scene = 0
 gpu = 0
 scene_ready = False
-render_system = 0
+render_system_async = 0
 
 
 def InitialiseKraken():
 	global scene
 	global gpu
 	global scene_ready
-	global render_system
+	global render_system_async
 
-	gpu = gs.EglRenderer()
-	gpu.Open(1280, 720)
+	gs.GetTaskSystem().CreateWorkers()
+
+	egl = gs.EglRenderer()
+	gpu = gs.GpuRendererAsync(egl)
 
 	gs.GetFilesystem().Mount(gs.CFile("runtime"), "@core")
 	gs.GetFilesystem().Mount(gs.CFile())
 
-	render_system = gs.RenderSystem(gpu)
-	render_system.Initialize()
+	render_system = gs.RenderSystem(egl)
+	render_system_async = gs.RenderSystemAsync(render_system)
+
+	gpu.Open(1280, 720)
+	render_system_async.Initialize().wait()
 
 	scene = gs.Scene()
 	scene.SetupCoreSystemsAndComponents(render_system)
 	scene_ready = scene.Load('scene/world_scene.xml', gs.SceneLoadContext(render_system))
+
 
 def UpdateKraken():
 	if scene_ready:
@@ -46,7 +52,7 @@ def UpdateKraken():
 
 
 def GetGeo(name):
-	return render_system.LoadGeometry(name)
+	return render_system_async.LoadGeometry(name)
 
 
 def CreateCube(pos):
@@ -59,7 +65,7 @@ def CreateCube(pos):
 	transform.SetPosition(pos)
 	node.AddComponent(transform)
 
-	render_geo = render_system.LoadGeometry('scene/assets/geo-cube.xml')
+	render_geo = render_system_async.LoadGeometry('scene/assets/geo-cube.xml', True)
 	object = gs.Object()
 	object.SetGeometry(render_geo)
 	node.AddComponent(object)
@@ -68,7 +74,6 @@ def CreateCube(pos):
 	# script = gs.Script()
 	# script.SetPath("@core/lua/cube.lua")
 	# node.AddComponent(script)
-
 
 	scene.AddNode(node)
 
