@@ -3,6 +3,7 @@ __author__ = 'scorpheus'
 from dfhack_connect import *
 from kraken_scene import *
 import numpy as np
+import time
 
 
 try:
@@ -39,30 +40,77 @@ try:
 
 		blocklist = GetBlockList(p_min, p_max)
 
-		for x in range(int(size_area.x)):
-			for y in range(int(size_area.y)):
-				for z in range(int(size_area.z)):
-					#find good block
-					start_x = int((p_min.x + x)/16)*16
-					start_y = int((p_min.y + y)/16)*16
-					start_z = int(p_min.z + z)
-					for block in blocklist.map_blocks:
-						if start_x == block.map_x and start_y == block.map_y and start_z == block.map_z:
-							# print(tile_type_list.tiletype_list[block.tiles[int(p_min.x - start_x + x + (p_min.y - start_y + y)*16)]].shape)
 
-							# if tile_type_list.tiletype_list[block.tiles[int(p_min.x - start_x + x + (p_min.y - start_y + y)*16)]].shape in \
-							# 		[remote_fortress.FLOOR, remote_fortress.BOULDER, remote_fortress.PEBBLES, remote_fortress.WALL, remote_fortress.FORTIFICATION]:
-							# 	cube_matrix[x, y, z].object.SetGeometry(render_geo)
-							# else:
-							# 	cube_matrix[x, y, z].object.SetGeometry(None)
+		# time_process = time.perf_counter()
 
-							if tile_type_list.tiletype_list[block.tiles[int(p_min.x - start_x + x + (p_min.y - start_y + y)*16)]].shape in \
-									[remote_fortress.EMPTY]:
-								cube_matrix[x, y, z].object.SetGeometry(None)
-							else:
-								cube_matrix[x, y, z].object.SetGeometry(render_geo)
+		for block in blocklist.map_blocks:
+			for x in range(16):
+				if p_min.x <= block.map_x + x < p_max.x:
+					for y in range(16):
+						if p_min.y <= block.map_y + y < p_max.y:
+							if p_min.z <= block.map_z < p_max.z:
+								matrix_x = block.map_x + x - p_min.x
+								matrix_y = block.map_y + y - p_min.y
+								matrix_z = block.map_z - p_min.z
 
-							break
+								if tile_type_list.tiletype_list[block.tiles[int(x + y*16)]].shape in \
+										[remote_fortress.EMPTY]:
+									cube_matrix[matrix_x, matrix_y, matrix_z].object.SetGeometry(None)
+								else:
+									cube_matrix[matrix_x, matrix_y, matrix_z].object.SetGeometry(render_geo)
+
+		#
+		# time_process1 = time.perf_counter() - time_process
+		# time_process = time.perf_counter()
+		#
+		# # use the flag unactive, lose 0.002 sec perf
+		# for block in blocklist.map_blocks:
+		# 	for x in range(16):
+		# 		if p_min.x <= block.map_x + x < p_max.x:
+		# 			for y in range(16):
+		# 				if p_min.y <= block.map_y + y < p_max.y:
+		# 					if p_min.z <= block.map_z < p_max.z:
+		# 						matrix_x = block.map_x + x - p_min.x
+		# 						matrix_y = block.map_y + y - p_min.y
+		# 						matrix_z = block.map_z - p_min.z
+		#
+		# 						if tile_type_list.tiletype_list[block.tiles[int(x + y*16)]].shape in \
+		# 								[remote_fortress.EMPTY]:
+		# 							cube_matrix[matrix_x, matrix_y, matrix_z].SetFlag(gs.Node.FlagIsActive, False)
+		# 							# cube_matrix[matrix_x, matrix_y, matrix_z].object.SetGeometry(None)
+		# 						else:
+		# 							cube_matrix[matrix_x, matrix_y, matrix_z].SetFlag(gs.Node.FlagIsActive, True)
+		# 							# cube_matrix[matrix_x, matrix_y, matrix_z].object.SetGeometry(render_geo)
+
+		#
+		# use the first naive method, lose 0.13 sec perf
+		# for x in range(int(size_area.x)):
+		# 	for y in range(int(size_area.y)):
+		# 		for z in range(int(size_area.z)):
+		# 			#find good block
+		# 			start_x = int((p_min.x + x)/16)*16
+		# 			start_y = int((p_min.y + y)/16)*16
+		# 			start_z = int(p_min.z + z)
+		# 			for block in blocklist.map_blocks:
+		# 				if start_x == block.map_x and start_y == block.map_y and start_z == block.map_z:
+		# 					# print(tile_type_list.tiletype_list[block.tiles[int(p_min.x - start_x + x + (p_min.y - start_y + y)*16)]].shape)
+		#
+		# 					# if tile_type_list.tiletype_list[block.tiles[int(p_min.x - start_x + x + (p_min.y - start_y + y)*16)]].shape in \
+		# 					# 		[remote_fortress.FLOOR, remote_fortress.BOULDER, remote_fortress.PEBBLES, remote_fortress.WALL, remote_fortress.FORTIFICATION]:
+		# 					# 	cube_matrix[x, y, z].object.SetGeometry(render_geo)
+		# 					# else:
+		# 					# 	cube_matrix[x, y, z].object.SetGeometry(None)
+		#
+		# 					if tile_type_list.tiletype_list[block.tiles[int(p_min.x - start_x + x + (p_min.y - start_y + y)*16)]].shape in \
+		# 							[remote_fortress.EMPTY]:
+		# 						cube_matrix[x, y, z].object.SetGeometry(None)
+		# 					else:
+		# 						cube_matrix[x, y, z].object.SetGeometry(render_geo)
+		#
+		# 					break
+
+		# print(str(time_process1)+", "+str(time.perf_counter() - time_process))
+
 finally:
 	close_socket()
 
