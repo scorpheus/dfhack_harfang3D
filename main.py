@@ -37,7 +37,6 @@ try:
 		p_min = (pos - size_area*0.5)
 		p_max = (pos + size_area*0.5)
 
-
 		blocklist = GetBlockList(p_min, p_max)
 
 		for x in range(int(size_area.x)):
@@ -50,12 +49,12 @@ try:
 					for block in blocklist.map_blocks:
 						if start_x == block.map_x and start_y == block.map_y and start_z == block.map_z:
 							# print(tile_type_list.tiletype_list[block.tiles[int(p_min.x - start_x + x + (p_min.y - start_y + y)*16)]].shape)
+
 							# if tile_type_list.tiletype_list[block.tiles[int(p_min.x - start_x + x + (p_min.y - start_y + y)*16)]].shape in \
 							# 		[remote_fortress.FLOOR, remote_fortress.BOULDER, remote_fortress.PEBBLES, remote_fortress.WALL, remote_fortress.FORTIFICATION]:
 							# 	cube_matrix[x, y, z].object.SetGeometry(render_geo)
 							# else:
 							# 	cube_matrix[x, y, z].object.SetGeometry(None)
-
 
 							if tile_type_list.tiletype_list[block.tiles[int(p_min.x - start_x + x + (p_min.y - start_y + y)*16)]].shape in \
 									[remote_fortress.EMPTY]:
