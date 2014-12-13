@@ -3,7 +3,7 @@ __author__ = 'scorpheus'
 import socket
 import struct
 import proto.build.RemoteFortressReader_pb2 as remote_fortress
-import proto.build.BasicApi_pb2 as BasciApi
+import proto.build.BasicApi_pb2 as BasicApi
 import proto.build.CoreProtocol_pb2 as CoreProtocol
 
 HOST, PORT = "localhost", 5000
@@ -40,6 +40,7 @@ def Handshake():
 
 
 def send_message(id, message):
+	#create header with id of the binding function and the length of the message
 	values = (id, len(message))
 	packer = struct.Struct('hi')
 	packed_data = packer.pack(*values)
@@ -54,7 +55,12 @@ def GetAnswerHeader():
 
 
 def GetAnswer():
-	received = sock.recv(GetAnswerHeader())
+	size = GetAnswerHeader()
+	received = sock.recv(size)
+
+	while len(received) < size:
+		received += sock.recv(size - len(received))
+
 	return received
 
 
@@ -91,7 +97,7 @@ def GetInfoFromDFHack(message_request, message_input):
 
 def GetDFVersion():     # example of how it works, just get the df version
 
-	# get the id of the fonction in dfhack
+	# create function request
 	message_request = CoreProtocol.CoreBindRequest()
 	message_request.method = "GetDFVersion"
 	message_request.input_msg = "dfproto.EmptyMessage"
@@ -106,36 +112,83 @@ def GetDFVersion():     # example of how it works, just get the df version
 	return out.value
 
 
-def GetBlockList():
+def GetListUnits():
 
-	# get the id of the fonction in dfhack
+	# create function request
 	message_request = CoreProtocol.CoreBindRequest()
-	# message_request.method = "ListEnums"
-	# message_request.input_msg = "dfproto.EmptyMessage"
-	# message_request.output_msg = "dfproto.ListEnumsOut"
+	message_request.method = "ListUnits"
+	message_request.input_msg = "dfproto.ListUnitsIn"
+	message_request.output_msg = "dfproto.ListUnitsOut"
 
+	# input message: which part of datablock we want
+	list_unit_in_message = BasicApi.ListUnitsIn()
+	list_unit_in_message.scan_all = True
+	list_unit_in_message.alive = True
+
+	received = GetInfoFromDFHack(message_request, list_unit_in_message)
+
+	out = BasicApi.ListUnitsOut()
+	out.ParseFromString(received)
+
+	return out
+
+
+def GetBlockList(p_min, p_max):
+
+	# create function request
+	message_request = CoreProtocol.CoreBindRequest()
 	message_request.method = "GetBlockList"
 	message_request.input_msg = "RemoteFortressReader.BlockRequest"
 	message_request.output_msg = "RemoteFortressReader.BlockList"
 	message_request.plugin = "RemoteFortressReader"
 
-	# message_request.method = "GetGrowthList"
-	# message_request.input_msg = "dfproto.EmptyMessage"
-	# message_request.output_msg = "RemoteFortressReader.MaterialList"
-	# message_request.plugin = "RemoteFortressReader"
-
-	# input message which part of datablock we want
+	# input message: which part of datablock we want
 	input_block_message = remote_fortress.BlockRequest()
-	input_block_message.min_x = 0
-	input_block_message.max_x = 2
-	input_block_message.min_y = 0
-	input_block_message.max_y = 2
-	input_block_message.min_z = 3
-	input_block_message.max_z = 5
+	input_block_message.min_x = int(p_min.x)
+	input_block_message.max_x = int(p_max.x)
+	input_block_message.min_y = int(p_min.y)
+	input_block_message.max_y = int(p_max.y)
+	input_block_message.min_z = int(p_min.z)
+	input_block_message.max_z = int(p_max.z)
 
 	received = GetInfoFromDFHack(message_request, input_block_message)
 
 	out = remote_fortress.BlockList()
 	out.ParseFromString(received)
 
-	return "YEAAA"
+	return out
+
+
+def GetTiletypeList():
+
+	# create function request
+	message_request = CoreProtocol.CoreBindRequest()
+	message_request.method = "GetTiletypeList"
+	message_request.input_msg = "dfproto.EmptyMessage"
+	message_request.output_msg = "RemoteFortressReader.TiletypeList"
+	message_request.plugin = "RemoteFortressReader"
+
+	received = GetInfoFromDFHack(message_request, CoreProtocol.EmptyMessage())
+
+	out = remote_fortress.TiletypeList()
+	out.ParseFromString(received)
+
+	return out
+
+
+def GetMaterialList():
+
+	# create function request
+	message_request = CoreProtocol.CoreBindRequest()
+	message_request.method = "GetMaterialList"
+	message_request.input_msg = "dfproto.EmptyMessage"
+	message_request.output_msg = "RemoteFortressReader.MaterialList"
+	message_request.plugin = "RemoteFortressReader"
+
+	received = GetInfoFromDFHack(message_request, CoreProtocol.EmptyMessage())
+
+	out = remote_fortress.MaterialList()
+	out.ParseFromString(received)
+
+	return out
+

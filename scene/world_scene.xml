@@ -1,0 +1,31 @@
+<Scene>
+    <Editor>
+        <SceneTools>
+            <SceneCameraTool>
+                <WorldMatrix m00="0.965340" m10="0.000000" m20="0.260997" m01="-0.144717" m11="0.832199" m21="0.535258" m02="-0.217202" m12="-0.554477" m22="0.803355" m03="4.399938" m13="11.232241" m23="-16.273857"/>
+            </SceneCameraTool>
+        </SceneTools>
+    </Editor>
+    <Components/>
+    <Nodes>
+        <Node Uid="1" Name="main_camera">
+            <Components>
+                <gs::core::Transform>
+                    <Position x="6.000000" y="7.300000" z="-10.000000"/>
+                    <Rotation x="0.446804" y="-0.146608" z="-0.001745"/>
+                </gs::core::Transform>
+                <gs::core::Camera ZNear="0.100000" ZFar="50000.000000"/>
+            </Components>
+        </Node>
+        <Node Uid="3" Name="New Light">
+            <Components>
+                <gs::core::Transform>
+                    <Position x="-15.200000" y="10.000000" z="-9.000000"/>
+                </gs::core::Transform>
+                <gs::core::Light ShadowRange="0.000000" Range="45.799999" DiffuseIntensity="9.400000"/>
+            </Components>
+        </Node>
+    </Nodes>
+    <NodeHierarchy/>
+    <Skins/>
+</Scene>
