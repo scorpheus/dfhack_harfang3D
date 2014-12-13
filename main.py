@@ -16,7 +16,7 @@ try:
 	# material_list = GetMaterialList()
 
 
-	size_area = gs.Vector3(20, 20, 10)
+	size_area = gs.Vector3(40, 40, 10)
 
 	InitialiseKraken()
 
@@ -25,40 +25,47 @@ try:
 	for x in range(int(size_area.x)):
 		for y in range(int(size_area.y)):
 			for z in range(int(size_area.z)):
-				cube_matrix[x, y, z] = CreateCube(gs.Vector3(x, z, y))
+				cube_matrix[x, y, z] = CreateCube(gs.Vector3(x, z, -y))
 
 
 	render_geo = GetGeo('scene/assets/geo-cube.xml')
+
+	phase_update = 0
+
 	while True:
+
 		UpdateKraken()
 
-		list_unit = GetListUnits()
+		if phase_update == 0:
+			list_unit = GetListUnits()
 
-		pos = gs.Vector3(list_unit.value[12].pos_x, list_unit.value[12].pos_y, list_unit.value[12].pos_z)
-		p_min = (pos - size_area*0.5)
-		p_max = (pos + size_area*0.5)
+			pos = gs.Vector3(list_unit.value[12].pos_x, list_unit.value[12].pos_y, list_unit.value[12].pos_z)
+			p_min = (pos - size_area*0.5)
+			p_max = (pos + size_area*0.5)
 
-		blocklist = GetBlockList(p_min, p_max)
+		elif phase_update == 1:
+			blocklist = GetBlockList(p_min, p_max)
 
+		elif phase_update == 2:
+			for block in blocklist.map_blocks:
+				for x in range(16):
+					if p_min.x <= block.map_x + x < p_max.x:
+						for y in range(16):
+							if p_min.y <= block.map_y + y < p_max.y:
+								if p_min.z <= block.map_z < p_max.z:
+									matrix_x = block.map_x + x - p_min.x
+									matrix_y = block.map_y + y - p_min.y
+									matrix_z = block.map_z - p_min.z
 
-		# time_process = time.perf_counter()
+									# yo = material_list.material_list[block.materials[int(x + y*16)].mat_index]
+									if tile_type_list.tiletype_list[block.tiles[int(x + y*16)]].shape in [remote_fortress.EMPTY] and\
+										tile_type_list.tiletype_list[block.tiles[int(x + y*16)]].material != remote_fortress.MAGMA:
+										cube_matrix[matrix_x, matrix_y, matrix_z].object.SetGeometry(None)
+									else:
+										cube_matrix[matrix_x, matrix_y, matrix_z].object.SetGeometry(render_geo)
+			phase_update = -1
 
-		for block in blocklist.map_blocks:
-			for x in range(16):
-				if p_min.x <= block.map_x + x < p_max.x:
-					for y in range(16):
-						if p_min.y <= block.map_y + y < p_max.y:
-							if p_min.z <= block.map_z < p_max.z:
-								matrix_x = block.map_x + x - p_min.x
-								matrix_y = block.map_y + y - p_min.y
-								matrix_z = block.map_z - p_min.z
-
-								if tile_type_list.tiletype_list[block.tiles[int(x + y*16)]].shape in \
-										[remote_fortress.EMPTY]:
-									cube_matrix[matrix_x, matrix_y, matrix_z].object.SetGeometry(None)
-								else:
-									cube_matrix[matrix_x, matrix_y, matrix_z].object.SetGeometry(render_geo)
-
+		phase_update += 1
 		#
 		# time_process1 = time.perf_counter() - time_process
 		# time_process = time.perf_counter()
@@ -108,8 +115,6 @@ try:
 		# 						cube_matrix[x, y, z].object.SetGeometry(render_geo)
 		#
 		# 					break
-
-		# print(str(time_process1)+", "+str(time.perf_counter() - time_process))
 
 finally:
 	close_socket()
