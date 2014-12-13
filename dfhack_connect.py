@@ -124,6 +124,7 @@ def GetListUnits():
 	list_unit_in_message = BasicApi.ListUnitsIn()
 	list_unit_in_message.scan_all = True
 	list_unit_in_message.alive = True
+	list_unit_in_message.race = 465
 
 	received = GetInfoFromDFHack(message_request, list_unit_in_message)
 
@@ -144,10 +145,10 @@ def GetBlockList(p_min, p_max):
 
 	# input message: which part of datablock we want
 	input_block_message = remote_fortress.BlockRequest()
-	input_block_message.min_x = int(p_min.x)
-	input_block_message.max_x = int(p_max.x)
-	input_block_message.min_y = int(p_min.y)
-	input_block_message.max_y = int(p_max.y)
+	input_block_message.min_x = int(p_min.x / 16)
+	input_block_message.max_x = int(p_max.x / 16)+1
+	input_block_message.min_y = int(p_min.y / 16)
+	input_block_message.max_y = int(p_max.y / 16)+1
 	input_block_message.min_z = int(p_min.z)
 	input_block_message.max_z = int(p_max.z)
 

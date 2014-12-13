@@ -2,27 +2,65 @@
     <Editor>
         <SceneTools>
             <SceneCameraTool>
-                <WorldMatrix m00="0.965340" m10="0.000000" m20="0.260997" m01="-0.144717" m11="0.832199" m21="0.535258" m02="-0.217202" m12="-0.554477" m22="0.803355" m03="4.399938" m13="11.232241" m23="-16.273857"/>
+                <WorldMatrix m00="0.969186" m10="0.000000" m20="0.246329" m01="-0.186164" m11="0.654857" m21="0.732465" m02="-0.161310" m12="-0.755753" m22="0.634678" m03="7.712028" m13="61.801590" m23="-47.262428"/>
             </SceneCameraTool>
         </SceneTools>
     </Editor>
-    <Components/>
+    <Components>
+        <gs::core::Environment>
+            <AmbientColor r="0.400000" g="0.400000" b="0.400000"/>
+            <FogColor r="1.000000" g="1.000000" b="1.000000"/>
+        </gs::core::Environment>
+    </Components>
     <Nodes>
-        <Node Uid="1" Name="main_camera">
+        <Node Uid="1" Name="Light">
             <Components>
                 <gs::core::Transform>
-                    <Position x="6.000000" y="7.300000" z="-10.000000"/>
-                    <Rotation x="0.446804" y="-0.146608" z="-0.001745"/>
+                    <Position x="16.400000" y="20.000000" z="0.000000"/>
                 </gs::core::Transform>
-                <gs::core::Camera ZNear="0.100000" ZFar="50000.000000"/>
+                <gs::core::Light Shadow="ProjectionMap" ZNear="0.000000" ConeAngle="0.436332" EdgeAngle="0.261799">
+                    <DiffuseColor r="0.380957" g="0.451728" b="1.000000"/>
+                    <SpecularColor r="1.000000" g="1.000000" b="1.000000"/>
+                </gs::core::Light>
             </Components>
         </Node>
-        <Node Uid="3" Name="New Light">
+        <Node Uid="2" Name="render_camera">
             <Components>
                 <gs::core::Transform>
-                    <Position x="-15.200000" y="10.000000" z="-9.000000"/>
+                    <Position x="5.000000" y="19.500000" z="-15.000000"/>
+                    <Rotation x="0.584685" y="0.000000" z="0.000000"/>
                 </gs::core::Transform>
-                <gs::core::Light ShadowRange="0.000000" Range="45.799999" DiffuseIntensity="9.400000"/>
+                <gs::core::Camera ZoomFactor="2.400000" ZNear="0.100000" ZFar="50000.000000"/>
+                <gs::core::Script Path="scene/scripts/center_camera.lua">
+                    <Parameters/>
+                </gs::core::Script>
+            </Components>
+        </Node>
+        <Node Uid="3" Name="ground">
+            <Components>
+                <gs::core::Transform>
+                    <Position x="0.012000" y="-6.800000" z="1.836000"/>
+                </gs::core::Transform>
+                <gs::core::Object Geometry="scene/assets/geo-ground.xml"/>
+            </Components>
+        </Node>
+        <Node Uid="4" Name="New Light">
+            <Components>
+                <gs::core::Transform>
+                    <Position x="-26.000000" y="29.100000" z="0.000000"/>
+                </gs::core::Transform>
+                <gs::core::Light ShadowRange="0.000000" DiffuseIntensity="0.200000">
+                    <DiffuseColor r="0.546029" g="0.269383" b="0.036408"/>
+                </gs::core::Light>
+            </Components>
+        </Node>
+        <Node Uid="5" Name="center_camera">
+            <Components>
+                <gs::core::Transform/>
+                <gs::core::Camera ZNear="0.100000" ZFar="50000.000000"/>
+                <gs::core::Script Path="scene/scripts/center_camera.lua">
+                    <Parameters/>
+                </gs::core::Script>
             </Components>
         </Node>
     </Nodes>
