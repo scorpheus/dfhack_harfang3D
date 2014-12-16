@@ -30,6 +30,8 @@ def InitialiseKraken():
 	gpu.Open(1280, 720)
 	render_system_async.Initialize().wait()
 
+	gs.GetInputSystem().SetHandle(gpu.GetDefaultOutputWindow().GetHandle())
+
 	scene = gs.Scene()
 	scene.SetupCoreSystemsAndComponents(render_system)
 	scene_ready = scene.Load('scene/world_scene.xml', gs.SceneLoadContext(render_system))
@@ -42,20 +44,33 @@ def UpdateCamera():
 		vec_dir = camera_item.transform.GetRotation()
 		speed = 1.0
 
+		gs.GetInputSystem().Update()
 		keyboard_device = gs.GetInputSystem().GetDevice("keyboard")
-		# print(keyboard_device.IsDown(gs.InputDevice.KeyUp))
+
 		if keyboard_device.IsDown(gs.InputDevice.KeyUp) or keyboard_device.IsDown(gs.InputDevice.KeyZ) or keyboard_device.IsDown(gs.InputDevice.KeyW):
-			camera_item.transform.SetPosition(camera_item.transform.GetPosition() + gs.Vector4(math.sin(vec_dir.y), -math.sin(vec_dir.x), math.cos(-vec_dir.y))*speed)
+			camera_item.transform.SetPosition(camera_item.transform.GetPosition() + gs.Vector3(math.sin(vec_dir.y), -math.sin(vec_dir.x), math.cos(-vec_dir.y))*speed)
 
 		elif keyboard_device.IsDown(gs.InputDevice.KeyDown) or keyboard_device.IsDown(gs.InputDevice.KeyS):
-			camera_item.transform.SetPosition(camera_item.transform.GetPosition() - gs.Vector4(math.sin(vec_dir.y), -math.sin(vec_dir.x), math.cos(-vec_dir.y))*speed)
+			camera_item.transform.SetPosition(camera_item.transform.GetPosition() - gs.Vector3(math.sin(vec_dir.y), -math.sin(vec_dir.x), math.cos(-vec_dir.y))*speed)
 
 		elif keyboard_device.IsDown(gs.InputDevice.KeyLeft) or keyboard_device.IsDown(gs.InputDevice.KeyQ) or keyboard_device.IsDown(gs.InputDevice.KeyA):
-			camera_item.transform.SetPosition(camera_item.transform.GetPosition() - gs.Vector4(math.cos(vec_dir.y), 0.0, math.sin(-vec_dir.y))*speed)
+			camera_item.transform.SetPosition(camera_item.transform.GetPosition() - gs.Vector3(math.cos(vec_dir.y), 0.0, math.sin(-vec_dir.y))*speed)
 
 		elif keyboard_device.IsDown(gs.InputDevice.KeyRight) or keyboard_device.IsDown(gs.InputDevice.KeyD):
-			camera_item.transform.SetPosition(camera_item.transform.GetPosition() + gs.Vector4(math.cos(vec_dir.y), 0.0, math.sin(-vec_dir.y))*speed)
+			camera_item.transform.SetPosition(camera_item.transform.GetPosition() + gs.Vector3(math.cos(vec_dir.y), 0.0, math.sin(-vec_dir.y))*speed)
 
+		mouse_device = gs.GetInputSystem().GetDevice("mouse")
+		if mouse_device.IsDown(gs.InputDevice.KeyButton0):
+			old_mx = mouse_device.GetLastValue(gs.InputDevice.InputAxisX)
+			old_my = mouse_device.GetLastValue(gs.InputDevice.InputAxisY)
+			mx = mouse_device.GetValue(gs.InputDevice.InputAxisX)
+			my = mouse_device.GetValue(gs.InputDevice.InputAxisY)
+			euler = camera_item.transform.GetRotation() + gs.Vector3(my - old_my, mx - old_mx, 0) * math.radians(360)
+			if euler.x < -math.pi:
+				euler.x = -math.pi
+			if euler.x > math.pi:
+				euler.x = math.pi
+			camera_item.transform.SetRotation(euler)
 
 def UpdateKraken():
 	if scene_ready:
