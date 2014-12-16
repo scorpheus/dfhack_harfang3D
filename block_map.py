@@ -17,7 +17,7 @@ class BlockMap():
 		self.cubes = []
 		for x in range(16):
 			for z in range(16):
-				cube = CreateCube(gs.Vector3(x, 0, z))
+				cube = CreateCube(gs.Vector3(x, 0, -z))
 				cube.transform.SetParent(self.block_map_node)
 				cube.object.SetGeometry(None)   # for the now we want them hidden
 				self.cubes.append(cube)
@@ -26,7 +26,7 @@ class BlockMap():
 
 	def update_cube_from_blocks_protobuf(self, tile_type_list, block, pos):
 		# convert pos to 16 * 16 start coordinate
-		corner_pos = gs.Vector3(int(pos.x/16)*16, int(pos.y), int(pos.z/16)*16)
+		corner_pos = gs.Vector3(int(pos.x/16)*16, int(pos.y), (int(pos.z/16)+1)*16)
 		self.block_map_node.transform.SetPosition(corner_pos)
 
 		for tile, cube in zip(block.tiles, self.cubes):

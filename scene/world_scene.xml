@@ -2,7 +2,7 @@
     <Editor>
         <SceneTools>
             <SceneCameraTool>
-                <WorldMatrix m00="0.926544" m10="0.000000" m20="-0.376186" m01="0.238372" m11="0.773616" m21="0.587109" m02="0.291024" m12="-0.633655" m22="0.716789" m03="24.800512" m13="390.623688" m23="-234.323929"/>
+                <WorldMatrix m00="0.926544" m10="0.000000" m20="-0.376186" m01="0.238372" m11="0.773616" m21="0.587109" m02="0.291024" m12="-0.633655" m22="0.716789" m03="-46.388588" m13="545.625916" m23="-409.662140"/>
             </SceneCameraTool>
         </SceneTools>
     </Editor>
@@ -17,7 +17,7 @@
         <Node Uid="1" Name="Light">
             <Components>
                 <gs::core::Transform>
-                    <Position x="16.400000" y="20.000000" z="0.000000"/>
+                    <Position x="16.400000" y="510.000000" z="0.000000"/>
                 </gs::core::Transform>
                 <gs::core::Light Shadow="ProjectionMap" ZNear="0.000000" ConeAngle="0.436332" EdgeAngle="0.261799">
                     <DiffuseColor r="0.380957" g="0.451728" b="1.000000"/>
@@ -49,7 +49,7 @@
         <Node Uid="4" Name="New Light">
             <Components>
                 <gs::core::Transform>
-                    <Position x="-26.000000" y="29.100000" z="0.000000"/>
+                    <Position x="-26.000000" y="512.099976" z="0.000000"/>
                 </gs::core::Transform>
                 <gs::core::Light ShadowRange="0.000000" DiffuseIntensity="0.200000">
                     <DiffuseColor r="0.546029" g="0.269383" b="0.036408"/>
