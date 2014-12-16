@@ -72,6 +72,7 @@ def UpdateCamera():
 				euler.x = math.pi
 			camera_item.transform.SetRotation(euler)
 
+
 def UpdateKraken():
 	if scene_ready:
 		scene.SetCurrentCamera(scene.GetNode("render_camera"))

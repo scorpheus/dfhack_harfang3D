@@ -134,6 +134,11 @@ def GetListUnits():
 	return out
 
 
+def GetBlock(pos):
+	dfblock = GetBlockList(pos, pos+1)
+	return None if len(dfblock.map_blocks) <= 0 else dfblock.map_blocks[0]
+
+
 def GetBlockList(p_min, p_max):
 
 	# create function request
@@ -151,6 +156,10 @@ def GetBlockList(p_min, p_max):
 	input_block_message.max_y = int(p_max.y / 16)+1
 	input_block_message.min_z = int(p_min.z)
 	input_block_message.max_z = int(p_max.z)
+
+	# print("x %d, %d"%(input_block_message.min_x, p_min.x))
+	# print("y %d, %d"%(input_block_message.min_y, p_min.y))
+	# print("z %d, %d"%(input_block_message.min_z, p_min.z))
 
 	received = GetInfoFromDFHack(message_request, input_block_message)
 
