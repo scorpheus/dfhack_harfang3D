@@ -2,6 +2,7 @@ __author__ = 'scorpheus'
 
 import gs
 import time
+import math
 
 scene = 0
 gpu = 0
@@ -34,13 +35,37 @@ def InitialiseKraken():
 	scene_ready = scene.Load('scene/world_scene.xml', gs.SceneLoadContext(render_system))
 
 
+def UpdateCamera():
+
+	camera_item = scene.GetNode("render_camera")
+	if camera_item is not None:
+		vec_dir = camera_item.transform.GetRotation()
+		speed = 1.0
+
+		keyboard_device = gs.GetInputSystem().GetDevice("keyboard")
+		# print(keyboard_device.IsDown(gs.InputDevice.KeyUp))
+		if keyboard_device.IsDown(gs.InputDevice.KeyUp) or keyboard_device.IsDown(gs.InputDevice.KeyZ) or keyboard_device.IsDown(gs.InputDevice.KeyW):
+			camera_item.transform.SetPosition(camera_item.transform.GetPosition() + gs.Vector4(math.sin(vec_dir.y), -math.sin(vec_dir.x), math.cos(-vec_dir.y))*speed)
+
+		elif keyboard_device.IsDown(gs.InputDevice.KeyDown) or keyboard_device.IsDown(gs.InputDevice.KeyS):
+			camera_item.transform.SetPosition(camera_item.transform.GetPosition() - gs.Vector4(math.sin(vec_dir.y), -math.sin(vec_dir.x), math.cos(-vec_dir.y))*speed)
+
+		elif keyboard_device.IsDown(gs.InputDevice.KeyLeft) or keyboard_device.IsDown(gs.InputDevice.KeyQ) or keyboard_device.IsDown(gs.InputDevice.KeyA):
+			camera_item.transform.SetPosition(camera_item.transform.GetPosition() - gs.Vector4(math.cos(vec_dir.y), 0.0, math.sin(-vec_dir.y))*speed)
+
+		elif keyboard_device.IsDown(gs.InputDevice.KeyRight) or keyboard_device.IsDown(gs.InputDevice.KeyD):
+			camera_item.transform.SetPosition(camera_item.transform.GetPosition() + gs.Vector4(math.cos(vec_dir.y), 0.0, math.sin(-vec_dir.y))*speed)
+
+
 def UpdateKraken():
 	if scene_ready:
 		scene.SetCurrentCamera(scene.GetNode("render_camera"))
 		# scene.SetCurrentCamera(scene.GetNode("center_camera"))
 
+		UpdateCamera()
+
 		# Read-only
-		scene.Update()
+		scene.Update(gs.time(0.016))
 		scene.WaitUpdate()
 
 		# Read/write

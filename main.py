@@ -39,7 +39,7 @@ try:
 		if phase_update == 0:
 			list_unit = GetListUnits()
 
-			pos = gs.Vector3(list_unit.value[12].pos_x, list_unit.value[12].pos_y, list_unit.value[12].pos_z)
+			pos = gs.Vector3(list_unit.value[0].pos_x, list_unit.value[0].pos_y, list_unit.value[0].pos_z)
 			p_min = (pos - size_area*0.5)
 			p_max = (pos + size_area*0.5)
 
