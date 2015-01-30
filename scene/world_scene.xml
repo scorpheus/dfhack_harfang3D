@@ -2,7 +2,7 @@
     <Editor>
         <SceneTools>
             <SceneCameraTool>
-                <WorldMatrix m00="0.926544" m10="0.000000" m20="-0.376186" m01="0.238372" m11="0.773616" m21="0.587109" m02="0.291024" m12="-0.633655" m22="0.716789" m03="-46.388588" m13="545.625916" m23="-409.662140"/>
+                <WorldMatrix m00="0.926544" m10="0.000000" m20="-0.376186" m01="0.238372" m11="0.773616" m21="0.587109" m02="0.291024" m12="-0.633655" m22="0.716789" m03="-46.388584" m13="545.625916" m23="-409.662140"/>
             </SceneCameraTool>
         </SceneTools>
     </Editor>
@@ -31,7 +31,7 @@
                     <Position x="90.000000" y="108.000000" z="73.000000"/>
                     <Rotation x="1.570796" y="0.000000" z="0.000000"/>
                 </gs::core::Transform>
-                <gs::core::Camera ZoomFactor="2.400000" ZNear="0.100000" ZFar="50000.000000"/>
+                <gs::core::Camera ZoomFactor="1.400000" ZNear="0.100000" ZFar="50000.000000"/>
                 <gs::core::Script Path="scene/scripts/center_camera.lua">
                     <Parameters/>
                 </gs::core::Script>

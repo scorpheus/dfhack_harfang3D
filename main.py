@@ -3,7 +3,6 @@ __author__ = 'scorpheus'
 from dfhack_connect import *
 import kraken_scene
 from block_map import *
-import numpy as np
 
 
 def from_world_to_dfworld(pos):
@@ -42,13 +41,48 @@ try:
 
 		pos = kraken_scene.scene.GetNode('render_camera').transform.GetPosition()
 		pos.y -= 10
+
+		# check if we don't have a block with this pos
 		pos += pos_around_camera[current_block_use]
-		df_block = GetBlock(from_world_to_dfworld(pos))
-		if df_block is not None:
-			pool_blocks[current_block_use].update_cube_from_blocks_protobuf(tile_type_list, df_block, pos)
+		corner_pos = gs.Vector3(int(pos.x/16)*16, int(pos.y), (int(pos.z/16))*16)
+
+		already_have_this_pos = False
+		for block in pool_blocks:
+			if not block.free:
+				if block.get_pos() == corner_pos:
+					already_have_this_pos = True
+
+		if not already_have_this_pos:
+			# Get block from df
+			df_block = GetBlock(from_world_to_dfworld(pos))
+
+			# Get a free block
+			free_block = None
+			for block in pool_blocks:
+				if block.free:
+					free_block = block
+					break
+
+			if free_block is not None:
+				if df_block is not None:
+					free_block.update_cube_from_blocks_protobuf(tile_type_list, df_block, pos)
 
 		current_block_use += 1
 		if current_block_use >= len(pool_blocks):
+
+			# check if there block outside the pos
+			pos = kraken_scene.scene.GetNode('render_camera').transform.GetPosition()
+			min = gs.Vector3(pos.x - math.floor(nb_block.x * 0.5)*16, pos.y - math.floor(nb_block.y * 0.5), pos.z - math.floor(nb_block.z * 0.5)*16)
+			max = gs.Vector3(pos.x + math.floor(nb_block.x * 0.5)*16, pos.y + math.floor(nb_block.y * 0.5), pos.z + math.floor(nb_block.z * 0.5)*16)
+
+			for block in pool_blocks:
+				if not block.free:
+					block_pos = block.get_pos()
+					if min.x > block_pos.x or max.x < block_pos.x or \
+						min.y > block_pos.y or max.y < block_pos.y or \
+						min.z > block_pos.z or max.z < block_pos.z:
+						block.free = True
+
 			current_block_use = 0
 
 finally:
