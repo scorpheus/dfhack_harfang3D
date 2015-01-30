@@ -21,8 +21,8 @@ def InitialiseKraken():
 	egl = gs.EglRenderer()
 	gpu = gs.GpuRendererAsync(egl)
 
-	gs.GetFilesystem().Mount(gs.CFile("runtime"), "@core")
-	gs.GetFilesystem().Mount(gs.CFile())
+	gs.GetFilesystem().Mount(gs.StdFileDriver("runtime"), "@core")
+	gs.GetFilesystem().Mount(gs.StdFileDriver())
 
 	render_system = gs.RenderSystem(egl)
 	render_system_async = gs.RenderSystemAsync(render_system)

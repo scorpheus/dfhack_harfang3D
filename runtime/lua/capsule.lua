@@ -176,7 +176,17 @@ function Setup()
 		render_geo = CreateRenderGeometry(uname)
 	end
 
-	this.object:SetGeometry(render_geo)
+	if object == nil then
+		if this.object == nil then
+			object = gs.Object()
+			this:AddComponent(object)
+		else
+			object = this.object
+		end
+	end
+
+	object:SetDoNotSerialize(true)
+	object:SetGeometry(render_geo)
 end
 
 function OnEditorSetParameter(name)
@@ -188,5 +198,5 @@ function OnEditorSetParameter(name)
 end
 
 function Delete()
-	this.object:SetGeometry(nil)
+	this:RemoveComponent(object)
 end

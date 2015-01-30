@@ -26,7 +26,7 @@ class BlockMap():
 
 	def update_cube_from_blocks_protobuf(self, tile_type_list, block, pos):
 		# convert pos to 16 * 16 start coordinate
-		corner_pos = gs.Vector3(int(pos.x/16)*16, int(pos.y), (int(pos.z/16)+1)*16)
+		corner_pos = gs.Vector3(int(pos.x/16)*16, int(pos.y), (int(pos.z/16))*16)
 		self.block_map_node.transform.SetPosition(corner_pos)
 
 		for tile, cube in zip(block.tiles, self.cubes):

@@ -90,6 +90,8 @@ function Setup()
 	for h=0,(nb_height-1) do
 		for w=0,(nb_width-1) do
 			node = gs.Node()
+			node:SetDoNotSerialize(true)
+
 			node:SetName("brick")
 			transform = gs.Transform()
 			transform:SetPosition(gs.Vector3(w * cube_width, h* cube_height, 0))
