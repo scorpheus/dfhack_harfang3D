@@ -7,6 +7,7 @@ class BlockMap():
 	def __init__(self, scene):
 		# create the node, move it to the right place in the world and the cubes will follow
 		self.free = True
+		self.corner_pos = gs.Vector3()
 		self.block_map_node = gs.Node()
 		self.block_map_node.SetName("block_map")
 
@@ -26,14 +27,14 @@ class BlockMap():
 		self.render_geo = GetGeo('scene/assets/geo-cube.xml')
 
 	def get_pos(self):
-		return self.block_map_node.transform.GetPosition()
+		return self.corner_pos
 
 	def update_cube_from_blocks_protobuf(self, tile_type_list, block, pos):
 		self.free = False
 
 		# convert pos to 16 * 16 start coordinate
-		corner_pos = gs.Vector3(int(pos.x/16)*16, int(pos.y), (int(pos.z/16))*16)
-		self.block_map_node.transform.SetPosition(corner_pos)
+		self.corner_pos = gs.Vector3(math.floor(pos.x/16)*16, math.floor(pos.y), (math.floor(pos.z/16))*16)
+		self.block_map_node.transform.SetPosition(self.corner_pos)
 
 		for tile, cube in zip(block.tiles, self.cubes):
 			if tile_type_list.tiletype_list[tile].shape in [remote_fortress.EMPTY] and\

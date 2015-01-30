@@ -44,18 +44,16 @@ try:
 
 		# check if we don't have a block with this pos
 		pos += pos_around_camera[current_block_use]
-		corner_pos = gs.Vector3(int(pos.x/16)*16, int(pos.y), (int(pos.z/16))*16)
+		corner_pos = gs.Vector3(math.floor(pos.x/16)*16, math.floor(pos.y), (math.floor(pos.z/16))*16)
 
 		already_have_this_pos = False
 		for block in pool_blocks:
 			if not block.free:
-				if block.get_pos() == corner_pos:
+				if gs.Vector3.Dist2(block.get_pos(), corner_pos) < 1.0:
 					already_have_this_pos = True
+					break
 
 		if not already_have_this_pos:
-			# Get block from df
-			df_block = GetBlock(from_world_to_dfworld(pos))
-
 			# Get a free block
 			free_block = None
 			for block in pool_blocks:
@@ -64,6 +62,9 @@ try:
 					break
 
 			if free_block is not None:
+				# Get block from df
+				df_block = GetBlock(from_world_to_dfworld(pos))
+
 				if df_block is not None:
 					free_block.update_cube_from_blocks_protobuf(tile_type_list, df_block, pos)
 
@@ -72,15 +73,17 @@ try:
 
 			# check if there block outside the pos
 			pos = kraken_scene.scene.GetNode('render_camera').transform.GetPosition()
-			min = gs.Vector3(pos.x - math.floor(nb_block.x * 0.5)*16, pos.y - math.floor(nb_block.y * 0.5), pos.z - math.floor(nb_block.z * 0.5)*16)
-			max = gs.Vector3(pos.x + math.floor(nb_block.x * 0.5)*16, pos.y + math.floor(nb_block.y * 0.5), pos.z + math.floor(nb_block.z * 0.5)*16)
+			pos.y -= 10
 
+			min_pos = gs.Vector3(math.floor((pos.x+pos_around_camera[0].x)/16)*16, math.floor((pos.y+pos_around_camera[0].y)), (math.floor((pos.z+pos_around_camera[0].z)/16))*16)
+			max_pos = gs.Vector3(math.floor((pos.x+pos_around_camera[len(pos_around_camera)-1].x)/16)*16, math.floor((pos.y+pos_around_camera[len(pos_around_camera)-1].y)), (math.floor((pos.z+pos_around_camera[len(pos_around_camera)-1].z)/16))*16)
+		
 			for block in pool_blocks:
 				if not block.free:
 					block_pos = block.get_pos()
-					if min.x > block_pos.x or max.x < block_pos.x or \
-						min.y > block_pos.y or max.y < block_pos.y or \
-						min.z > block_pos.z or max.z < block_pos.z:
+					if min_pos.x > block_pos.x or max_pos.x < block_pos.x or \
+						min_pos.y > block_pos.y or max_pos.y < block_pos.y or \
+						min_pos.z > block_pos.z or max_pos.z < block_pos.z:
 						block.free = True
 
 			current_block_use = 0
