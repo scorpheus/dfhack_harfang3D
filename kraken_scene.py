@@ -8,6 +8,9 @@ scene = 0
 gpu = 0
 scene_ready = False
 render_system_async = 0
+mixer_async = 0
+lua_system = 0
+engine_env = 0
 
 
 def InitialiseKraken():
@@ -15,6 +18,9 @@ def InitialiseKraken():
 	global gpu
 	global scene_ready
 	global render_system_async
+	global mixer_async
+	global lua_system
+	global engine_env
 
 	gs.GetTaskSystem().CreateWorkers()
 
@@ -27,6 +33,9 @@ def InitialiseKraken():
 	render_system = gs.RenderSystem(egl)
 	render_system_async = gs.RenderSystemAsync(render_system)
 
+	mixer = gs.ALMixer()
+	mixer_async = gs.MixerAsync(mixer)
+
 	gpu.Open(1280, 720)
 	render_system_async.Initialize().wait()
 
@@ -36,6 +45,12 @@ def InitialiseKraken():
 	scene.SetupCoreSystemsAndComponents(render_system)
 	scene_ready = scene.Load('scene/world_scene.xml', gs.SceneLoadContext(render_system))
 
+	engine_env = gs.ScriptEngineEnv(render_system_async, gpu, mixer_async)
+
+	lua_system = gs.LuaSystem(engine_env)
+	lua_system.SetExecutionContext(gs.ScriptContextEditor)
+	lua_system.Open()
+	scene.AddNodeSystem(lua_system)
 
 def UpdateCamera():
 

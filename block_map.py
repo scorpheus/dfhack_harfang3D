@@ -14,15 +14,19 @@ class BlockMap():
 		transform = gs.Transform()
 		self.block_map_node.AddComponent(transform)
 
-		scene.AddNode(self.block_map_node)
+		self.block_script = gs.Script()
+		self.block_script.SetPath("block_renderable_optim_index.lua")
+		self.block_map_node.AddComponent(self.block_script)
 
-		self.cubes = []
-		for x in range(16):
-			for z in range(16):
-				cube = CreateCube(gs.Vector3(x, 0, -z))
-				cube.transform.SetParent(self.block_map_node)
-				cube.object.SetGeometry(None)   # for the now we want them hidden
-				self.cubes.append(cube)
+		scene.AddNode(self.block_map_node)
+		#
+		# self.cubes = []
+		# for x in range(16):
+		# 	for z in range(16):
+		# 		cube = CreateCube(gs.Vector3(x, 0, -z))
+		# 		cube.transform.SetParent(self.block_map_node)
+		# 		cube.object.SetGeometry(None)   # for the now we want them hidden
+		# 		self.cubes.append(cube)
 
 		self.render_geo = GetGeo('scene/assets/geo-cube.xml')
 
@@ -31,20 +35,22 @@ class BlockMap():
 
 	def update_cube_from_blocks_protobuf(self, tile_type_list, block, pos):
 		self.free = False
+		you = self.block_script.GetParameters()
+		yo = self.block_script.Get("grid_value")
 
 		# convert pos to 16 * 16 start coordinate
 		self.corner_pos = gs.Vector3(math.floor(pos.x/16)*16, math.floor(pos.y), (math.floor(pos.z/16))*16)
 		self.block_map_node.transform.SetPosition(self.corner_pos)
-
-		for tile, cube in zip(block.tiles, self.cubes):
-			if tile_type_list.tiletype_list[tile].shape in [remote_fortress.EMPTY] and\
-				tile_type_list.tiletype_list[tile].material != remote_fortress.MAGMA:
-				# cube.SetEnabled(False)
-				if cube.object.GetGeometry() is not None:
-					cube.object.SetGeometry(None)
-			else:
-				# cube.SetEnabled(True)
-				if cube.object.GetGeometry() is None:
-					cube.object.SetGeometry(self.render_geo)
+		#
+		# for tile, cube in zip(block.tiles, self.cubes):
+		# 	if tile_type_list.tiletype_list[tile].shape in [remote_fortress.EMPTY] and\
+		# 		tile_type_list.tiletype_list[tile].material != remote_fortress.MAGMA:
+		# 		# cube.SetEnabled(False)
+		# 		if cube.object.GetGeometry() is not None:
+		# 			cube.object.SetGeometry(None)
+		# 	else:
+		# 		# cube.SetEnabled(True)
+		# 		if cube.object.GetGeometry() is None:
+		# 			cube.object.SetGeometry(self.render_geo)
 
 
