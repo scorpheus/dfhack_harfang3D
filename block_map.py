@@ -35,12 +35,20 @@ class BlockMap():
 
 	def update_cube_from_blocks_protobuf(self, tile_type_list, block, pos):
 		self.free = False
-		you = self.block_script.GetParameters()
-		yo = self.block_script.Get("grid_value")
+
+		grid_value = self.block_script.Get("grid_value")
+		grid_value.Free()
 
 		# convert pos to 16 * 16 start coordinate
 		self.corner_pos = gs.Vector3(math.floor(pos.x/16)*16, math.floor(pos.y), (math.floor(pos.z/16))*16)
 		self.block_map_node.transform.SetPosition(self.corner_pos)
+
+		for tile in block.tiles:
+			if tile_type_list.tiletype_list[tile].shape in [remote_fortress.EMPTY] and\
+				tile_type_list.tiletype_list[tile].material != remote_fortress.MAGMA:
+				grid_value.WriteByte(0)
+			else:
+				grid_value.WriteByte(1)
 		#
 		# for tile, cube in zip(block.tiles, self.cubes):
 		# 	if tile_type_list.tiletype_list[tile].shape in [remote_fortress.EMPTY] and\

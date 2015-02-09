@@ -36,6 +36,7 @@ def InitialiseKraken():
 	mixer = gs.ALMixer()
 	mixer_async = gs.MixerAsync(mixer)
 
+
 	gpu.Open(1280, 720)
 	render_system_async.Initialize().wait()
 
@@ -51,6 +52,7 @@ def InitialiseKraken():
 	lua_system.SetExecutionContext(gs.ScriptContextEditor)
 	lua_system.Open()
 	scene.AddNodeSystem(lua_system)
+
 
 def UpdateCamera():
 

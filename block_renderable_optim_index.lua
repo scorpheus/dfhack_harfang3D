@@ -2,10 +2,10 @@
 
 surface_shader = engine:GetRenderSystemAsync():LoadSurfaceShader("shader.isl")
 
-seed = 1 --> int
 isolevel = 0.5 --> float
 size_block = 16 --> int
-grid_value = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} --> gs::array<int>
+
+grid_value = gs.BinaryBlob() --> gs::BinaryBlob
 
 function get_index_ro_create_it(vtx_array, normal_array, vtx)
     -- check if this vtx exist
@@ -437,14 +437,16 @@ end
 function CreateIsoFBO(renderer)
     math.randomseed(seed)
 
+    grid_value:SetCursor(0)
     -- Create a grid 16 * 16 from random binary value
     local block_grid = {}
     for x=1, size_block do
         block_grid[x] = {}
         for z=1, size_block do
-            block_grid[x][z] = math.random(2) - 1
+            block_grid[x][z] = grid_value:ReadByte()
         end
     end
+
 
     local index_array = {}
     local vtx_array = {}
@@ -518,15 +520,12 @@ function IsoPrimitive:Draw(render_system, pass)
 	end
 
 	-- draw iso surface
-    if seed_change ~= seed or isolevel_change ~= isolevel or size_block_changed ~= size_block then
-        seed_change = seed
-        isolevel_change = isolevel
-        size_block_changed = size_block
-
+    if grid_value:GetDataSize() > 0 then
         CreateIsoFBO(renderer)
+        grid_value:Free()
     end
 
-	gs.DrawBuffers(renderer, idx, vtx, shader, gs.PrimitiveTriangle)
+--	gs.DrawBuffers(renderer, idx, vtx, shader, gs.PrimitiveTriangle)
 end
 
 iso_primitive = gs.RenderPrimitive(IsoPrimitive)
