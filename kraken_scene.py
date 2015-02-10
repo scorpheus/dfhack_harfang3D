@@ -13,6 +13,16 @@ lua_system = 0
 engine_env = 0
 
 
+def on_log(msg, prefix, details):
+	print('%s: %s' % ('log' if prefix == '' else prefix, msg))
+	if details != '':
+		print('	%s' % details)
+
+def on_script_error(event):
+	print("Error in script '%s'\n\n%s" % (event.component.GetPath(), event.error))
+
+
+
 def InitialiseKraken():
 	global scene
 	global gpu
@@ -21,6 +31,9 @@ def InitialiseKraken():
 	global mixer_async
 	global lua_system
 	global engine_env
+
+	# hook the engine log
+	# gs.GetOnLogSignal().Connect(on_log)
 
 	gs.GetTaskSystem().CreateWorkers()
 
@@ -51,6 +64,7 @@ def InitialiseKraken():
 	lua_system = gs.LuaSystem(engine_env)
 	lua_system.SetExecutionContext(gs.ScriptContextEditor)
 	lua_system.Open()
+	# lua_system.GetScriptErrorSignal().Connect(on_script_error)
 	scene.AddNodeSystem(lua_system)
 
 

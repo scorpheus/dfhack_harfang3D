@@ -1,4 +1,5 @@
 
+execution_context = gs.ScriptContextAll
 
 surface_shader = engine:GetRenderSystemAsync():LoadSurfaceShader("shader.isl")
 
@@ -443,7 +444,7 @@ function CreateIsoFBO(renderer)
     for x=1, size_block do
         block_grid[x] = {}
         for z=1, size_block do
-            block_grid[x][z] = grid_value:ReadByte()
+            block_grid[x][z] = grid_value:ReadInt()
         end
     end
 
@@ -525,7 +526,7 @@ function IsoPrimitive:Draw(render_system, pass)
         grid_value:Free()
     end
 
---	gs.DrawBuffers(renderer, idx, vtx, shader, gs.PrimitiveTriangle)
+	gs.DrawBuffers(renderer, idx, vtx, shader, gs.PrimitiveTriangle)
 end
 
 iso_primitive = gs.RenderPrimitive(IsoPrimitive)
