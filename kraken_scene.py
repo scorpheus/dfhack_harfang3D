@@ -64,7 +64,7 @@ def InitialiseKraken():
 	lua_system = gs.LuaSystem(engine_env)
 	lua_system.SetExecutionContext(gs.ScriptContextEditor)
 	lua_system.Open()
-	# lua_system.GetScriptErrorSignal().Connect(on_script_error)
+	lua_system.GetScriptErrorSignal().Connect(on_script_error)
 	scene.AddNodeSystem(lua_system)
 
 
