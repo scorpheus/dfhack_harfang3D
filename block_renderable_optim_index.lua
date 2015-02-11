@@ -421,7 +421,7 @@ end
 IsoPrimitive = {}
 
 function IsoPrimitive:IsLit()
-	return false
+	return true
 end
 
 function IsoPrimitive:GetMinMax()
