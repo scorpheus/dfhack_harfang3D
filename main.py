@@ -20,7 +20,7 @@ try:
 
 	kraken_scene.InitialiseKraken()
 
-	nb_block = gs.Vector3(2, 2, 2)
+	# nb_block = gs.Vector3(2, 2, 2)
 	nb_block = gs.Vector3(2, 8, 2)
 	# nb_block = gs.Vector3(5, 20, 5)
 

@@ -7,17 +7,21 @@ isolevel = 1.0 --> float
 size_block = 16 --> int
 
 grid_value = gs.BinaryBlob() --> gs::BinaryBlob
+grid_value_up = gs.BinaryBlob() --> gs::BinaryBlob
+grid_value_down = gs.BinaryBlob() --> gs::BinaryBlob
 block_grid = {}
+block_grid_up = {}
+block_grid_down = {}
 
 nb_triangle = 0
 
 function get_index_ro_create_it(vtx_array, normal_array, vtx)
     -- check if this vtx exist
-    for i=1, #vtx_array do
-        if vtx_array[i] == vtx then
-            return i - 1
-        end
-    end
+--    for i=1, #vtx_array do
+--        if vtx_array[i] == vtx then
+--            return i - 1
+--        end
+--    end
 
     -- didn't found the vertx , so add it and send the new index
     table.insert(normal_array, gs.Vector3(math.random(), math.random(), math.random()))
@@ -427,11 +431,11 @@ function IsoPrimitive:GetMinMax()
 end
 
 function IsoPrimitive:GetWorld()
-	return this.transform:GetCurrent().world
+	return gs.Matrix4.Identity
 end
 
 function IsoPrimitive:GetInverseWorld()
-	return this.transform:GetCurrent().world:InversedFast()
+	return gs.Matrix4.Identity
 end
 
 function IsoPrimitive:GetSortKey()
@@ -440,6 +444,7 @@ end
 
 function CreateIsoFBO(renderer)
 
+    nb_triangle = 0
     local index_array = {}
     local vtx_array = {}
     local normal_array = {}
@@ -451,27 +456,25 @@ function CreateIsoFBO(renderer)
 
     for x=1, size_block-1 do
         for z=1, size_block-1 do
-            -- down
-            grid.val = {0,0,0,0,
-                        block_grid[x][z], block_grid[x+1][z], block_grid[x+1][z+1], block_grid[x][z+1]}
-            local offset = gs.Vector3(x-1, -1, z-1)
-            nb_tri = IsoSurface(grid, isolevel, index_array, vtx_array, normal_array, offset)
+--            -- down
+--            grid.val = {block_grid_down[x][z], block_grid_down[x+1][z], block_grid_down[x+1][z+1], block_grid_down[x][z+1],
+--                        block_grid[x][z], block_grid[x+1][z], block_grid[x+1][z+1], block_grid[x][z+1]}
+--            local offset = gs.Vector3(x-1, -1, z-1)
+--            nb_tri = IsoSurface(grid, isolevel, index_array, vtx_array, normal_array, offset)
 
             -- middle
             grid.val = {block_grid[x][z], block_grid[x+1][z], block_grid[x+1][z+1], block_grid[x][z+1],
                         block_grid[x][z], block_grid[x+1][z], block_grid[x+1][z+1], block_grid[x][z+1]}
             local offset = gs.Vector3(x-1, 0, z-1)
             nb_tri = IsoSurface(grid, isolevel, index_array, vtx_array, normal_array, offset)
-
-            -- up
-            grid.val = {block_grid[x][z], block_grid[x+1][z], block_grid[x+1][z+1], block_grid[x][z+1],
-                        0,0,0,0}
-            local offset = gs.Vector3(x-1, 1, z-1)
-            nb_tri = IsoSurface(grid, isolevel, index_array, vtx_array, normal_array, offset)
+--
+--            -- up
+--            grid.val = {block_grid[x][z], block_grid[x+1][z], block_grid[x+1][z+1], block_grid[x][z+1],
+--                        block_grid_up[x][z], block_grid_up[x+1][z], block_grid_up[x+1][z+1], block_grid_up[x][z+1]}
+--            local offset = gs.Vector3(x-1, 1, z-1)
+--            nb_tri = IsoSurface(grid, isolevel, index_array, vtx_array, normal_array, offset)
         end
     end
-
-    block_grid = {}
 
     -- create fbo
     -- Create index buffer
@@ -486,10 +489,10 @@ function CreateIsoFBO(renderer)
 
     idx:Create(index_array, gs.VBO.Dynamic)
 
-    print("nb triangles: "..(#index_array/3))
-    print("nb vertices: "..(#vtx_array))
-
     nb_triangle = (#index_array/3)
+
+    print("nb triangles: "..nb_triangle)
+    print("nb vertices: "..(#vtx_array))
 
     vtx:Create(desc, #vtx_array, gs.VBO.Dynamic)
     vtx:UpdateStreamVector3(gs.ShaderStream.Position, vtx_array)
@@ -499,7 +502,7 @@ end
 function IsoPrimitive:Draw(render_system, pass)
 	local renderer = render_system:GetRenderer()
 
---	renderer:SetWorldMatrix(this.transform:GetCurrent().world)
+	renderer:SetWorldMatrix(this.transform:GetCurrent().world)
 
 	-- retrieve the pass shader variant from the surface shader
 	local shader = surface_shader:GetPassShader(pass:GetPass())
@@ -519,7 +522,11 @@ function IsoPrimitive:Draw(render_system, pass)
 	-- draw iso surface
     if #block_grid > 0 then
         CreateIsoFBO(renderer)
+        block_grid = {}
+        block_grid_down = {}
+        block_grid_up = {}
     end
+
     if idx ~= nil and nb_triangle > 0 then
 	    gs.DrawBuffers(renderer, idx, vtx, shader, gs.PrimitiveTriangle)
     end
@@ -545,8 +552,23 @@ function GetRenderable()
 	return gs.LuaRenderable(IsoRenderable)
 end
 
+function update_block(grid, block)
+     if grid:GetDataSize() > 0 then
+        grid:SetCursor(0)
+        -- Create a grid 16 * 16 from random binary value
+        block = {}
+        for x=1, size_block do
+            block[x] = {}
+            for z=1, size_block do
+                block[x][z] = grid:ReadInt()
+            end
+        end
+        grid:Free()
+    end
+end
+
 function Update()
-    if grid_value:GetDataSize() > 0 then
+     if grid_value:GetDataSize() > 0 then
         grid_value:SetCursor(0)
         -- Create a grid 16 * 16 from random binary value
         block_grid = {}
@@ -558,4 +580,8 @@ function Update()
         end
         grid_value:Free()
     end
+--   update_block(grid_value, block_grid)
+   update_block(grid_value_down, block_grid_down)
+   update_block(grid_value_up, block_grid_up)
+--    collectgarbage()
 end

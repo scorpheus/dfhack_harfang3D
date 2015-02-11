@@ -13,10 +13,9 @@ lua_system = 0
 engine_env = 0
 
 
-def on_log(msg, prefix, details):
-	print('%s: %s' % ('log' if prefix == '' else prefix, msg))
-	if details != '':
-		print('	%s' % details)
+def on_log(msgs):
+	for i in range(msgs.GetSize()):
+		print(msgs.GetMessage(i))
 
 def on_script_error(event):
 	print("Error in script '%s'\n\n%s" % (event.component.GetPath(), event.error))
@@ -33,7 +32,7 @@ def InitialiseKraken():
 	global engine_env
 
 	# hook the engine log
-	# gs.GetOnLogSignal().Connect(on_log)
+	gs.GetOnLogSignal().Connect(on_log)
 
 	gs.GetTaskSystem().CreateWorkers()
 
