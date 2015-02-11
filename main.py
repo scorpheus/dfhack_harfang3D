@@ -21,8 +21,8 @@ try:
 	kraken_scene.InitialiseKraken()
 
 	# nb_block = gs.Vector3(2, 2, 2)
-	nb_block = gs.Vector3(2, 8, 2)
-	# nb_block = gs.Vector3(5, 20, 5)
+	# nb_block = gs.Vector3(2, 8, 2)
+	nb_block = gs.Vector3(5, 20, 5)
 
 	pos_around_camera = []
 	for x in range(-math.floor(nb_block.x * 0.5), math.floor(nb_block.x * 0.5)):
@@ -47,12 +47,15 @@ try:
 		pos += pos_around_camera[current_block_use]
 		corner_pos = gs.Vector3(math.floor(pos.x/16)*16, math.floor(pos.y), (math.floor(pos.z/16))*16)
 
-		already_have_this_pos = False
-		for block in pool_blocks:
-			if not block.free:
-				if gs.Vector3.Dist2(block.get_pos(), corner_pos) < 1.0:
-					already_have_this_pos = True
-					break
+		def get_block_map_from_corner_pos(corner_pos):
+			for block in pool_blocks:
+				if not block.free:
+					if gs.Vector3.Dist2(block.get_pos(), corner_pos) < 1.0:
+						return block
+			return None
+
+		corner_block = get_block_map_from_corner_pos(corner_pos)
+		already_have_this_pos = False if corner_block is None else True
 
 		if not already_have_this_pos:
 			# Get a free block
@@ -67,7 +70,20 @@ try:
 				df_block = GetBlock(from_world_to_dfworld(pos))
 
 				if df_block is not None:
+					# update the grid
 					free_block.update_cube_from_blocks_protobuf(tile_type_list, df_block, pos)
+
+					#update the geometry
+					# Get a grid_value from the block up
+					up_corner_block = get_block_map_from_corner_pos(corner_pos + gs.Vector3(0, 1, 0))
+					grid_value_up = None if corner_block is None else corner_block.grid_value
+
+					free_block.update_geometry(grid_value_up)
+
+					# Get a valid block under
+					down_corner_block = get_block_map_from_corner_pos(corner_pos + gs.Vector3(0, -1, 0))
+					if down_corner_block is not None:
+						down_corner_block.update_geometry(free_block.grid_value)
 
 		current_block_use += 1
 		if current_block_use >= len(pool_blocks):

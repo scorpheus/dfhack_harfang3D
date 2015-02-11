@@ -8,10 +8,8 @@ size_block = 16 --> int
 
 grid_value = gs.BinaryBlob() --> gs::BinaryBlob
 grid_value_up = gs.BinaryBlob() --> gs::BinaryBlob
-grid_value_down = gs.BinaryBlob() --> gs::BinaryBlob
 block_grid = {}
 block_grid_up = {}
-block_grid_down = {}
 
 nb_triangle = 0
 
@@ -462,9 +460,16 @@ function CreateIsoFBO(renderer)
 --            local offset = gs.Vector3(x-1, -1, z-1)
 --            nb_tri = IsoSurface(grid, isolevel, index_array, vtx_array, normal_array, offset)
 
+
             -- middle
-            grid.val = {block_grid[x][z], block_grid[x+1][z], block_grid[x+1][z+1], block_grid[x][z+1],
-                        block_grid[x][z], block_grid[x+1][z], block_grid[x+1][z+1], block_grid[x][z+1]}
+            if #block_grid_up > 0 then
+                grid.val = {block_grid[x][z], block_grid[x+1][z], block_grid[x+1][z+1], block_grid[x][z+1],
+                            block_grid_up[x][z], block_grid_up[x+1][z], block_grid_up[x+1][z+1], block_grid_up[x][z+1]}
+            else
+                grid.val = {block_grid[x][z], block_grid[x+1][z], block_grid[x+1][z+1], block_grid[x][z+1],
+                            block_grid[x][z], block_grid[x+1][z], block_grid[x+1][z+1], block_grid[x][z+1] }
+            end
+
             local offset = gs.Vector3(x-1, 0, z-1)
             nb_tri = IsoSurface(grid, isolevel, index_array, vtx_array, normal_array, offset)
 --
@@ -543,7 +548,7 @@ end
 
 function IsoRenderable:GetRenderPrimitives(view, default_view, list, prim_type, do_culling)
 	if prim_type == gs.LuaRenderable.ContextDefault then
-		list:PushPrimitive(iso_primitive, gs.RenderPass.Transparent)
+		list:PushPrimitive(iso_primitive, gs.RenderPass.Opaque)
 	end
 	return 1
 end
@@ -568,7 +573,7 @@ function update_block(grid, block)
 end
 
 function Update()
-     if grid_value:GetDataSize() > 0 then
+    if grid_value:GetDataSize() > 0 then
         grid_value:SetCursor(0)
         -- Create a grid 16 * 16 from random binary value
         block_grid = {}
@@ -580,8 +585,17 @@ function Update()
         end
         grid_value:Free()
     end
---   update_block(grid_value, block_grid)
-   update_block(grid_value_down, block_grid_down)
-   update_block(grid_value_up, block_grid_up)
---    collectgarbage()
+
+    if grid_value_up:GetDataSize() > 0 then
+        grid_value_up:SetCursor(0)
+        -- Create a grid 16 * 16 from random binary value
+        block_grid_up = {}
+        for x=1, size_block do
+            block_grid_up[x] = {}
+            for z=1, size_block do
+                block_grid_up[x][z] = grid_value_up:ReadInt()
+            end
+        end
+        grid_value_up:Free()
+    end
 end
