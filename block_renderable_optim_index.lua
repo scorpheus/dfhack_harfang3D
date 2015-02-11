@@ -491,8 +491,8 @@ function CreateIsoFBO(renderer)
 
     nb_triangle = (#index_array/3)
 
-    print("nb triangles: "..nb_triangle)
-    print("nb vertices: "..(#vtx_array))
+--    print("nb triangles: "..nb_triangle)
+--    print("nb vertices: "..(#vtx_array))
 
     vtx:Create(desc, #vtx_array, gs.VBO.Dynamic)
     vtx:UpdateStreamVector3(gs.ShaderStream.Position, vtx_array)
