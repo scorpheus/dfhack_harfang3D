@@ -20,15 +20,17 @@ try:
 
 	kraken_scene.InitialiseKraken()
 
-	# nb_block = gs.Vector3(2, 2, 2)
-	# nb_block = gs.Vector3(2, 8, 2)
-	nb_block = gs.Vector3(5, 20, 5)
+	nb_block = gs.Vector3(4, 4, 4)
+	# nb_block = gs.Vector3(5, 8, 5)
+	# nb_block = gs.Vector3(5, 20, 5)
 
 	pos_around_camera = []
 	for x in range(-math.floor(nb_block.x * 0.5), math.floor(nb_block.x * 0.5)):
 		for y in range(-math.floor(nb_block.y * 0.5), math.floor(nb_block.y * 0.5)):
 			for z in range(-math.floor(nb_block.z * 0.5), math.floor(nb_block.z * 0.5)):
 				pos_around_camera.append(gs.Vector3(x*16, y, z*16))
+
+				# print('start: %.2f, %.2f, %.2f' % (x*16, y, z*16))
 
 	pool_blocks = []
 	for i in range(len(pos_around_camera)):
@@ -41,7 +43,7 @@ try:
 		UpdateKraken()
 
 		pos = kraken_scene.scene.GetNode('render_camera').transform.GetPosition()
-		pos.y -= 10
+		# pos.y -= 10
 
 		# check if we don't have a block with this pos
 		pos += pos_around_camera[current_block_use]
@@ -66,6 +68,7 @@ try:
 					break
 
 			if free_block is not None:
+				# print('update: %.2f, %.2f, %.2f' % (corner_pos.x, corner_pos.y, corner_pos.z))
 				# Get block from df
 				df_block = GetBlock(from_world_to_dfworld(pos))
 
@@ -73,7 +76,7 @@ try:
 					# update the grid
 					free_block.update_cube_from_blocks_protobuf(tile_type_list, df_block, pos)
 
-					#update the geometry
+					# update the geometry
 					# Get a grid_value from the block up
 					up_corner_block = get_block_map_from_corner_pos(corner_pos + gs.Vector3(0, 1, 0))
 					grid_value_up = None if corner_block is None else corner_block.grid_value
@@ -90,7 +93,9 @@ try:
 
 			# check if there block outside the pos
 			pos = kraken_scene.scene.GetNode('render_camera').transform.GetPosition()
-			pos.y -= 10
+			# pos.y -= 10
+			# print('pos: %.2f, %.2f, %.2f' % (pos.x, pos.y, pos.z))
+
 
 			min_pos = gs.Vector3(math.floor((pos.x+pos_around_camera[0].x)/16)*16, math.floor((pos.y+pos_around_camera[0].y)), (math.floor((pos.z+pos_around_camera[0].z)/16))*16)
 			max_pos = gs.Vector3(math.floor((pos.x+pos_around_camera[len(pos_around_camera)-1].x)/16)*16, math.floor((pos.y+pos_around_camera[len(pos_around_camera)-1].y)), (math.floor((pos.z+pos_around_camera[len(pos_around_camera)-1].z)/16))*16)
