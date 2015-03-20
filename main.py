@@ -41,6 +41,8 @@ try:
 	while True:
 
 		UpdateKraken()
+		if not kraken_scene.scene.IsReady():
+			continue
 
 		pos = kraken_scene.scene.GetNode('render_camera').transform.GetPosition()
 		# pos.y -= 10

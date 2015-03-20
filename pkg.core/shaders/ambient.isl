@@ -1,4 +1,10 @@
 variant {
+	vertex {
+		source %{
+			%out.position% = vec4(vPosition, 1.0);
+		%}
+	}
+
 	pixel {
 		source %{
 			vec2 UV = %in.fragcoord%.xy * vInverseInternalResolution.xy;

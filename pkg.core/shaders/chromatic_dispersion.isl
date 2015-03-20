@@ -6,7 +6,7 @@ in {
 variant {
 	vertex {
 		source %{
-			%out.position% = _mtx_mul(vModelViewProjectionMatrix, vec4(vPosition, 1.0));
+			%out.position% = vec4(vPosition, 1.0);
 		%}
 	}
 

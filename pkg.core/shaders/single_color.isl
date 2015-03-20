@@ -1,5 +1,3 @@
-in { tex2D u_tex; }
-
 variant {
 	vertex {
 		out { vec4 v_color; }

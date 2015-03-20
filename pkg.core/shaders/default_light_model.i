@@ -4,12 +4,12 @@
 #ifndef DEFAULT_LIGHT_MODEL_I
 #define DEFAULT_LIGHT_MODEL_I
 
-LightModelOut ComputePhongModel(vec3 p, vec3 n, vec3 incident)
+LightModelOut ComputePhongModel(vec3 p, vec3 n, vec3 incident, float gloss)
 {
 	LightModelOut m;
 	m.i_diff = max(-dot(incident, n), 0.0);
 	vec3 e = normalize(reflect(p, n));
-	m.i_spec = max(-dot(incident, e), 0.0);
+	m.i_spec = pow(max(-dot(incident, e), 0.0), gloss);
 	return m;
 }
 
@@ -20,6 +20,7 @@ float ComputePointLightAttenuation(float d)
 		k = max(1.0 - d / vLightState.x, 0.0); // distance attenuation
 	return k;
 }
+
 float ComputeSpotLightAttenuation(float d, vec3 incident)
 {
 	float k = ComputePointLightAttenuation(d);
@@ -33,6 +34,7 @@ float ComputeSpotLightAttenuation(float d, vec3 incident)
 	}
 	return k;
 }
+
 float ComputeLinearLightAttenuation() { return 1.0; }
 
 /*
@@ -41,9 +43,9 @@ float ComputeLinearLightAttenuation() { return 1.0; }
 	d: distance from light to pixel
 	incident: light incident direction
 */
-LightModelOut ComputeLightModel(vec3 p, vec3 n, float d, vec3 incident)
+LightModelOut ComputeLightModel(vec3 p, vec3 n, float d, vec3 incident, float gloss)
 {
-	LightModelOut m = ComputePhongModel(p, n, incident);
+	LightModelOut m = ComputePhongModel(p, n, incident, gloss);
 
 #if defined(SPOT_LIGHT_MODEL)
 	float k = ComputeSpotLightAttenuation(d, incident);

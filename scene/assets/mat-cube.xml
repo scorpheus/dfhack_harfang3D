@@ -1,5 +1,5 @@
 <Material Shader="scene/assets/diffuse.isl">
-    <MaterialValues>
-        <Value Name="user_diffuse_color" Type="vec4" Value="vec4(1.0000, 1.0000, 1.0000, 1.0000)"/>
-    </MaterialValues>
+	<MaterialValues>
+		<Value Name="user_diffuse_color" Type="vec4" Value="vec4(1.0000, 1.0000, 1.0000, 1.0000)"/>
+	</MaterialValues>
 </Material>

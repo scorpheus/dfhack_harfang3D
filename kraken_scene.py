@@ -17,9 +17,9 @@ def on_log(msgs):
 	for i in range(msgs.GetSize()):
 		print(msgs.GetMessage(i))
 
+
 def on_script_error(event):
 	print("Error in script '%s'\n\n%s" % (event.component.GetPath(), event.error))
-
 
 
 def InitialiseKraken():
@@ -39,15 +39,13 @@ def InitialiseKraken():
 	egl = gs.EglRenderer()
 	gpu = gs.GpuRendererAsync(egl)
 
-	gs.GetFilesystem().Mount(gs.StdFileDriver("runtime"), "@core")
+	gs.GetFilesystem().Mount(gs.StdFileDriver("pkg.core"), "@core")
 	gs.GetFilesystem().Mount(gs.StdFileDriver())
 
 	render_system = gs.RenderSystem(egl)
 	render_system_async = gs.RenderSystemAsync(render_system)
 
-	mixer = gs.ALMixer()
-	mixer_async = gs.MixerAsync(mixer)
-
+	mixer_async = gs.MixerAsync(gs.ALMixer())
 
 	gpu.Open(1280, 720)
 	render_system_async.Initialize().wait()
@@ -56,7 +54,7 @@ def InitialiseKraken():
 
 	scene = gs.Scene()
 	scene.SetupCoreSystemsAndComponents(render_system)
-	scene_ready = scene.Load('scene/world_scene.xml', gs.SceneLoadContext(render_system))
+	scene.Load('scene/world_scene.scn', gs.SceneLoadContext(render_system))
 
 	engine_env = gs.ScriptEngineEnv(render_system_async, gpu, mixer_async)
 
@@ -66,15 +64,15 @@ def InitialiseKraken():
 	lua_system.GetScriptErrorSignal().Connect(on_script_error)
 	scene.AddNodeSystem(lua_system)
 
+clock = gs.Clock()
 
 def UpdateCamera():
 
 	camera_item = scene.GetNode("render_camera")
 	if camera_item is not None:
 		vec_dir = camera_item.transform.GetRotation()
-		speed = 1.0
+		speed = 10.0 * clock.GetDelta().to_sec()
 
-		gs.GetInputSystem().Update()
 		keyboard_device = gs.GetInputSystem().GetDevice("keyboard")
 
 		if keyboard_device.IsDown(gs.InputDevice.KeyUp) or keyboard_device.IsDown(gs.InputDevice.KeyZ) or keyboard_device.IsDown(gs.InputDevice.KeyW):
@@ -104,22 +102,24 @@ def UpdateCamera():
 
 
 def UpdateKraken():
-	if scene_ready:
-		scene.SetCurrentCamera(scene.GetNode("render_camera"))
-		# scene.SetCurrentCamera(scene.GetNode("center_camera"))
 
+	clock.Update()  # only update prior to the update step
+
+	# Read-only
+	scene.Update(gs.time(0.016))
+	scene.WaitUpdate()
+
+	# Read/write
+	scene.Commit()
+	scene.WaitCommit()
+
+	if scene.IsReady():
 		UpdateCamera()
 
-		# Read-only
-		scene.Update(gs.time(0.016))
-		scene.WaitUpdate()
-
-		# Read/write
-		scene.Commit()
-		scene.WaitCommit()
-
 		gpu.ShowFrame()
-		gpu.UpdateOutputWindow()
+
+	gpu.UpdateOutputWindow()
+	gs.GetInputSystem().Update()
 
 
 def GetGeo(name):

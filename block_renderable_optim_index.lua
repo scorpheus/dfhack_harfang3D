@@ -1,7 +1,6 @@
-
 execution_context = gs.ScriptContextAll
 
-surface_shader = engine:GetRenderSystemAsync():LoadSurfaceShader("shader.isl")
+surface_shader = render_system:LoadSurfaceShader("shader.isl")
 
 isolevel = 1.0 --> float
 size_block = 16 --> int
@@ -12,14 +11,13 @@ block_grid = {}
 block_grid_up = {}
 
 nb_triangle = 0
-
 function get_index_ro_create_it(vtx_array, normal_array, vtx)
     -- check if this vtx exist
---    for i=1, #vtx_array do
---        if vtx_array[i] == vtx then
---            return i - 1
---        end
---    end
+    for i=1, #vtx_array do
+        if vtx_array[i] == vtx then
+            return i - 1
+        end
+    end
 
     -- didn't found the vertx , so add it and send the new index
     table.insert(normal_array, gs.Vector3(math.random(), math.random(), math.random()))
@@ -49,9 +47,6 @@ function Lerp2Vertex(isolevel, p1, p2, valp1, valp2)
    local mu = (isolevel - valp1) / (valp2 - valp1)
    return p1 + (p2 - p1) * mu
 end
-
-
-function IsoSurface(grid, isolevel, index_array, vtx_array, normal_array, offset)
 
 --[256]
 edgeTable ={
@@ -346,6 +341,8 @@ triTable=
 {0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}}
 
+function IsoSurface(grid, isolevel, index_array, vtx_array, normal_array, offset)
+
     --      Determine the index into the edge table which
     --      tells us which vertices are inside of the surface
     local cubeindex = 0
@@ -418,30 +415,8 @@ end
 
 
 -------------------------------------------------------------------------------
-IsoPrimitive = {}
-
-function IsoPrimitive:IsLit()
-	return true
-end
-
-function IsoPrimitive:GetMinMax()
-	return gs.MinMax(gs.Vector3(0, -3, 0), gs.Vector3(size_block, 3, size_block)) --TODO
-end
-
-function IsoPrimitive:GetWorld()
-	return gs.Matrix4.Identity
-end
-
-function IsoPrimitive:GetInverseWorld()
-	return gs.Matrix4.Identity
-end
-
-function IsoPrimitive:GetSortKey()
-	return 0
-end
 
 function CreateIsoFBO(renderer)
-
     nb_triangle = 0
     local index_array = {}
     local vtx_array = {}
@@ -481,6 +456,7 @@ function CreateIsoFBO(renderer)
         end
     end
 
+
     -- create fbo
     -- Create index buffer
     if idx == nil then
@@ -496,7 +472,7 @@ function CreateIsoFBO(renderer)
 
     nb_triangle = (#index_array/3)
 
---    print("nb triangles: "..nb_triangle)
+--    print("nb triangles: "..(#index_array/3))
 --    print("nb vertices: "..(#vtx_array))
 
     vtx:Create(desc, #vtx_array, gs.VBO.Dynamic)
@@ -504,13 +480,16 @@ function CreateIsoFBO(renderer)
     vtx:UpdateStreamVector3(gs.ShaderStream.Normal, normal_array)
 end
 
-function IsoPrimitive:Draw(render_system, pass)
-	local renderer = render_system:GetRenderer()
+function GetMinMax()
+	return gs.MinMax(gs.Vector3(0, -3, 0), gs.Vector3(size_block, 3, size_block)) --TODO
+end
+
+function Draw(pass)
+	-- retrieve the pass shader variant from the surface shader
+	local shader = surface_shader:GetPassShader(pass:GetShader())
+	if shader == nil or shader:IsReady() == false then return end
 
 	renderer:SetWorldMatrix(this.transform:GetCurrent().world)
-
-	-- retrieve the pass shader variant from the surface shader
-	local shader = surface_shader:GetPassShader(pass:GetPass())
 
 	-- set draw state from the surface shader configuration
 	gs.SetSurfaceDrawState(render_system, surface_shader:GetSurfaceDrawState(), pass);
@@ -537,25 +516,9 @@ function IsoPrimitive:Draw(render_system, pass)
     end
 end
 
-iso_primitive = gs.RenderPrimitive(IsoPrimitive)
+render_primitive = { GetMinMax = GetMinMax, Draw = Draw, pass = { gs.RenderPass.Opaque } }
 
 -------------------------------------------------------------------------------
-local IsoRenderable = {}
-
-function IsoRenderable:GetRenderableMinMax(minmax)
-	return gs.MinMax(gs.Vector3(0, -3, 0), gs.Vector3(size_block, 3, size_block)) --TODO
-end
-
-function IsoRenderable:GetRenderPrimitives(view, default_view, list, prim_type, do_culling)
-	if prim_type == gs.LuaRenderable.ContextDefault then
-		list:PushPrimitive(iso_primitive, gs.RenderPass.Opaque)
-	end
-	return 1
-end
-
-function GetRenderable()
-	return gs.LuaRenderable(IsoRenderable)
-end
 
 function update_block(grid, block)
      if grid:GetDataSize() > 0 then
@@ -572,7 +535,7 @@ function update_block(grid, block)
     end
 end
 
-function Update()
+function BeginDrawFrame()
     if grid_value:GetDataSize() > 0 then
         grid_value:SetCursor(0)
         -- Create a grid 16 * 16 from random binary value

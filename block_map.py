@@ -14,7 +14,7 @@ class BlockMap():
 		transform = gs.Transform()
 		self.block_map_node.AddComponent(transform)
 
-		self.block_script = gs.Script()
+		self.block_script = gs.RenderScript()
 		self.block_script.SetPath("block_renderable_optim_index.lua")
 		self.block_map_node.AddComponent(self.block_script)
 

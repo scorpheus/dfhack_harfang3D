@@ -1,1 +1,3 @@
-<Material Shader="iso/shader.isl"/>
+<Material Shader="shader.isl">
+	<MaterialValues/>
+</Material>

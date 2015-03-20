@@ -19,7 +19,7 @@ variant {
 
 	pixel {
 		source %{
-			%diffuse% = vec4(0.22, 0.73, 0.35, 1.0);
+			%diffuse% = vec4(v_normal, 1.0);
 			%normal% = normalize(v_normal);
 		%}
 	}
