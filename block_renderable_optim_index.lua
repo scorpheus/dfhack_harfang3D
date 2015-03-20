@@ -520,21 +520,6 @@ render_primitive = { GetMinMax = GetMinMax, Draw = Draw, pass = { gs.RenderPass.
 
 -------------------------------------------------------------------------------
 
-function update_block(grid, block)
-     if grid:GetDataSize() > 0 then
-        grid:SetCursor(0)
-        -- Create a grid 16 * 16 from random binary value
-        block = {}
-        for x=1, size_block do
-            block[x] = {}
-            for z=1, size_block do
-                block[x][z] = grid:ReadInt()
-            end
-        end
-        grid:Free()
-    end
-end
-
 function BeginDrawFrame()
     if grid_value:GetDataSize() > 0 then
         grid_value:SetCursor(0)

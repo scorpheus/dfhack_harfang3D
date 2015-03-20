@@ -5,6 +5,7 @@ import time
 import math
 
 scene = 0
+egl = 0
 gpu = 0
 scene_ready = False
 render_system_async = 0
@@ -24,6 +25,7 @@ def on_script_error(event):
 
 def InitialiseKraken():
 	global scene
+	global egl
 	global gpu
 	global scene_ready
 	global render_system_async
