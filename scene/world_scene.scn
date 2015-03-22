@@ -24,8 +24,9 @@
 		<Node Uid="2" Name="render_camera">
 			<Components>
 				<gs::core::Transform>
-					<Position x="90.000000" y="108.000000" z="73.000000"/>
-					<Rotation x="0.903049" y="-0.536100" z="0.000000"/>
+					<Position x="94.545341" y="228.739838" z="66.830833"/>
+					<Rotation x="1.312178" y="-0.799184" z="0.000000"/>
+					<Scale x="0.999997" y="0.999996" z="0.999997"/>
 				</gs::core::Transform>
 				<gs::core::Camera ZoomFactor="1.400000" ZNear="0.100000" ZFar="50000.000000"/>
 				<gs::core::LogicScript>

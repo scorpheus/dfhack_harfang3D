@@ -2,7 +2,7 @@ execution_context = gs.ScriptContextAll
 
 surface_shader = render_system:LoadSurfaceShader("shader.isl")
 
-isolevel = 1.0 --> float
+isolevel = 0.5 --> float
 size_block = 16 --> int
 
 grid_value = gs.BinaryBlob() --> gs::BinaryBlob
@@ -13,11 +13,11 @@ block_grid_up = {}
 nb_triangle = 0
 function get_index_ro_create_it(vtx_array, normal_array, vtx)
     -- check if this vtx exist
-    for i=1, #vtx_array do
-        if vtx_array[i] == vtx then
-            return i - 1
-        end
-    end
+--    for i=1, #vtx_array do
+--        if vtx_array[i] == vtx then
+--            return i - 1
+--        end
+--    end
 
     -- didn't found the vertx , so add it and send the new index
     table.insert(normal_array, gs.Vector3(math.random(), math.random(), math.random()))
