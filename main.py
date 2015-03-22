@@ -20,121 +20,135 @@ try:
 
 	kraken_scene.InitialiseKraken()
 
-	# nb_block = gs.Vector3(4, 4, 4)
-	# nb_block = gs.Vector3(5, 8, 5)
-	# nb_block = gs.Vector3(5, 20, 5)
-
-	# pos_around_camera = []
-	# for x in range(-math.floor(nb_block.x * 0.5), math.floor(nb_block.x * 0.5)):
-	# 	for y in range(-math.floor(nb_block.y * 0.5), math.floor(nb_block.y * 0.5)):
-	# 		for z in range(-math.floor(nb_block.z * 0.5), math.floor(nb_block.z * 0.5)):
-	# 			pos_around_camera.append(gs.Vector3(x*16, y, z*16))
-	#
-	# 			# print('start: %.2f, %.2f, %.2f' % (x*16, y, z*16))
-
-	pool_blocks = []
-	for i in range(5*5*10):
-		pool_blocks.append(BlockMap(kraken_scene.scene))
-
 	def fill_cube_list_to_draw_in_frustum():
 		block_to_draw = []
 		camera = kraken_scene.scene.GetCurrentCamera()
-		frustum = gs.Frustum(gs.ZoomFactorToFov(camera.camera.GetZoomFactor()), camera.camera.GetZNear(), camera.camera.GetZFar(), kraken_scene.egl.GetAspectRatio(), camera.transform.GetCurrent().world)
+		# frustum = gs.Frustum(gs.ZoomFactorToFov(camera.camera.GetZoomFactor()), camera.camera.GetZNear(), camera.camera.GetZFar(), kraken_scene.egl.GetAspectRatio(), camera.transform.GetCurrent().world)
+		frustum = gs.Frustum(gs.ZoomFactorToFov(camera.camera.GetZoomFactor()), 0.5, 50, kraken_scene.egl.GetAspectRatio(), camera.transform.GetCurrent().world)
 		frustum_planes = gs.BuildFrustumPlanes(frustum)
 
-		camera_right = camera.transform.GetCurrent().world.GetX()
-		camera_up = camera.transform.GetCurrent().world.GetY()
-		camera_front = camera.transform.GetCurrent().world.GetZ()
-		camera_pos = camera.transform.GetCurrent().world.GetTranslation()
-		nb_block = gs.Vector3(5, 5, 100)
+		def is_in_block(min_max):
+			if gs.ClassifyMinMax(frustum_planes, min_max) == gs.Outside:
+				return  # outside, so not interesting
+			if gs.ClassifyMinMax(frustum_planes, min_max) == gs.Inside:
+				# add all box in the list
+				min = min_max.mn
+				max = min_max.mx
 
-		for x in range(-math.floor(nb_block.x * 0.5), math.floor(nb_block.x * 0.5)):
-			for y in range(-math.floor(nb_block.y * 0.5), math.floor(nb_block.y * 0.5)):
+				for x in range(int(min.x), int(max.x), 16):
+					for y in range(int(min.y), int(max.y), 1):
+						for z in range(int(min.z), int(max.z), 16):
+							block_to_draw.append(gs.Vector3(x, y, z))
+				return
+
+			if gs.ClassifyMinMax(frustum_planes, min_max) == gs.Clipped:
+				# check we are not in small box
+				center = min_max.GetCenter()
+				min = min_max.mn
+				max = min_max.mx
+				if max.x - min.x <= 16 and max.y - min.y <= 1 and max.z - min.z <= 16:
+					return
+
+				if max.x - min.x <= 16:
+					max.x = min.x + 32
+					center.x = min.x + 16
+				if max.y - min.y <= 1:
+					max.y = min.y + 2
+					center.y = min.y + 1
+				if max.z - min.z <= 16:
+					max.z = min.z + 32
+					center.z = min.z + 16
+
+				# split and continue deep search
+				is_in_block(gs.MinMax(min, center))
+				is_in_block(gs.MinMax(gs.Vector3(min.x, min.y, center.z), gs.Vector3(center.x, center.y, max.z)))
+				is_in_block(gs.MinMax(gs.Vector3(center.x, min.y, min.z), gs.Vector3(max.x, center.y, center.z)))
+				is_in_block(gs.MinMax(gs.Vector3(center.x, min.y, center.z), gs.Vector3(max.x, center.y, max.z)))
+
+				is_in_block(gs.MinMax(gs.Vector3(min.x, center.y, min.z), gs.Vector3(center.x, max.y, center.z)))
+				is_in_block(gs.MinMax(gs.Vector3(min.x, center.y, center.z), gs.Vector3(center.x, max.y, max.z)))
+				is_in_block(gs.MinMax(gs.Vector3(center.x, center.y, min.z), gs.Vector3(max.x, max.y, center.z)))
+				is_in_block(gs.MinMax(center, max))
 
 
-				for z in range(-math.floor(nb_block.z * 0.5), math.floor(nb_block.z * 0.5)):
-					dir = camera_right * x * 16 + camera_up * y + camera_front * z * 16
-					pos = camera_pos + dir
-					min_max = gs.MinMax(pos, pos + gs.Vector3(16, 1, 16))
-
-					if gs.ClassifyMinMax(frustum_planes, min_max) != gs.Outside:
-						block_to_draw.append(pos)
+		is_in_block(gs.MinMax(gs.Vector3(0, 0, 0), gs.Vector3(192, 512, 192)))
 
 		return block_to_draw
 
+	pool_blocks = []
+	for i in range(500):
+		pool_blocks.append(BlockMap(kraken_scene.scene))
+
 	current_block_use = 0
-	do_once = False
+	block_to_draw = []
 	while True:
 
 		UpdateKraken()
 		if not kraken_scene.scene.IsReady():
 			continue
 
-		if not do_once:
-			block_to_draw = fill_cube_list_to_draw_in_frustum()
-			do_once = True
-		if len(block_to_draw) <= 0:
-			continue
+		for step in range(10):
+			current_block_use += 1
+			if current_block_use >= len(block_to_draw) or len(block_to_draw) == 0:
+				# check if there block outside the pos
+				pos = kraken_scene.scene.GetNode('render_camera').transform.GetPosition()
 
-		current_block_use += 1
-		if current_block_use >= len(block_to_draw):
+				for block in pool_blocks:
+					if not block.free:
+						block_pos = block.get_pos()
+						if gs.Vector3.Dist(pos, block_pos) > 100.0:
+							block.free = True
 
-			# check if there block outside the pos
-			pos = kraken_scene.scene.GetNode('render_camera').transform.GetPosition()
+				current_block_use = 0
 
-			for block in pool_blocks:
-				if not block.free:
-					block_pos = block.get_pos()
-					if gs.Vector3.Dist(pos, block_pos) > 100.0:
-						block.free = True
+				block_to_draw = fill_cube_list_to_draw_in_frustum()
+				print(len(block_to_draw))
 
-			current_block_use = 0
+			if len(block_to_draw) <= 0:
+				continue
 
-		# pos = kraken_scene.scene.GetNode('render_camera').transform.GetPosition()
-		# pos.y -= 10
+			# check if we don't have a block with this pos
+			pos = block_to_draw[current_block_use]
+			corner_pos = gs.Vector3(math.floor(pos.x/16)*16, math.floor(pos.y), (math.floor(pos.z/16))*16)
 
-		# check if we don't have a block with this pos
-		pos = block_to_draw[current_block_use]
-		corner_pos = gs.Vector3(math.floor(pos.x/16)*16, math.floor(pos.y), (math.floor(pos.z/16))*16)
+			def get_block_map_from_corner_pos(corner_pos):
+				for block in pool_blocks:
+					if not block.free:
+						if gs.Vector3.Dist2(block.get_pos(), corner_pos) < 1.0:
+							return block
+				return None
 
-		def get_block_map_from_corner_pos(corner_pos):
-			for block in pool_blocks:
-				if not block.free:
-					if gs.Vector3.Dist2(block.get_pos(), corner_pos) < 1.0:
-						return block
-			return None
+			corner_block = get_block_map_from_corner_pos(corner_pos)
+			already_have_this_pos = False if corner_block is None else True
 
-		corner_block = get_block_map_from_corner_pos(corner_pos)
-		already_have_this_pos = False if corner_block is None else True
+			if not already_have_this_pos:
+				# Get a free block
+				free_block = None
+				for block in pool_blocks:
+					if block.free:
+						free_block = block
+						break
 
-		if not already_have_this_pos:
-			# Get a free block
-			free_block = None
-			for block in pool_blocks:
-				if block.free:
-					free_block = block
-					break
+				if free_block is not None:
+					# print('update: %.2f, %.2f, %.2f' % (corner_pos.x, corner_pos.y, corner_pos.z))
+					# Get block from df
+					df_block = GetBlock(from_world_to_dfworld(pos))
 
-			if free_block is not None:
-				# print('update: %.2f, %.2f, %.2f' % (corner_pos.x, corner_pos.y, corner_pos.z))
-				# Get block from df
-				df_block = GetBlock(from_world_to_dfworld(pos))
+					if df_block is not None:
+						# update the grid
+						free_block.update_cube_from_blocks_protobuf(tile_type_list, df_block, pos)
 
-				if df_block is not None:
-					# update the grid
-					free_block.update_cube_from_blocks_protobuf(tile_type_list, df_block, pos)
+						# update the geometry
+						# Get a grid_value from the block up
+						up_corner_block = get_block_map_from_corner_pos(corner_pos + gs.Vector3(0, 1, 0))
+						grid_value_up = None if corner_block is None else corner_block.grid_value
 
-					# update the geometry
-					# Get a grid_value from the block up
-					up_corner_block = get_block_map_from_corner_pos(corner_pos + gs.Vector3(0, 1, 0))
-					grid_value_up = None if corner_block is None else corner_block.grid_value
+						free_block.update_geometry(grid_value_up)
 
-					free_block.update_geometry(grid_value_up)
-
-					# Get a valid block under
-					down_corner_block = get_block_map_from_corner_pos(corner_pos + gs.Vector3(0, -1, 0))
-					if down_corner_block is not None:
-						down_corner_block.update_geometry(free_block.grid_value)
+						# Get a valid block under and update it
+						down_corner_block = get_block_map_from_corner_pos(corner_pos + gs.Vector3(0, -1, 0))
+						if down_corner_block is not None:
+							down_corner_block.update_geometry(free_block.grid_value)
 
 
 finally:
