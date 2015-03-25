@@ -174,28 +174,28 @@ class SceneTemplate:
 
 	# the user can update, modify object, gameplay by subclassing this function
 	def update(self):
-		pass
+		self.clock.Update()
+
+		self.update_camera()
+
+		# Read-only
+		self.scene.Update(gs.time(0.016))
+		self.scene.WaitUpdate()
+
+		# Read/write
+		self.scene.Commit()
+		self.scene.WaitCommit()
+
+		if self.scene.IsReady():
+			self.renderer_async.ShowFrame()
+
+		self.renderer_async.UpdateOutputWindow()
+		gs.GetInputSystem().Update()
 
 	# launch the main loop
 	def main_loop(self):
 		# update the scene
 		while not self.keyboard.IsDown(gs.InputDevice.KeyEscape) and self.renderer.GetDefaultOutputWindow():
-			self.clock.Update()
-
-			self.update_camera()
 			self.update()
 
-			# Read-only
-			self.scene.Update(gs.time(0.016))
-			self.scene.WaitUpdate()
-
-			# Read/write
-			self.scene.Commit()
-			self.scene.WaitCommit()
-
-			if self.scene.IsReady():
-				self.renderer_async.ShowFrame()
-
-			self.renderer_async.UpdateOutputWindow()
-			gs.GetInputSystem().Update()
 
