@@ -1,153 +1,18 @@
 __author__ = 'scorpheus'
 
 import gs
-import time
-import math
-
-scene = 0
-egl = 0
-gpu = 0
-scene_ready = False
-render_system_async = 0
-mixer_async = 0
-lua_system = 0
-engine_env = 0
+import template_scene
 
 
-def on_log(msgs):
-	for i in range(msgs.GetSize()):
-		print(msgs.GetMessage(i))
+class SubScene(template_scene.SceneTemplate):
+	def on_frame_complete(self):
+		self.render_system.GetRenderer().SetWorldMatrix(gs.Matrix4.Identity)
+		gs.DrawBox(self.render_system, gs.MinMax(gs.Vector3(-10, -10, -10), gs.Vector3(10, 10, 10)), gs.Color.Red)
 
+	def update(self):
+		pass
 
-def on_script_error(event):
-	print("Error in script '%s'\n\n%s" % (event.component.GetPath(), event.error))
-
-
-def InitialiseKraken():
-	global scene
-	global egl
-	global gpu
-	global scene_ready
-	global render_system_async
-	global mixer_async
-	global lua_system
-	global engine_env
-
-	# hook the engine log
-	gs.GetOnLogSignal().Connect(on_log)
-
-	gs.GetTaskSystem().CreateWorkers()
-
-	egl = gs.EglRenderer()
-	gpu = gs.GpuRendererAsync(egl)
-
-	gs.GetFilesystem().Mount(gs.StdFileDriver("pkg.core"), "@core")
-	gs.GetFilesystem().Mount(gs.StdFileDriver())
-
-	render_system = gs.RenderSystem(egl)
-	render_system_async = gs.RenderSystemAsync(render_system)
-
-	mixer_async = gs.MixerAsync(gs.ALMixer())
-
-	gpu.Open(1280, 720)
-	render_system_async.Initialize().wait()
-
-	gs.GetInputSystem().SetHandle(gpu.GetDefaultOutputWindow().GetHandle())
-
-	scene = gs.Scene()
-	scene.SetupCoreSystemsAndComponents(render_system)
-	scene.Load('scene/world_scene.scn', gs.SceneLoadContext(render_system))
-
-	engine_env = gs.ScriptEngineEnv(render_system_async, gpu, mixer_async)
-
-	lua_system = gs.LuaSystem(engine_env)
-	lua_system.SetExecutionContext(gs.ScriptContextEditor)
-	lua_system.Open()
-	lua_system.GetScriptErrorSignal().Connect(on_script_error)
-	scene.AddNodeSystem(lua_system)
-
-clock = gs.Clock()
-
-def UpdateCamera():
-
-	camera_item = scene.GetNode("render_camera")
-	if camera_item is not None:
-		vec_dir = camera_item.transform.GetRotation()
-		speed = 10.0 * clock.GetDelta().to_sec()
-
-		keyboard_device = gs.GetInputSystem().GetDevice("keyboard")
-
-		if keyboard_device.IsDown(gs.InputDevice.KeyUp) or keyboard_device.IsDown(gs.InputDevice.KeyZ) or keyboard_device.IsDown(gs.InputDevice.KeyW):
-			camera_item.transform.SetPosition(camera_item.transform.GetPosition() + gs.Vector3(math.sin(vec_dir.y)*abs(math.cos(vec_dir.x)), -math.sin(vec_dir.x), math.cos(-vec_dir.y)*abs(math.cos(vec_dir.x)))*speed)
-
-		elif keyboard_device.IsDown(gs.InputDevice.KeyDown) or keyboard_device.IsDown(gs.InputDevice.KeyS):
-			camera_item.transform.SetPosition(camera_item.transform.GetPosition() - gs.Vector3(math.sin(vec_dir.y)*abs(math.cos(vec_dir.x)), -math.sin(vec_dir.x), math.cos(-vec_dir.y)*abs(math.cos(vec_dir.x)))*speed)
-
-		elif keyboard_device.IsDown(gs.InputDevice.KeyLeft) or keyboard_device.IsDown(gs.InputDevice.KeyQ) or keyboard_device.IsDown(gs.InputDevice.KeyA):
-			camera_item.transform.SetPosition(camera_item.transform.GetPosition() - gs.Vector3(math.cos(vec_dir.y), 0.0, math.sin(-vec_dir.y))*speed)
-
-		elif keyboard_device.IsDown(gs.InputDevice.KeyRight) or keyboard_device.IsDown(gs.InputDevice.KeyD):
-			camera_item.transform.SetPosition(camera_item.transform.GetPosition() + gs.Vector3(math.cos(vec_dir.y), 0.0, math.sin(-vec_dir.y))*speed)
-
-		mouse_device = gs.GetInputSystem().GetDevice("mouse")
-		if mouse_device.IsDown(gs.InputDevice.KeyButton0):
-			old_mx = mouse_device.GetLastValue(gs.InputDevice.InputAxisX)
-			old_my = mouse_device.GetLastValue(gs.InputDevice.InputAxisY)
-			mx = mouse_device.GetValue(gs.InputDevice.InputAxisX)
-			my = mouse_device.GetValue(gs.InputDevice.InputAxisY)
-			euler = camera_item.transform.GetRotation() + gs.Vector3(my - old_my, mx - old_mx, 0) * math.radians(360)
-			if euler.x < -math.pi:
-				euler.x = -math.pi
-			if euler.x > math.pi:
-				euler.x = math.pi
-			camera_item.transform.SetRotation(euler)
-
-
-def UpdateKraken():
-
-	clock.Update()  # only update prior to the update step
-
-	# Read-only
-	scene.Update(gs.time(0.016))
-	scene.WaitUpdate()
-
-	# Read/write
-	scene.Commit()
-	scene.WaitCommit()
-
-	if scene.IsReady():
-		UpdateCamera()
-
-		gpu.ShowFrame()
-
-	gpu.UpdateOutputWindow()
-	gs.GetInputSystem().Update()
-
-
-def GetGeo(name):
-	return render_system_async.LoadGeometry(name)
-
-
-def CreateCube(pos):
-
-	# add camera
-	node = gs.Node()
-	node.SetName("cube")
-
-	transform = gs.Transform()
-	transform.SetPosition(pos)
-	node.AddComponent(transform)
-
-	render_geo = render_system_async.LoadGeometry('scene/assets/geo-cube.xml', True)
-	object = gs.Object()
-	object.SetGeometry(render_geo)
-	node.AddComponent(object)
-
-	#
-	# script = gs.Script()
-	# script.SetPath("@core/lua/cube.lua")
-	# node.AddComponent(script)
-
-	scene.AddNode(node)
-
-	return node
+scene = SubScene("pkg.core")
+scene.open_window_and_initialize_scene(1024, 768)
+scene.load_scene('scene/world_scene.scn')
+scene.main_loop()

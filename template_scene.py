@@ -4,8 +4,21 @@ import gs
 from math import *
 
 
+def on_log(msgs):
+	for i in range(msgs.GetSize()):
+		print(msgs.GetMessage(i))
+
+
+def on_script_error(event):
+	print("Error in script '%s'\n\n%s" % (event.component.GetPath(), event.error))
+
+
 class SceneTemplate:
 	def __init__(self, path_pkg_core):
+
+		# hook the engine log
+		gs.GetOnLogSignal().Connect(on_log)
+
 		# create workers for multithreading
 		gs.GetTaskSystem().CreateWorkers()
 
@@ -20,6 +33,8 @@ class SceneTemplate:
 		# create the render system, which is used to draw through the renderer
 		self.render_system = gs.RenderSystem(self.renderer)
 		self.render_system_async = gs.RenderSystemAsync(self.render_system)
+
+		self.mixer_async = gs.MixerAsync(gs.ALMixer())
 
 		self.scene = None
 		self.camera = None
@@ -62,6 +77,18 @@ class SceneTemplate:
 		self.environment.SetAmbientColor(gs.Color(0.323476, 0.229694, 0.488884, 0.0))
 		self.environment.SetFogColor(gs.Color(0.561837, 0.767803, 0.977783, 0.0))
 		self.scene.AddComponent(self.environment)
+
+		# add lua system
+		engine_env = gs.ScriptEngineEnv(self.render_system_async, self.renderer_async, self.mixer_async)
+
+		lua_system = gs.LuaSystem(engine_env)
+		lua_system.SetExecutionContext(gs.ScriptContextEditor)
+		lua_system.Open()
+		lua_system.GetScriptErrorSignal().Connect(on_script_error)
+		self.scene.AddNodeSystem(lua_system)
+
+	def load_scene(self, path_scene):
+		self.scene.Load(path_scene, gs.SceneLoadContext(self.render_system))
 
 	# add content in the scene (camera, light)
 	def add_camera_light(self):
