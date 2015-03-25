@@ -2,7 +2,7 @@ execution_context = gs.ScriptContextAll
 
 surface_shader = render_system:LoadSurfaceShader("shader.isl")
 
-isolevel = 0.5 --> float
+isolevel = 1.0 --> float
 size_block = 16 --> int
 
 grid_value = gs.BinaryBlob() --> gs::BinaryBlob

@@ -84,9 +84,10 @@ try:
 
 		return block_to_draw
 
-	pool_blocks = []
+	pool_free_blocks = []
+	used_blocks = []
 	for i in range(700):
-		pool_blocks.append(BlockMap(kraken_scene.scene))
+		pool_free_blocks.append(BlockMap(kraken_scene.scene))
 
 	current_block_use = 0
 	block_to_draw = []
@@ -99,64 +100,59 @@ try:
 			current_block_use += 1
 			if current_block_use >= len(block_to_draw) or len(block_to_draw) == 0:
 				# check if there block outside the pos
-				pos = kraken_scene.scene.scene.GetNode('render_camera').transform.GetPosition()
+				cam_pos = kraken_scene.scene.scene.GetNode('render_camera').transform.GetPosition()
 
-				for block in pool_blocks:
-					if not block.free:
-						block_pos = block.get_pos()
-						if gs.Vector3.Dist(pos, block_pos) > 60.0:
-							block.free = True
+				# remove too far block
+				temp_used_blocks = []
+				for block in used_blocks:
+					if gs.Vector3.Dist2(cam_pos, block.get_pos()) > 60.0 * 60.0:
+						pool_free_blocks.append(block)
+					else:
+						temp_used_blocks.append(block)
+				used_blocks = temp_used_blocks
 
 				current_block_use = 0
 
 				block_to_draw = fill_cube_list_to_draw_in_frustum()
 				print(len(block_to_draw))
 
-			if len(block_to_draw) <= 0:
-				continue
+			if len(block_to_draw) <= 0 or len(pool_free_blocks) == 0:
+				break
 
 			# check if we don't have a block with this pos
 			pos = block_to_draw[current_block_use]
 			corner_pos = gs.Vector3(pos)
-			# corner_pos = gs.Vector3(math.floor(pos.x/16)*16, math.floor(pos.y), (math.floor(pos.z/16))*16)
 
 			def get_block_map_from_corner_pos(corner_pos):
-				for block in pool_blocks:
-					if not block.free:
-						if gs.Vector3.Dist2(block.get_pos(), corner_pos) < 1.0:
-							return block
+				for block in used_blocks:
+					if gs.Vector3.Dist2(block.get_pos(), corner_pos) < 1.0:
+						return block
 				return None
 
-			corner_block = get_block_map_from_corner_pos(corner_pos)
-			already_have_this_pos = False if corner_block is None else True
+			if get_block_map_from_corner_pos(corner_pos) is None:
+				# Get block from df
+				df_block = GetBlock(from_world_to_dfworld(pos))
 
-			if not already_have_this_pos:
-				# Get a free block
-				free_block = None
-				for block in pool_blocks:
-					if block.free:
-						free_block = block
-						break
+				if df_block is not None:
 
-				if free_block is not None:
-					# Get block from df
-					df_block = GetBlock(from_world_to_dfworld(pos))
+					# Get a free block
+					free_block = pool_free_blocks.pop()
+					used_blocks.append(free_block)
 
-					if df_block is not None:
-						# update the grid
-						free_block.update_cube_from_blocks_protobuf(tile_type_list, df_block, pos)
+					# update the grid
+					free_block.update_cube_from_blocks_protobuf(tile_type_list, df_block, pos)
 
-						# update the geometry
-						# Get a grid_value from the block up
-						up_corner_block = get_block_map_from_corner_pos(corner_pos + gs.Vector3(0, 1, 0))
-						grid_value_up = None if corner_block is None else corner_block.grid_value
+					# update the geometry
+					# Get a grid_value from the block up
+					up_corner_block = get_block_map_from_corner_pos(corner_pos + gs.Vector3(0, 1, 0))
+					grid_value_up = None if up_corner_block is None else up_corner_block.grid_value
 
-						free_block.update_geometry(grid_value_up)
+					free_block.update_geometry(grid_value_up)
 
-						# Get a valid block under and update it
-						down_corner_block = get_block_map_from_corner_pos(corner_pos + gs.Vector3(0, -1, 0))
-						if down_corner_block is not None:
-							down_corner_block.update_geometry(free_block.grid_value)
+					# Get a valid block under and update it
+					down_corner_block = get_block_map_from_corner_pos(corner_pos + gs.Vector3(0, -1, 0))
+					if down_corner_block is not None:
+						down_corner_block.update_geometry(free_block.grid_value)
 
 
 finally:
