@@ -13,7 +13,7 @@ def on_script_error(event):
 	print("Error in script '%s'\n\n%s" % (event.component.GetPath(), event.error))
 
 
-class SceneTemplate:
+class AppTemplate:
 	def __init__(self, path_pkg_core):
 
 		# hook the engine log
@@ -172,14 +172,19 @@ class SceneTemplate:
 	def on_frame_complete(self):
 		pass
 
+	def on_update(self):
+		pass
+
 	# the user can update, modify object, gameplay by subclassing this function
 	def update(self):
 		self.clock.Update()
 
-		self.update_camera()
-
 		# Read-only
 		self.scene.Update(gs.time(0.016))
+
+		self.update_camera()
+		self.on_update()
+
 		self.scene.WaitUpdate()
 
 		# Read/write
