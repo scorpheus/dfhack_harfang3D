@@ -16,9 +16,9 @@ class BlockMap():
 		transform.SetScale(gs.Vector3(1, 1, 1))
 		self.block_map_node.AddComponent(transform)
 
-		self.block_script = gs.RenderScript()
-		self.block_script.SetPath("block_renderable_optim_index.lua")
-		self.block_map_node.AddComponent(self.block_script)
+		# self.block_script = gs.RenderScript()
+		# self.block_script.SetPath("block_renderable_optim_index.lua")
+		# self.block_map_node.AddComponent(self.block_script)
 
 		scene.scene.AddNode(self.block_map_node)
 
@@ -28,6 +28,9 @@ class BlockMap():
 		return self.corner_pos
 
 	def update_cube_from_blocks_protobuf(self, tile_type_list, block, pos):
+		if block is None:
+			return
+
 		self.free = False
 
 		self.grid_value.Free()

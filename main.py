@@ -1,7 +1,7 @@
 __author__ = 'scorpheus'
 
 from dfhack_connect import *
-import kraken_scene
+import template_app
 from block_map import *
 
 
@@ -9,27 +9,38 @@ def from_world_to_dfworld(pos):
 	return gs.Vector3(pos.x, pos.z, pos.y)
 
 
-try:
-	connect_socket()
-	Handshake()
-	# dfversion = GetDFVersion()
+class KrakenApp(template_app.AppTemplate):
 
-	# get once to use after (material list is huge)
-	tile_type_list = GetTiletypeList()
-	# material_list = GetMaterialList()
+	red_list = []
+	blue_list = []
 
-	kraken_scene.InitialiseKraken()
+	def setup(self):
+		self.pool_free_blocks = []
+		self.used_blocks = []
+		for i in range(700):
+			self.pool_free_blocks.append(BlockMap(self))
 
+		self.current_block_use = 0
+		self.block_to_draw = []
 
-	def fill_cube_list_to_draw_in_frustum():
+	def on_frame_complete(self):
+		# pass
+		self.render_system.GetRenderer().SetWorldMatrix(gs.Matrix4.Identity)
+
+		# for red in self.red_list:
+		# 	gs.DrawBox(self.render_system, red, gs.Color.Red)
+		for blue in self.blue_list:
+			gs.DrawBox(self.render_system, blue, gs.Color.Blue)
+
+	def fill_cube_list_to_draw_in_frustum(self):
 		block_to_draw = []
-		camera = kraken_scene.scene.scene.GetCurrentCamera()
+		camera = self.scene.GetCurrentCamera()
 		# frustum = gs.Frustum(gs.ZoomFactorToFov(camera.camera.GetZoomFactor()), camera.camera.GetZNear(), camera.camera.GetZFar(), kraken_scene.scene.renderer.GetAspectRatio(), camera.transform.GetCurrent().world)
-		frustum = gs.Frustum(gs.ZoomFactorToFov(camera.camera.GetZoomFactor()), 0.5, 20, kraken_scene.scene.renderer.GetAspectRatio(), camera.transform.GetCurrent().world)
+		frustum = gs.Frustum(gs.ZoomFactorToFov(camera.camera.GetZoomFactor()), 0.5, 20, self.renderer.GetAspectRatio(), camera.transform.GetCurrent().world)
 		frustum_planes = gs.BuildFrustumPlanes(frustum)
 
-		kraken_scene.red_list = []
-		kraken_scene.blue_list = []
+		self.red_list = []
+		self.blue_list = []
 
 		def is_in_block(min_max):
 			visibility = gs.ClassifyMinMax(frustum_planes, min_max)
@@ -51,7 +62,7 @@ try:
 						for z in range(int(min.z), int(max.z), 16):
 							new_min_max = gs.MinMax(gs.Vector3(x, y, z), gs.Vector3(x+16, y+1, z+16))
 							if gs.ClassifyMinMax(frustum_planes, new_min_max) != gs.Outside:
-								kraken_scene.blue_list.append(new_min_max)
+								self.blue_list.append(new_min_max)
 								block_to_draw.append(gs.Vector3(x, y, z))
 				return
 
@@ -66,7 +77,7 @@ try:
 							for z in range(int(min.z), int(max.z), 16):
 								new_min_max = gs.MinMax(gs.Vector3(x, y, z), gs.Vector3(x+16, y+1, z+16))
 								if gs.ClassifyMinMax(frustum_planes, new_min_max) != gs.Outside:
-									kraken_scene.blue_list.append(new_min_max)
+									self.blue_list.append(new_min_max)
 									block_to_draw.append(gs.Vector3(x, y, z))
 					return
 
@@ -84,75 +95,86 @@ try:
 
 		return block_to_draw
 
-	pool_free_blocks = []
-	used_blocks = []
-	for i in range(700):
-		pool_free_blocks.append(BlockMap(kraken_scene.scene))
+	def on_update(self):
 
-	current_block_use = 0
-	block_to_draw = []
-	while True:
-
-		if not kraken_scene.UpdateKraken():
-			continue
+		if not self.scene.IsReady():
+			return
 
 		for step in range(10):
-			current_block_use += 1
-			if current_block_use >= len(block_to_draw) or len(block_to_draw) == 0:
+			self.current_block_use += 1
+			if self.current_block_use >= len(self.block_to_draw) or len(self.block_to_draw) == 0:
 				# check if there block outside the pos
-				cam_pos = kraken_scene.scene.scene.GetNode('render_camera').transform.GetPosition()
+				cam_pos = self.scene.GetNode('render_camera').transform.GetPosition()
 
 				# remove too far block
 				temp_used_blocks = []
-				for block in used_blocks:
+				for block in self.used_blocks:
 					if gs.Vector3.Dist2(cam_pos, block.get_pos()) > 60.0 * 60.0:
-						pool_free_blocks.append(block)
+						self.pool_free_blocks.append(block)
 					else:
 						temp_used_blocks.append(block)
-				used_blocks = temp_used_blocks
+				self.used_blocks = temp_used_blocks
 
-				current_block_use = 0
+				self.current_block_use = 0
 
-				block_to_draw = fill_cube_list_to_draw_in_frustum()
-				print(len(block_to_draw))
+				self.block_to_draw = self.fill_cube_list_to_draw_in_frustum()
+				print(len(self.block_to_draw))
 
-			if len(block_to_draw) <= 0 or len(pool_free_blocks) == 0:
+			if len(self.block_to_draw) <= 0 or len(self.pool_free_blocks) == 0:
 				break
 
 			# check if we don't have a block with this pos
-			pos = block_to_draw[current_block_use]
+			pos = self.block_to_draw[self.current_block_use]
 			corner_pos = gs.Vector3(pos)
 
 			def get_block_map_from_corner_pos(corner_pos):
-				for block in used_blocks:
+				for block in self.used_blocks:
 					if gs.Vector3.Dist2(block.get_pos(), corner_pos) < 1.0:
 						return block
 				return None
 
 			if get_block_map_from_corner_pos(corner_pos) is None:
 				# Get block from df
-				df_block = GetBlock(from_world_to_dfworld(pos))
-
-				if df_block is not None:
+				# df_block = GetBlock(from_world_to_dfworld(pos))
+				df_block = None
+				# if df_block is not None:
+				if df_block is None:
 
 					# Get a free block
-					free_block = pool_free_blocks.pop()
-					used_blocks.append(free_block)
+					free_block = self.pool_free_blocks.pop()
+					self.used_blocks.append(free_block)
 
 					# update the grid
 					free_block.update_cube_from_blocks_protobuf(tile_type_list, df_block, pos)
 
 					# update the geometry
 					# Get a grid_value from the block up
-					up_corner_block = get_block_map_from_corner_pos(corner_pos + gs.Vector3(0, 1, 0))
-					grid_value_up = None if up_corner_block is None else up_corner_block.grid_value
+					# up_corner_block = get_block_map_from_corner_pos(corner_pos + gs.Vector3(0, 1, 0))
+					# grid_value_up = None if up_corner_block is None else up_corner_block.grid_value
+					#
+					# free_block.update_geometry(grid_value_up)
+					#
+					# # Get a valid block under and update it
+					# down_corner_block = get_block_map_from_corner_pos(corner_pos + gs.Vector3(0, -1, 0))
+					# if down_corner_block is not None:
+					# 	down_corner_block.update_geometry(free_block.grid_value)
 
-					free_block.update_geometry(grid_value_up)
 
-					# Get a valid block under and update it
-					down_corner_block = get_block_map_from_corner_pos(corner_pos + gs.Vector3(0, -1, 0))
-					if down_corner_block is not None:
-						down_corner_block.update_geometry(free_block.grid_value)
+
+try:
+	connect_socket()
+	Handshake()
+	# dfversion = GetDFVersion()
+
+	# get once to use after (material list is huge)
+	tile_type_list = GetTiletypeList()
+	# material_list = GetMaterialList()
+
+	app = KrakenApp("pkg.core")
+	app.open_window_and_initialize_scene(1024, 768)
+	app.load_scene('scene/world_scene.scn')
+
+	app.main_loop()
 
 
 finally:
