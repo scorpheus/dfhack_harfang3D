@@ -24,13 +24,12 @@ class KrakenApp(template_app.AppTemplate):
 		self.block_to_draw = []
 
 	def on_frame_complete(self):
-		# pass
+		return
 		self.render_system.GetRenderer().SetWorldMatrix(gs.Matrix4.Identity)
 
 		# for red in self.red_list:
 		# 	gs.DrawBox(self.render_system, red, gs.Color.Red)
-		for blue in self.blue_list:
-			gs.DrawBox(self.render_system, blue, gs.Color.Blue)
+		gs.DrawBox(self.render_system, len(self.blue_list), self.blue_list, gs.Color.Blue)
 
 	def fill_cube_list_to_draw_in_frustum(self):
 		block_to_draw = []
@@ -135,10 +134,10 @@ class KrakenApp(template_app.AppTemplate):
 
 			if get_block_map_from_corner_pos(corner_pos) is None:
 				# Get block from df
-				# df_block = GetBlock(from_world_to_dfworld(pos))
-				df_block = None
-				# if df_block is not None:
-				if df_block is None:
+				df_block = GetBlock(from_world_to_dfworld(pos))
+				# df_block = None
+				if df_block is not None:
+				# if df_block is None:
 
 					# Get a free block
 					free_block = self.pool_free_blocks.pop()
@@ -149,15 +148,15 @@ class KrakenApp(template_app.AppTemplate):
 
 					# update the geometry
 					# Get a grid_value from the block up
-					# up_corner_block = get_block_map_from_corner_pos(corner_pos + gs.Vector3(0, 1, 0))
-					# grid_value_up = None if up_corner_block is None else up_corner_block.grid_value
-					#
-					# free_block.update_geometry(grid_value_up)
-					#
-					# # Get a valid block under and update it
-					# down_corner_block = get_block_map_from_corner_pos(corner_pos + gs.Vector3(0, -1, 0))
-					# if down_corner_block is not None:
-					# 	down_corner_block.update_geometry(free_block.grid_value)
+					up_corner_block = get_block_map_from_corner_pos(corner_pos + gs.Vector3(0, 1, 0))
+					grid_value_up = None if up_corner_block is None else up_corner_block.grid_value
+
+					free_block.update_geometry(grid_value_up)
+
+					# Get a valid block under and update it
+					down_corner_block = get_block_map_from_corner_pos(corner_pos + gs.Vector3(0, -1, 0))
+					if down_corner_block is not None:
+						down_corner_block.update_geometry(free_block.grid_value)
 
 
 

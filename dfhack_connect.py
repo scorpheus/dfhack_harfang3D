@@ -157,7 +157,7 @@ def GetBlockList(p_min, p_max):
 	# input_block_message.min_z = int(p_min.z)
 	# input_block_message.max_z = int(p_max.z)
 
-
+	input_block_message.blocks_needed = 1
 	input_block_message.min_x = int(p_min.x / 16)
 	input_block_message.max_x = input_block_message.min_x + 1
 	input_block_message.min_y = int(p_min.y / 16)

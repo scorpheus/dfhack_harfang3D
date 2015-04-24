@@ -16,9 +16,9 @@ class BlockMap():
 		transform.SetScale(gs.Vector3(1, 1, 1))
 		self.block_map_node.AddComponent(transform)
 
-		# self.block_script = gs.RenderScript()
-		# self.block_script.SetPath("block_renderable_optim_index.lua")
-		# self.block_map_node.AddComponent(self.block_script)
+		self.block_script = gs.RenderScript()
+		self.block_script.SetPath("block_renderable_optim_index.lua")
+		self.block_map_node.AddComponent(self.block_script)
 
 		scene.scene.AddNode(self.block_map_node)
 
@@ -48,7 +48,7 @@ class BlockMap():
 				self.grid_value.WriteInt(1)
 
 	def update_geometry(self, top_grid_value):
-		if self.block_script.IsReady():
+		if self.block_script.GetState() == gs.Ready:
 			self.block_script.Set("grid_value", self.grid_value)
 			if top_grid_value is not None:
 				self.block_script.Set("grid_value_up", top_grid_value)
