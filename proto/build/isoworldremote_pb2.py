@@ -37,7 +37,7 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='isoworldremote.proto',
   package='isoworldremote',
-  serialized_pb=b('\n\x14isoworldremote.proto\x12\x0eisoworldremote\"k\n\x0f\x45mbarkTileLayer\x12\x39\n\x0emat_type_table\x18\x04 \x03(\x0e\x32\x1d.isoworldremote.BasicMaterialB\x02\x10\x01\x12\x1d\n\x11mat_subtype_table\x18\x05 \x03(\x05\x42\x02\x10\x01\"\xb4\x01\n\nEmbarkTile\x12\x0f\n\x07world_x\x18\x01 \x02(\x05\x12\x0f\n\x07world_y\x18\x02 \x02(\x05\x12\x0f\n\x07world_z\x18\x03 \x02(\x11\x12\x33\n\ntile_layer\x18\x04 \x03(\x0b\x32\x1f.isoworldremote.EmbarkTileLayer\x12\x14\n\x0c\x63urrent_year\x18\x05 \x01(\x05\x12\x16\n\x0e\x63urrent_season\x18\x06 \x01(\x05\x12\x10\n\x08is_valid\x18\x07 \x01(\x08\"-\n\x0bTileRequest\x12\x0e\n\x06want_x\x18\x01 \x01(\x05\x12\x0e\n\x06want_y\x18\x02 \x01(\x05\"!\n\nMapRequest\x12\x13\n\x0bsave_folder\x18\x01 \x01(\t\"\x9d\x01\n\x08MapReply\x12\x11\n\tavailable\x18\x01 \x02(\x08\x12\x10\n\x08region_x\x18\x02 \x01(\x05\x12\x10\n\x08region_y\x18\x03 \x01(\x05\x12\x15\n\rregion_size_x\x18\x04 \x01(\x05\x12\x15\n\rregion_size_y\x18\x05 \x01(\x05\x12\x14\n\x0c\x63urrent_year\x18\x06 \x01(\x05\x12\x16\n\x0e\x63urrent_season\x18\x07 \x01(\x05\"A\n\x08RawNames\x12\x11\n\tavailable\x18\x01 \x02(\x08\x12\x11\n\tinorganic\x18\x02 \x03(\t\x12\x0f\n\x07organic\x18\x03 \x03(\t*S\n\rBasicMaterial\x12\x07\n\x03\x41IR\x10\x00\x12\t\n\x05OTHER\x10\x01\x12\r\n\tINORGANIC\x10\x02\x12\n\n\x06LIQUID\x10\x03\x12\t\n\x05PLANT\x10\x04\x12\x08\n\x04WOOD\x10\x05*+\n\nLiquidType\x12\x07\n\x03ICE\x10\x00\x12\t\n\x05WATER\x10\x01\x12\t\n\x05MAGMA\x10\x02\x42\x02H\x03'))
+  serialized_pb=b('\n\x14isoworldremote.proto\x12\x0eisoworldremote\";\n\x0f\x43olorDefinition\x12\x0b\n\x03red\x18\x01 \x02(\x05\x12\r\n\x05green\x18\x02 \x02(\x05\x12\x0c\n\x04\x62lue\x18\x03 \x02(\x05\"\xe0\x01\n\x0f\x45mbarkTileLayer\x12\x39\n\x0emat_type_table\x18\x04 \x03(\x0e\x32\x1d.isoworldremote.BasicMaterialB\x02\x10\x01\x12\x1d\n\x11mat_subtype_table\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x38\n\x10tile_shape_table\x18\x06 \x03(\x0e\x32\x1a.isoworldremote.BasicShapeB\x02\x10\x01\x12\x39\n\x10tile_color_table\x18\x07 \x03(\x0b\x32\x1f.isoworldremote.ColorDefinition\"\xb4\x01\n\nEmbarkTile\x12\x0f\n\x07world_x\x18\x01 \x02(\x05\x12\x0f\n\x07world_y\x18\x02 \x02(\x05\x12\x0f\n\x07world_z\x18\x03 \x02(\x11\x12\x33\n\ntile_layer\x18\x04 \x03(\x0b\x32\x1f.isoworldremote.EmbarkTileLayer\x12\x14\n\x0c\x63urrent_year\x18\x05 \x01(\x05\x12\x16\n\x0e\x63urrent_season\x18\x06 \x01(\x05\x12\x10\n\x08is_valid\x18\x07 \x01(\x08\"-\n\x0bTileRequest\x12\x0e\n\x06want_x\x18\x01 \x01(\x05\x12\x0e\n\x06want_y\x18\x02 \x01(\x05\"!\n\nMapRequest\x12\x13\n\x0bsave_folder\x18\x01 \x01(\t\"\x9d\x01\n\x08MapReply\x12\x11\n\tavailable\x18\x01 \x02(\x08\x12\x10\n\x08region_x\x18\x02 \x01(\x05\x12\x10\n\x08region_y\x18\x03 \x01(\x05\x12\x15\n\rregion_size_x\x18\x04 \x01(\x05\x12\x15\n\rregion_size_y\x18\x05 \x01(\x05\x12\x14\n\x0c\x63urrent_year\x18\x06 \x01(\x05\x12\x16\n\x0e\x63urrent_season\x18\x07 \x01(\x05\"A\n\x08RawNames\x12\x11\n\tavailable\x18\x01 \x02(\x08\x12\x11\n\tinorganic\x18\x02 \x03(\t\x12\x0f\n\x07organic\x18\x03 \x03(\t*S\n\rBasicMaterial\x12\x07\n\x03\x41IR\x10\x00\x12\t\n\x05OTHER\x10\x01\x12\r\n\tINORGANIC\x10\x02\x12\n\n\x06LIQUID\x10\x03\x12\t\n\x05PLANT\x10\x04\x12\x08\n\x04WOOD\x10\x05*+\n\nLiquidType\x12\x07\n\x03ICE\x10\x00\x12\t\n\x05WATER\x10\x01\x12\t\n\x05MAGMA\x10\x02*Q\n\nBasicShape\x12\x08\n\x04NONE\x10\x00\x12\x08\n\x04OPEN\x10\x01\x12\x08\n\x04WALL\x10\x03\x12\t\n\x05\x46LOOR\x10\x04\x12\x0b\n\x07RAMP_UP\x10\x05\x12\r\n\tRAMP_DOWN\x10\x06\x42\x02H\x03'))
 
 _BASICMATERIAL = _descriptor.EnumDescriptor(
   name='BasicMaterial',
@@ -72,8 +72,8 @@ _BASICMATERIAL = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=641,
-  serialized_end=724,
+  serialized_start=820,
+  serialized_end=903,
 )
 
 BasicMaterial = enum_type_wrapper.EnumTypeWrapper(_BASICMATERIAL)
@@ -98,11 +98,49 @@ _LIQUIDTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=726,
-  serialized_end=769,
+  serialized_start=905,
+  serialized_end=948,
 )
 
 LiquidType = enum_type_wrapper.EnumTypeWrapper(_LIQUIDTYPE)
+_BASICSHAPE = _descriptor.EnumDescriptor(
+  name='BasicShape',
+  full_name='isoworldremote.BasicShape',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='NONE', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='OPEN', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='WALL', index=2, number=3,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='FLOOR', index=3, number=4,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='RAMP_UP', index=4, number=5,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='RAMP_DOWN', index=5, number=6,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=950,
+  serialized_end=1031,
+)
+
+BasicShape = enum_type_wrapper.EnumTypeWrapper(_BASICSHAPE)
 AIR = 0
 OTHER = 1
 INORGANIC = 2
@@ -112,7 +150,55 @@ WOOD = 5
 ICE = 0
 WATER = 1
 MAGMA = 2
+NONE = 0
+OPEN = 1
+WALL = 3
+FLOOR = 4
+RAMP_UP = 5
+RAMP_DOWN = 6
 
+
+
+_COLORDEFINITION = _descriptor.Descriptor(
+  name='ColorDefinition',
+  full_name='isoworldremote.ColorDefinition',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='red', full_name='isoworldremote.ColorDefinition.red', index=0,
+      number=1, type=5, cpp_type=1, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='green', full_name='isoworldremote.ColorDefinition.green', index=1,
+      number=2, type=5, cpp_type=1, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='blue', full_name='isoworldremote.ColorDefinition.blue', index=2,
+      number=3, type=5, cpp_type=1, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=40,
+  serialized_end=99,
+)
 
 
 _EMBARKTILELAYER = _descriptor.Descriptor(
@@ -136,6 +222,20 @@ _EMBARKTILELAYER = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='tile_shape_table', full_name='isoworldremote.EmbarkTileLayer.tile_shape_table', index=2,
+      number=6, type=14, cpp_type=8, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='tile_color_table', full_name='isoworldremote.EmbarkTileLayer.tile_color_table', index=3,
+      number=7, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -145,8 +245,8 @@ _EMBARKTILELAYER = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=40,
-  serialized_end=147,
+  serialized_start=102,
+  serialized_end=326,
 )
 
 
@@ -215,8 +315,8 @@ _EMBARKTILE = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=150,
-  serialized_end=330,
+  serialized_start=329,
+  serialized_end=509,
 )
 
 
@@ -250,8 +350,8 @@ _TILEREQUEST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=332,
-  serialized_end=377,
+  serialized_start=511,
+  serialized_end=556,
 )
 
 
@@ -278,8 +378,8 @@ _MAPREQUEST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=379,
-  serialized_end=412,
+  serialized_start=558,
+  serialized_end=591,
 )
 
 
@@ -348,8 +448,8 @@ _MAPREPLY = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=415,
-  serialized_end=572,
+  serialized_start=594,
+  serialized_end=751,
 )
 
 
@@ -390,18 +490,27 @@ _RAWNAMES = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=574,
-  serialized_end=639,
+  serialized_start=753,
+  serialized_end=818,
 )
 
 _EMBARKTILELAYER.fields_by_name['mat_type_table'].enum_type = _BASICMATERIAL
+_EMBARKTILELAYER.fields_by_name['tile_shape_table'].enum_type = _BASICSHAPE
+_EMBARKTILELAYER.fields_by_name['tile_color_table'].message_type = _COLORDEFINITION
 _EMBARKTILE.fields_by_name['tile_layer'].message_type = _EMBARKTILELAYER
+DESCRIPTOR.message_types_by_name['ColorDefinition'] = _COLORDEFINITION
 DESCRIPTOR.message_types_by_name['EmbarkTileLayer'] = _EMBARKTILELAYER
 DESCRIPTOR.message_types_by_name['EmbarkTile'] = _EMBARKTILE
 DESCRIPTOR.message_types_by_name['TileRequest'] = _TILEREQUEST
 DESCRIPTOR.message_types_by_name['MapRequest'] = _MAPREQUEST
 DESCRIPTOR.message_types_by_name['MapReply'] = _MAPREPLY
 DESCRIPTOR.message_types_by_name['RawNames'] = _RAWNAMES
+
+ColorDefinition = _reflection.GeneratedProtocolMessageType('ColorDefinition', (_message.Message,),
+    {
+      'DESCRIPTOR': _COLORDEFINITION,
+      # @@protoc_insertion_point(class_scope:isoworldremote.ColorDefinition)
+    })
 
 EmbarkTileLayer = _reflection.GeneratedProtocolMessageType('EmbarkTileLayer', (_message.Message,),
     {
@@ -446,4 +555,6 @@ _EMBARKTILELAYER.fields_by_name['mat_type_table'].has_options = True
 _EMBARKTILELAYER.fields_by_name['mat_type_table']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b('\020\001'))
 _EMBARKTILELAYER.fields_by_name['mat_subtype_table'].has_options = True
 _EMBARKTILELAYER.fields_by_name['mat_subtype_table']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b('\020\001'))
+_EMBARKTILELAYER.fields_by_name['tile_shape_table'].has_options = True
+_EMBARKTILELAYER.fields_by_name['tile_shape_table']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b('\020\001'))
 # @@protoc_insertion_point(module_scope)
