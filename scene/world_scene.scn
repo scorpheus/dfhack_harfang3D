@@ -1,75 +1,158 @@
-<Scene>
-	<Editor>
-		<SceneTools/>
-	</Editor>
-	<Components>
-		<gs::core::Environment>
-			<BackgroundColor r="0.029679" g="0.417227" b="0.492058"/>
-			<AmbientColor r="0.473014" g="0.461204" b="0.295811"/>
-			<FogColor r="1.000000" g="1.000000" b="1.000000"/>
-		</gs::core::Environment>
-	</Components>
-	<Nodes>
-		<Node Uid="1" Name="Light">
-			<Components>
-				<gs::core::Transform>
-					<Position x="16.400000" y="510.000000" z="0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Light Shadow="ProjectionMap" ZNear="0.000000" ConeAngle="0.436332" EdgeAngle="0.261799">
-					<DiffuseColor r="0.380957" g="0.451728" b="1.000000"/>
-					<SpecularColor r="1.000000" g="1.000000" b="1.000000"/>
-				</gs::core::Light>
-			</Components>
-		</Node>
-		<Node Uid="2" Name="render_camera">
-			<Components>
-				<gs::core::Transform>
-					<Position x="94.545341" y="228.739838" z="66.830833"/>
-					<Rotation x="1.312178" y="-0.799184" z="0.000000"/>
-					<Scale x="0.999997" y="0.999996" z="0.999997"/>
-				</gs::core::Transform>
-				<gs::core::Camera ZoomFactor="1.400000" ZNear="0.100000" ZFar="50000.000000"/>
-				<gs::core::LogicScript>
-					<gs::core::Script Path="scene/scripts/center_camera.lua">
-						<Parameters/>
-					</gs::core::Script>
-				</gs::core::LogicScript>
-			</Components>
-		</Node>
-		<Node Uid="3" Name="ground">
-			<Components>
-				<gs::core::Transform>
-					<Position x="92.000000" y="0.000000" z="92.000000"/>
-					<Scale x="-192.000000" y="512.000000" z="192.000000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="scene/assets/geo-ground.xml"/>
-			</Components>
-		</Node>
-		<Node Uid="4" Name="New Light">
-			<Components>
-				<gs::core::Transform>
-					<Position x="-26.000000" y="512.099976" z="0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Light ShadowRange="0.000000" DiffuseIntensity="0.200000">
-					<DiffuseColor r="0.546029" g="0.269383" b="0.036408"/>
-				</gs::core::Light>
-			</Components>
-		</Node>
-		<Node Uid="5" Name="center_camera">
-			<Components>
-				<gs::core::Transform/>
-				<gs::core::Camera ZNear="0.100000" ZFar="50000.000000"/>
-				<gs::core::LogicScript>
-					<gs::core::Script Path="scene/scripts/center_camera.lua">
-						<Parameters/>
-					</gs::core::Script>
-				</gs::core::LogicScript>
-			</Components>
-		</Node>
-	</Nodes>
-	<NodeHierarchy/>
-	<Skins/>
-	<State>
-		<CurrentCamera Uid="2"/>
-	</State>
-</Scene>
+{
+	"Scene": {
+		"Editor": {
+			"SceneTools": {}
+		},
+		"Components": {
+			"gs::core::Environment": {
+				"BackgroundColor": {
+					"r": 0.0297,
+					"g": 0.4173,
+					"b": 0.4921
+				},
+				"AmbientColor": {
+					"r": 0.4731,
+					"g": 0.4613,
+					"b": 0.2959
+				},
+				"FogColor": {
+					"r": 1.0,
+					"g": 1.0,
+					"b": 1.0
+				}
+			}
+		},
+		"Nodes": {
+			"Node": {
+				"Uid": 1,
+				"Name": "Light",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 16.4,
+							"y": 510.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Light": {
+						"Shadow": "ProjectionMap",
+						"ZNear": 0.0,
+						"DiffuseColor": {
+							"r": 0.381,
+							"g": 0.4518,
+							"b": 1.0
+						},
+						"SpecularColor": {
+							"r": 1.0,
+							"g": 1.0,
+							"b": 1.0
+						},
+						"ConeAngle": 0.4364,
+						"EdgeAngle": 0.2618
+					}
+				}
+			},
+			"Node": {
+				"Uid": 2,
+				"Name": "render_camera",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 94.5454,
+							"y": 228.7399,
+							"z": 66.8309
+						},
+						"Rotation": {
+							"x": 1.4183,
+							"y": -0.7258,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Camera": {
+						"ZoomFactor": 1.4,
+						"ZNear": 0.1001,
+						"ZFar": 50000.0
+					},
+					"gs::core::LogicScript": {
+						"gs::core::Script": {
+							"Path": "scene/scripts/center_camera.lua",
+							"Parameters": {}
+						}
+					}
+				}
+			},
+			"Node": {
+				"Uid": 3,
+				"Name": "ground",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 92.0,
+							"y": 0.0,
+							"z": 92.0
+						},
+						"Scale": {
+							"x": -192.0,
+							"y": 512.0,
+							"z": 192.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "scene/assets/geo-ground.xml"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 4,
+				"Name": "New Light",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -26.0,
+							"y": 512.1,
+							"z": 0.0
+						}
+					},
+					"gs::core::Light": {
+						"ShadowRange": 0.0,
+						"DiffuseColor": {
+							"r": 0.5461,
+							"g": 0.2694,
+							"b": 0.0365
+						},
+						"DiffuseIntensity": 0.2001
+					}
+				}
+			},
+			"Node": {
+				"Uid": 5,
+				"Name": "center_camera",
+				"Components": {
+					"gs::core::Transform": {},
+					"gs::core::Camera": {
+						"ZNear": 0.1001,
+						"ZFar": 50000.0
+					},
+					"gs::core::LogicScript": {
+						"gs::core::Script": {
+							"Path": "scene/scripts/center_camera.lua",
+							"Parameters": {}
+						}
+					}
+				}
+			}
+		},
+		"NodeHierarchy": {},
+		"Skins": {},
+		"State": {
+			"CurrentCamera": {
+				"Uid": 2
+			}
+		}
+	}
+}

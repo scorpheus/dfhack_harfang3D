@@ -150,20 +150,21 @@ def GetBlockList(p_min, p_max):
 
 	# input message: which part of datablock we want
 	input_block_message = remote_fortress.BlockRequest()
-	# input_block_message.min_x = int(p_min.x / 16)
-	# input_block_message.max_x = int(p_max.x / 16)+1
-	# input_block_message.min_y = int(p_min.y / 16)
-	# input_block_message.max_y = int(p_max.y / 16)+1
-	# input_block_message.min_z = int(p_min.z)
-	# input_block_message.max_z = int(p_max.z)
-
-	input_block_message.blocks_needed = 1
 	input_block_message.min_x = int(p_min.x / 16)
-	input_block_message.max_x = input_block_message.min_x + 1
+	input_block_message.max_x = int(p_max.x / 16)+1
 	input_block_message.min_y = int(p_min.y / 16)
-	input_block_message.max_y = input_block_message.min_y + 1
+	input_block_message.max_y = int(p_max.y / 16)+1
 	input_block_message.min_z = int(p_min.z)
-	input_block_message.max_z = input_block_message.min_z + 1
+	input_block_message.max_z = int(p_max.z)
+	input_block_message.blocks_needed = (input_block_message.max_x - input_block_message.min_x) * (input_block_message.max_y - input_block_message.min_y) * (input_block_message.max_z - input_block_message.min_z)
+
+	# input_block_message.blocks_needed = 1
+	# input_block_message.min_x = int(p_min.x / 16)
+	# input_block_message.max_x = input_block_message.min_x + 1
+	# input_block_message.min_y = int(p_min.y / 16)
+	# input_block_message.max_y = input_block_message.min_y + 1
+	# input_block_message.min_z = int(p_min.z)
+	# input_block_message.max_z = input_block_message.min_z + 1
 
 	# print("x %d, %d"%(input_block_message.min_x, p_min.x))
 	# print("y %d, %d"%(input_block_message.min_y, p_min.y))
