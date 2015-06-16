@@ -9,24 +9,37 @@ import gs.plus.scene as scene
 import gs.plus.clock as clock
 import geometry_iso
 
+import numpy as np
+
+world_tile = np.full((255, 150, 255), 0)
+
+corner_iso_array = {}
 
 def update_block(df_block, block, corner_pos):
 	x, z = 0, 0
-	array_iso = [[[0 for x in range(16)] for y in range(3)] for z in range(16)]
+	array_iso = np.empty((18, 3, 18))
+	array_tile = np.empty((16, 16))
+
+	if world_tile[corner_pos.x // 16][corner_pos.y + 1][corner_pos.z // 16] != 0:
+		array_iso[:, 2, :] = world_tile[corner_pos.x // 16][corner_pos.y + 1][corner_pos.z // 16]
 
 	for tile in df_block.tiles:
 		if tile_type_list.tiletype_list[tile].shape in [remote_fortress.EMPTY] and\
 			tile_type_list.tiletype_list[tile].material != remote_fortress.MAGMA:
-			array_iso[x][1][z] = 0
+			array_tile[x][z] = 0
 		else:
-			array_iso[x][1][z] = 1
+			array_tile[x][z] = 1
 
 		x += 1
 		if x >= 16:
 			x = 0
 			z += 1
 
-	block.object.SetGeometry(geometry_iso.create_iso(array_iso, 16, 3, 16, 1, "iso.mat"))
+	array_iso[1:-1, 2, 1:-1] = array_tile
+
+	world_tile[corner_pos.x // 16][corner_pos.y][corner_pos.z // 16] = array_tile
+
+	block.object.SetGeometry(geometry_iso.create_iso(array_iso, 16, 3, 16, 0.1, "iso.mat"))
 	block.transform.SetPosition(corner_pos)
 
 
