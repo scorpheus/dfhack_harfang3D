@@ -2,7 +2,7 @@ in {
 	vec4 diffuse_color = vec4(0.7,0.7,0.7,1.0) [hint:color];
 	vec4 specular_color = vec4(0.5,0.5,0.5,1.0) [hint:color];
 }
-surface { double-sided: true }
+surface { double-sided: false }
 variant {
 	vertex {
 		out { vec3 n; }

@@ -413,7 +413,7 @@ def CreateIsoFBO(array, width, height, length, isolevel):
 def create_iso(array, width, height, length, isolevel=0.5, material_path=None, name=None):
 	"""Create an iso surface geometry"""
 	if name is None:
-		name = "@gen/iso_%d_%f" % (hash(''.join(str(w) for w in array)), isolevel)
+		name = "@gen/iso_%f" % (isolevel)
 
 	geo = render.get_render_system().HasGeometry(name)
 	if geo is not None:
