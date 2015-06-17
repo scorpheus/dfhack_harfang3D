@@ -23,7 +23,7 @@ variant {
 
 			vec4 color = diffuse_color;
 			if (NdotL > 0.0)
-				color += diffuse_color * NdotL;
+				color = vec4(NdotL);
 
 			%diffuse% = color;
 			%specular% = specular_color;
