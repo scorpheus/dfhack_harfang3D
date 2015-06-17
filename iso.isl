@@ -2,7 +2,7 @@ in {
 	vec4 diffuse_color = vec4(0.7,0.7,0.7,1.0) [hint:color];
 	vec4 specular_color = vec4(0.5,0.5,0.5,1.0) [hint:color];
 }
-surface { double-sided: false }
+surface { double-sided: true }
 variant {
 	vertex {
 		out { vec3 n; }
@@ -16,7 +16,7 @@ variant {
 
 	pixel {
 		source %{
-			vec3 light_pos = vec3(16, 20, 0);
+			vec3 light_pos = vec3(160, 200, 0);
 			vec3 normal = normalize(n);
 
 			float NdotL = max(dot(normal,light_pos),0.0);

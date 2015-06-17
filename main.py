@@ -66,7 +66,7 @@ try:
 	cam.camera.SetZoomFactor(gs.FovToZoomFactor(1.57))
 	fps = camera.fps_controller(112, 110, 112)
 
-	# create block node
+	# create blocks node
 	blocks = []
 	list_pos_to_update = []
 	for block_x in range(3):
@@ -79,10 +79,10 @@ try:
 	while not input.key_press(gs.InputDevice.KeyEscape):
 		if scn.IsReady():
 			for i in range(1):
-				# check if there block outside the pos
+				# check if there blocks outside the pos
 				cam_pos = cam.transform.GetPosition() + gs.Vector3(-1.5 * 16, -10, -1.5*16)
 
-				# Get block from df
+				# Get blocks from df
 				df_block = GetBlock(from_world_to_dfworld(cam_pos + list_pos_to_update[count]))
 
 				if df_block is not None:

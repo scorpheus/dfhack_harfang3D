@@ -81,10 +81,15 @@ def GetIDBindFunction(message_request):
 
 	return out_id.assigned_id
 
+cache_id_function = {}
 
 def GetInfoFromDFHack(message_request, message_input):
 
-	id_function = GetIDBindFunction(message_request)
+	if message_request.method in cache_id_function:
+		id_function = cache_id_function[message_request.method]
+	else:
+		id_function = GetIDBindFunction(message_request)
+		cache_id_function[message_request.method] = id_function
 
 	# with the id, call the function and get the result
 	serialize_block = message_input.SerializeToString()

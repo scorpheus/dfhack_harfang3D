@@ -393,19 +393,6 @@ cube_base_vtx = [gs.Vector3(-half_size, -half_size, -half_size), gs.Vector3(half
 				 gs.Vector3(-half_size, half_size, -half_size), gs.Vector3(half_size, half_size, -half_size),
 				 gs.Vector3(half_size, half_size, half_size), gs.Vector3(-half_size, half_size, half_size)]
 
-def CreateIsoFBONoHeight(array, width, length, isolevel):
-	index_array = []
-	vtx_array = []
-	normal_array = []
-
-	for x in range(width - 1):
-		for z in range(length - 1):
-			cube_val = [array[x][0][z], array[x + 1][0][z], array[x + 1][0][z + 1], array[x][0][z + 1],
-						array[x][0][z], array[x + 1][0][z], array[x + 1][0][z + 1],	array[x][0][z + 1]]
-			offset = gs.Vector3(x - 1, 0, z - 1)
-			IsoSurface(cube_val, cube_base_vtx, isolevel, index_array, vtx_array, normal_array, offset)
-
-	return index_array, vtx_array, normal_array
 
 def CreateIsoFBO(array, width, height, length, isolevel):
 	index_array = []
@@ -441,15 +428,7 @@ def create_iso(array, width, height, length, isolevel=0.5, material_path=None, n
 	geo.AllocateMaterialTable(1)
 	geo.SetMaterial(0, material_path, True)
 
-	import time
-	first = time.time()
-	if height == 1:
-		index_array, vtx_array, normal_array = CreateIsoFBONoHeight(array, width, length, isolevel)
-	else:
-		index_array, vtx_array, normal_array = CreateIsoFBO(array, width, height, length, isolevel)
-
-	print("finish generate iso %f" % (time.time() - first))
-	first = time.time()
+	index_array, vtx_array, normal_array = CreateIsoFBO(array, width, height, length, isolevel)
 
 	# generate vertices
 	if not geo.AllocateVertex(len(vtx_array)):
