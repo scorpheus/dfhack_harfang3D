@@ -35,7 +35,14 @@ try:
 	cube = render.create_geometry(geometry.create_cube(1, 1, 1, "iso.mat"))
 
 	pos = gs.Vector3(112//16, 62, 112//16)
-	size_display = gs.Vector3(16, 14, 16)
+
+
+	def hash_from_pos(x, y, z):
+		return str(x + y * 1024 + z * 1024 * 1024)
+
+
+	def hash_from_layer(layer, x, z):
+		return hash_from_pos(x + layer.pos.x - (layer_size - 1) / 2, layer.pos.y, z + layer.pos.z - (layer_size - 1) / 2)
 
 
 	def get_block_simple(pos):
@@ -68,7 +75,6 @@ try:
 
 		return array_has_geo
 
-	block_drawn = 0
 
 	class UpdateBlockFromDF(threading.Thread):
 		def __init__(self, pos):
@@ -79,6 +85,7 @@ try:
 		def run(self):
 			self.block = get_block_simple(self.pos)
 
+	block_drawn = 0
 
 	def draw_geo_block(geo_block, x, y, z):
 		x *= 16
@@ -104,8 +111,11 @@ try:
 			it.iternext()
 
 	block_fetched = 0
-	min_max_to_draw = gs.MinMax(gs.Vector3(7, 1, 7), gs.Vector3(13, 1, 13))
-	layer_size = 20
+	layer_size = 3
+	min_max_to_draw = gs.MinMax(gs.Vector3(0, 0, 0), gs.Vector3(layer_size, layer_size, layer_size))
+	cache_block = {}
+	cache_geo_block = {}
+
 
 	class Layer:
 		def __init__(self):
@@ -120,6 +130,21 @@ try:
 			self.geo_blocks[tile_to] = self.geo_blocks[tile_from]
 			self.update_block_threads[tile_to] = self.update_block_threads[tile_from]
 
+		def clean_or_check_cache(self, x, z):
+			name_block = hash_from_layer(self, x, z)
+
+			if name_block in cache_block:
+				self.blocks[x + z * layer_size] = cache_block[name_block]
+			else:
+				self.blocks[x + z * layer_size] = None
+
+			self.update_block_threads[x + z * layer_size] = None
+
+			if name_block in cache_geo_block:
+				self.geo_blocks[x + z * layer_size] = cache_geo_block[name_block]
+			else:
+				self.geo_blocks[x + z * layer_size] = None
+
 		def update(self, pos):
 			self.pos = gs.Vector3(pos)
 
@@ -128,27 +153,23 @@ try:
 					for z in range(layer_size):
 						for x in range(layer_size - 1):
 							self.switch_tile(x + 1 + z * layer_size, x + z * layer_size)
-						self.blocks[layer_size - 1 + z * layer_size] = None
-						self.update_block_threads[layer_size - 1 + z * layer_size] = None
+						self.clean_or_check_cache(layer_size-1, z)
 				elif self.pos.x < self.old_pos.x:
 					for z in range(layer_size):
 						for x in range(layer_size - 1, 0, -1):
 							self.switch_tile(x - 1 + z * layer_size, x + z * layer_size)
-						self.blocks[0 + z * layer_size] = None
-						self.update_block_threads[0 + z * layer_size] = None
+						self.clean_or_check_cache(0, z)
 
 				if self.pos.z > self.old_pos.z:
 					for x in range(layer_size):
 						for z in range(layer_size - 1):
 							self.switch_tile(x + (z + 1) * layer_size, x + z * layer_size)
-						self.blocks[x + (layer_size - 1) * layer_size] = None
-						self.update_block_threads[x + (layer_size - 1) * layer_size] = None
+							self.clean_or_check_cache(x, layer_size - 1)
 				elif self.pos.z < self.old_pos.z:
 					for x in range(layer_size):
 						for z in range(layer_size - 1, 0, -1):
 							self.switch_tile(x + (z - 1) * layer_size, x + z * layer_size)
-						self.blocks[x] = None
-						self.update_block_threads[x] = None
+						self.clean_or_check_cache(x, 0)
 
 			self.old_pos = gs.Vector3(self.pos)
 
@@ -163,29 +184,38 @@ try:
 				for x in range(layer_size):
 					i = x + z * layer_size
 					if self.blocks[i] is None:
-						if self.update_block_threads[i] is None:
+						#
+						name_block = hash_from_layer(self, x, z)
+						if name_block in cache_block:
+							self.blocks[i] = cache_block[name_block]
+						elif self.update_block_threads[i] is None:
 							self.update_block_threads[i] = UpdateBlockFromDF(block_pos)
 							self.update_block_threads[i].run()
 						elif not self.update_block_threads[i].is_alive():
 							self.blocks[i] = self.update_block_threads[i].block
+							cache_block[name_block] = self.blocks[i]
 
-							# update neigbourg array
+							# update neighbour array
 							if z != 0 and self.blocks[x + (z-1) * layer_size] is not None:
-								self.blocks[x + (z-1) * layer_size][1:-1, -1] = self.blocks[i][1:-1, 1]
-								self.geo_blocks[x + (z-1) * layer_size] = None
+								self.blocks[x + (z-1) * layer_size][:, -1] = self.blocks[i][:, 1]
+								self.blocks[i][:, 0] = self.blocks[x + (z-1) * layer_size][:, -2]
 							if z != layer_size-1 and self.blocks[x + (z+1) * layer_size] is not None:
-								self.blocks[x + (z+1) * layer_size][1:-1, 0] = self.blocks[i][1:-1, -2]
-								self.geo_blocks[x + (z+1) * layer_size] = None
-							if x != 0 and self.blocks[x-1 + z * layer_size][-1, :] is not None:
-								self.blocks[x-1 + z * layer_size][-1, 1:-1] = self.blocks[i][1, 1:-1]
-								self.geo_blocks[x-1 + z * layer_size] = None
+								self.blocks[x + (z+1) * layer_size][:, 0] = self.blocks[i][:, -2]
+								self.blocks[i][:, -1] = self.blocks[x + (z+1) * layer_size][:, 1]
+							if x != 0 and self.blocks[x-1 + z * layer_size] is not None:
+								self.blocks[x-1 + z * layer_size][-1, :] = self.blocks[i][1, :]
+								self.blocks[i][0, :] = self.blocks[x-1 + z * layer_size][-2, :]
 							if x != layer_size-1 and self.blocks[x+1 + z * layer_size] is not None:
-								self.blocks[x+1 + z * layer_size][0, 1:-1] = self.blocks[i][-2, 1:-1]
-								self.geo_blocks[x+1 + z * layer_size] = None
+								self.blocks[x+1 + z * layer_size][0, :] = self.blocks[i][-2, :]
+								self.blocks[i][-1, :] = self.blocks[x+1 + z * layer_size][1, :]
 
 							block_fetched += 1
 
-						self.geo_blocks[i] = None
+						#
+						if name_block in cache_geo_block:
+							self.geo_blocks[i] = cache_geo_block[name_block]
+						else:
+							self.geo_blocks[i] = None
 						return True
 
 					block_pos.x += 1
@@ -198,21 +228,15 @@ try:
 			for z in range(int(min_max.mn.z), int(min_max.mx.z)):
 				for x in range(int(min_max.mn.x), int(min_max.mx.x)):
 					i = x + z * layer_size
-					if self.blocks[i] is not None:
-						if self.geo_blocks[i] is not None:
-							draw_geo_block(self.geo_blocks[i], self.pos.x + x - (layer_size - 1) / 2, self.pos.y, self.pos.z + z - (layer_size - 1) / 2)
-						# else:
-						# 	draw_block(self.blocks[i], self.pos.x + x - (layer_size - 1) / 2, self.pos.y, self.pos.z + z - (layer_size - 1) / 2)
+					if self.geo_blocks[i] is not None:
+						draw_geo_block(self.geo_blocks[i], self.pos.x + x - (layer_size - 1) / 2, self.pos.y, self.pos.z + z - (layer_size - 1) / 2)
 
 
 	def get_geo_from_blocks(name_geo, block, upper_block):
-		if block is not None and upper_block is not None:
-			array_has_geo = np.full((18, 2, 18), 1)
-
-			array_has_geo[:, 0, :] = block
-			array_has_geo[:, 1, :] = upper_block
-			return geometry_iso.create_iso(array_has_geo, 18, 2, 18, 1.0, "iso.mat", name_geo)
-		return None
+		array_has_geo = np.empty((18, 2, 18))
+		array_has_geo[:, 0, :] = block
+		array_has_geo[:, 1, :] = upper_block
+		return geometry_iso.create_iso(array_has_geo, 18, 2, 18, 1.0, "iso.mat", name_geo)
 
 
 	def update_geo_layer(layer, upper_layer):
@@ -220,13 +244,26 @@ try:
 			for x in range(layer_size):
 				i = x + z * layer_size
 				if layer.geo_blocks[i] is None:
-					name_geo = layer.pos.x + x + layer.pos.y * 512 + (layer.pos.z + z) * 512*512
-					layer.geo_blocks[i] = get_geo_from_blocks(str(name_geo), layer.blocks[i], upper_layer.blocks[i])
-					return
+					# can update the geo block because it has all the neighbour
+					counter_update = 0
+					if z == 0 or (z != 0 and layer.blocks[x + (z-1) * layer_size] is not None):
+						counter_update += 1
+					if z == layer_size-1 or (z != layer_size-1 and layer.blocks[x + (z+1) * layer_size] is not None):
+						counter_update += 1
+					if x == 0 or (x != 0 and layer.blocks[x-1 + z * layer_size] is not None):
+						counter_update += 1
+					if x == layer_size-1 or (x != layer_size-1 and layer.blocks[x+1 + z * layer_size] is not None):
+						counter_update += 1
+
+					if counter_update == 4 and layer.blocks[i] is not None and upper_layer.blocks[i] is not None:
+						name_block = hash_from_layer(layer, x, z)
+						layer.geo_blocks[i] = get_geo_from_blocks(name_block, layer.blocks[i], upper_layer.blocks[i])
+						cache_geo_block[name_block] = layer.geo_blocks[i]
+						return
 
 
 	layers = []
-	for i in range(25):
+	for i in range(20):
 		layers.append(Layer())
 
 
@@ -240,7 +277,7 @@ try:
 
 		# pos -> blocks dans lequel on peux se deplacer
 		pos.x = fps.pos.x // 16
-		pos.y = (fps.pos.y - 20) // 1
+		pos.y = (fps.pos.y - 10) // 1
 		pos.z = fps.pos.z // 16
 
 		#
