@@ -77,10 +77,11 @@ try:
 
 
 	class UpdateBlockFromDF(threading.Thread):
-		def __init__(self, new_pos):
+		def __init__(self, name_block, new_pos):
 			threading.Thread.__init__(self)
+			self.name_block = name_block
 			self.block = None
-			self.pos = new_pos
+			self.pos = gs.Vector3(new_pos)
 
 		def run(self):
 			self.block = get_block_simple(self.pos)
@@ -106,7 +107,7 @@ try:
 
 		it = np.nditer(block, flags=['multi_index'])
 		while not it.finished:
-			if it[0] == 1:
+			if it[0] == 0:
 				block_drawn += 1
 				render.geometry3d(it.multi_index[0] + x, y, it.multi_index[1] + z, cube)
 			it.iternext()
@@ -115,68 +116,20 @@ try:
 	layer_size = 5
 	cache_block = {}
 	cache_geo_block = {}
+	update_cache_block = {}
+	current_update_threads = [None] * 6
 
 
 	class Layer:
 		def __init__(self):
-			self.blocks = [None] * (layer_size * layer_size)
-			self.update_block_threads = [None] * (layer_size * layer_size)
-			self.geo_blocks = [None] * (layer_size * layer_size)
-			self.old_pos = gs.Vector3()
 			self.pos = gs.Vector3()
-
-		def switch_tile(self, tile_from, tile_to):
-			self.blocks[tile_to] = self.blocks[tile_from]
-			self.geo_blocks[tile_to] = self.geo_blocks[tile_from]
-			self.update_block_threads[tile_to] = self.update_block_threads[tile_from]
-
-		def clean_or_check_cache(self, x, z):
-			name_block = hash_from_layer(self.pos, x, z)
-
-			i = x + z * layer_size
-			if name_block in cache_block:
-				self.blocks[i] = cache_block[name_block]
-			else:
-				self.blocks[i] = None
-
-			self.geo_blocks[i] = None
-			# self.blocks[i] = None
-			self.update_block_threads[i] = None
-
-			# if name_block in cache_geo_block:
-			# 	self.geo_blocks[i] = cache_geo_block[name_block]
-			# else:
-			# 	self.geo_blocks[i] = None
 
 		def update(self, new_pos):
 			self.pos = gs.Vector3(new_pos)
 
-			if self.pos != self.old_pos:
-				if self.pos.x > self.old_pos.x:
-					for z in range(layer_size):
-						for x in range(layer_size - 1):
-							self.switch_tile(x + 1 + z * layer_size, x + z * layer_size)
-						self.clean_or_check_cache(layer_size-1, z)
-				elif self.pos.x < self.old_pos.x:
-					for z in range(layer_size):
-						for x in range(layer_size - 1, 0, -1):
-							self.switch_tile(x - 1 + z * layer_size, x + z * layer_size)
-						self.clean_or_check_cache(0, z)
-
-				if self.pos.z > self.old_pos.z:
-					for x in range(layer_size):
-						for z in range(layer_size - 1):
-							self.switch_tile(x + (z + 1) * layer_size, x + z * layer_size)
-							self.clean_or_check_cache(x, layer_size - 1)
-				elif self.pos.z < self.old_pos.z:
-					for x in range(layer_size):
-						for z in range(layer_size - 1, 0, -1):
-							self.switch_tile(x + (z - 1) * layer_size, x + z * layer_size)
-						self.clean_or_check_cache(x, 0)
-
-			self.old_pos = gs.Vector3(self.pos)
-
 		def fill(self):
+			global update_cache_block
+
 			block_pos = gs.Vector3()
 			block_pos.x = self.pos.x - (layer_size - 1) / 2
 			block_pos.y = self.pos.y
@@ -185,46 +138,11 @@ try:
 			global block_fetched
 			for z in range(layer_size):
 				for x in range(layer_size):
-					i = x + z * layer_size
-					if self.blocks[i] is None:
-						name_block = hash_from_layer(self.pos, x, z)
-						if name_block in cache_block:
-							self.blocks[i] = cache_block[name_block]
-						elif self.update_block_threads[i] is None:
-							self.update_block_threads[i] = UpdateBlockFromDF(block_pos)
-							self.update_block_threads[i].run()
-						elif not self.update_block_threads[i].is_alive():
-							self.blocks[i] = self.update_block_threads[i].block
-							cache_block[name_block] = self.blocks[i]
-
-							# update neighbour array
-							north_name = hash_from_layer(self.pos, x, z-1) in cache_block
-							if north_name in cache_block:
-								cache_block[north_name][:, -1] = self.blocks[i][:, 1]
-								self.blocks[i][:, 0] = cache_block[north_name][:, -2]
-							south_name = hash_from_layer(self.pos, x, z+1) in cache_block
-							if south_name in cache_block:
-								cache_block[south_name][:, 0] = self.blocks[i][:, -2]
-								self.blocks[i][:, -1] = cache_block[south_name][:, 1]
-							west_name = hash_from_layer(self.pos, x-1, z) in cache_block
-							if west_name in cache_block:
-								cache_block[west_name][-1, :] = self.blocks[i][1, :]
-								self.blocks[i][0, :] = cache_block[west_name][-2, :]
-							east_name = hash_from_layer(self.pos, x+1, z) in cache_block
-							if east_name in cache_block:
-								cache_block[east_name][0, :] = self.blocks[i][-2, :]
-								self.blocks[i][-1, :] = cache_block[east_name][1, :]
-
-							block_fetched += 1
-
-							if name_block in cache_geo_block:
-								self.geo_blocks[i] = cache_geo_block[name_block]
-							else:
-								self.geo_blocks[i] = None
-						return True
+					name_block = hash_from_layer(self.pos, x, z)
+					if name_block not in cache_block and name_block not in update_cache_block:
+						update_cache_block[name_block] = gs.Vector3(block_pos)
 
 					block_pos.x += 1
-
 				block_pos.x -= layer_size
 				block_pos.z += 1
 			return False
@@ -235,9 +153,56 @@ try:
 					name_block = hash_from_layer(self.pos, x, z)
 					if name_block in cache_geo_block:
 						draw_geo_block(cache_geo_block[name_block], self.pos.x + x - (layer_size - 1) / 2, self.pos.y, self.pos.z + z - (layer_size - 1) / 2)
-					# i = x + z * layer_size
-					# if self.geo_blocks[i] is not None:
-					# 	draw_geo_block(self.geo_blocks[i], self.pos.x + x - (layer_size - 1) / 2, self.pos.y, self.pos.z + z - (layer_size - 1) / 2)
+
+	layers = []
+	for i in range(20):
+		layers.append(Layer())
+
+	def get_cache_block_needed():
+		global block_fetched
+		global current_update_thread
+		count = 0
+		for update_thread in current_update_threads:
+			if update_thread is not None:
+				if not update_thread.is_alive():
+					name_block = update_thread.name_block
+					block_pos = update_thread.pos
+					current_block = cache_block[name_block] = update_thread.block
+
+					current_update_threads[count] = None
+
+					# update neighbour array
+					north_name = hash_from_pos(block_pos.x, block_pos.y, block_pos.z-1)
+					if north_name in cache_block:
+						cache_block[north_name][:, -1] = current_block[:, 1]
+						current_block[:, 0] = cache_block[north_name][:, -2]
+					south_name = hash_from_pos(block_pos.x, block_pos.y, block_pos.z+1)
+					if south_name in cache_block:
+						cache_block[south_name][:, 0] = current_block[:, -2]
+						current_block[:, -1] = cache_block[south_name][:, 1]
+					west_name = hash_from_pos(block_pos.x-1, block_pos.y, block_pos.z)
+					if west_name in cache_block:
+						cache_block[west_name][-1, :] = current_block[1, :]
+						current_block[0, :] = cache_block[west_name][-2, :]
+					east_name = hash_from_pos(block_pos.x+1, block_pos.y, block_pos.z)
+					if east_name in cache_block:
+						cache_block[east_name][0, :] = current_block[-2, :]
+						current_block[-1, :] = cache_block[east_name][1, :]
+
+					update_cache_block.pop(name_block)
+					block_fetched += 1
+
+			elif len(update_cache_block) > count:
+				iter_update_block = iter(update_cache_block.items())
+				name_block, block_pos = None, None
+				for i in range(count + 1):
+					name_block, block_pos = next(iter_update_block)
+
+				update_thread = UpdateBlockFromDF(name_block, block_pos)
+				update_thread.run()
+				current_update_threads[count] = update_thread
+
+			count += 1
 
 
 	def get_geo_from_blocks(name_geo, block, upper_block):
@@ -254,9 +219,11 @@ try:
 	def update_geo_layer(current_layer, upper_layer):
 		for z in range(layer_size):
 			for x in range(layer_size):
-				i = x + z * layer_size
-				if current_layer.geo_blocks[i] is None\
-					and current_layer.blocks[i] is not None and upper_layer.blocks[i] is not None:
+				current_layer_block_name = hash_from_layer(current_layer.pos, x, z)
+				upper_layer_block_name = hash_from_layer(upper_layer.pos, x, z)
+
+				if current_layer_block_name not in cache_geo_block\
+					and current_layer_block_name in cache_block and upper_layer_block_name in cache_block:
 					def check_block_can_generate_geo(layer_pos):
 						# can update the geo block because it has all the neighbour
 						counter_update = 0
@@ -271,15 +238,8 @@ try:
 						return counter_update == 4
 
 					if check_block_can_generate_geo(current_layer.pos) and check_block_can_generate_geo(upper_layer.pos):
-						name_block = hash_from_layer(current_layer.pos, x, z)
-						current_layer.geo_blocks[i] = get_geo_from_blocks(name_block, current_layer.blocks[i], upper_layer.blocks[i])
-						cache_geo_block[name_block] = current_layer.geo_blocks[i]
+						cache_geo_block[current_layer_block_name] = get_geo_from_blocks(current_layer_block_name, cache_block[current_layer_block_name], cache_block[upper_layer_block_name])
 						return
-
-
-	layers = []
-	for i in range(20):
-		layers.append(Layer())
 
 
 	old_pos = gs.Vector3()
@@ -312,14 +272,10 @@ try:
 
 		for i, layer in enumerate(layers):
 			layer.update(pos + gs.Vector3(0, i, 0))
+			layer.fill()
 			layer.draw()
 
-		count = 0
-		for layer in layers:
-			if layer.fill():
-				count += 1
-				if count > 3:
-					break
+		get_cache_block_needed()
 
 		# update layer geo
 		for i in range(0, len(layers) - 1):
