@@ -9,6 +9,7 @@ import gs.plus.clock as clock
 import gs.plus.geometry as geometry
 import geometry_iso
 
+from collections import OrderedDict
 import threading
 import numpy as np
 
@@ -26,7 +27,7 @@ try:
 	tile_type_list = GetTiletypeList()
 	# material_list = GetMaterialList()
 
-	render.init(1024, 768, "pkg.core")
+	render.init(1920, 1080, "pkg.core")
 	gs.MountFileDriver(gs.StdFileDriver("."))
 
 	fps = camera.fps_controller(112, 62, 112)
@@ -117,7 +118,8 @@ try:
 	cache_block = {}
 	cache_geo_block = {}
 	update_cache_block = {}
-	current_update_threads = [None] * 6
+	update_cache_geo_block = {}
+	current_update_threads = [None] * 8
 
 
 	class Layer:
@@ -135,7 +137,6 @@ try:
 			block_pos.y = self.pos.y
 			block_pos.z = self.pos.z - (layer_size - 1) / 2
 
-			global block_fetched
 			for z in range(layer_size):
 				for x in range(layer_size):
 					name_block = hash_from_layer(self.pos, x, z)
@@ -189,11 +190,15 @@ try:
 						cache_block[east_name][0, :] = current_block[-2, :]
 						current_block[-1, :] = cache_block[east_name][1, :]
 
+					# this block array is setup, ask the update the geo block
+					update_cache_geo_block[name_block] = gs.Vector3(block_pos)
 					update_cache_block.pop(name_block)
 					block_fetched += 1
 
 			elif len(update_cache_block) > count:
-				iter_update_block = iter(update_cache_block.items())
+				ordered_update_cache_block = OrderedDict(sorted(update_cache_block.items(), key=lambda t: gs.Vector3.Dist2(gs.Vector3(t[1].x*16, t[1].y, t[1].z*16), fps.pos)))
+
+				iter_update_block = iter(ordered_update_cache_block.items())
 				name_block, block_pos = None, None
 				for i in range(count + 1):
 					name_block, block_pos = next(iter_update_block)
@@ -210,37 +215,39 @@ try:
 		array_has_geo[:, 0, :] = block
 		array_has_geo[:, 1, :] = upper_block
 
+		# empty block don't have geometry
 		if array_has_geo.sum() == 0 or np.average(array_has_geo) == 1:
 			return render.create_geometry(gs.CoreGeometry())
 		else:
 			return geometry_iso.create_iso(array_has_geo, 18, 2, 18, 1.0, "iso.mat", name_geo)
 
 
-	def update_geo_layer(current_layer, upper_layer):
-		for z in range(layer_size):
-			for x in range(layer_size):
-				current_layer_block_name = hash_from_layer(current_layer.pos, x, z)
-				upper_layer_block_name = hash_from_layer(upper_layer.pos, x, z)
+	def update_geo_block():
+		if len(update_cache_geo_block) > 0:
+			ordered_update_cache_geo = OrderedDict(sorted(update_cache_geo_block.items(), key=lambda t: gs.Vector3.Dist2(gs.Vector3(t[1].x*16, t[1].y, t[1].z*16), fps.pos)))
 
-				if current_layer_block_name not in cache_geo_block\
-					and current_layer_block_name in cache_block and upper_layer_block_name in cache_block:
-					def check_block_can_generate_geo(layer_pos):
+			for name_block, block_pos in ordered_update_cache_geo.items():
+				current_layer_block_name = hash_from_pos(block_pos.x, block_pos.y, block_pos.z)
+				upper_layer_block_name = hash_from_pos(block_pos.x, block_pos.y + 1, block_pos.z)
+
+				if current_layer_block_name in cache_block and upper_layer_block_name in cache_block:
+					def check_block_can_generate_geo(x, y, z):
 						# can update the geo block because it has all the neighbour
 						counter_update = 0
-						if hash_from_layer(layer_pos, x, z-1) in cache_block:
+						if hash_from_pos(x, y, z-1) in cache_block:
 							counter_update += 1
-						if hash_from_layer(layer_pos, x, z+1) in cache_block:
+						if hash_from_pos(x, y, z+1) in cache_block:
 							counter_update += 1
-						if hash_from_layer(layer_pos, x-1, z) in cache_block:
+						if hash_from_pos(x - 1, y, z) in cache_block:
 							counter_update += 1
-						if hash_from_layer(layer_pos, x+1, z) in cache_block:
+						if hash_from_pos(x + 1, y, z) in cache_block:
 							counter_update += 1
 						return counter_update == 4
 
-					if check_block_can_generate_geo(current_layer.pos) and check_block_can_generate_geo(upper_layer.pos):
+					if check_block_can_generate_geo(block_pos.x, block_pos.y, block_pos.z) and check_block_can_generate_geo(block_pos.x, block_pos.y + 1, block_pos.z):
 						cache_geo_block[current_layer_block_name] = get_geo_from_blocks(current_layer_block_name, cache_block[current_layer_block_name], cache_block[upper_layer_block_name])
+						update_cache_geo_block.pop(name_block)
 						return
-
 
 	old_pos = gs.Vector3()
 	while not input.key_press(gs.InputDevice.KeyEscape):
@@ -252,7 +259,7 @@ try:
 
 		# pos -> blocks dans lequel on peux se deplacer
 		pos.x = fps.pos.x // 16
-		pos.y = (fps.pos.y - 10) // 1
+		pos.y = fps.pos.y // 1
 		pos.z = fps.pos.z // 16
 
 		#
@@ -271,15 +278,12 @@ try:
 		block_fetched, block_drawn = 0, 0
 
 		for i, layer in enumerate(layers):
-			layer.update(pos + gs.Vector3(0, i, 0))
+			layer.update(pos + gs.Vector3(0, i - len(layers) // 2, 0))
 			layer.fill()
 			layer.draw()
 
 		get_cache_block_needed()
-
-		# update layer geo
-		for i in range(0, len(layers) - 1):
-			update_geo_layer(layers[i], layers[i + 1])
+		update_geo_block()
 
 		render.text2d(0, 45, "FPS: %.2fHZ - BLOCK FETCHED: %d - BLOCK DRAWN: %d" % (1 / dt_sec, block_fetched, block_drawn), color=gs.Color.Red)
 		render.text2d(0, 25, "FPS.X = %f, FPS.Z = %f" % (fps.pos.x, fps.pos.z), color=gs.Color.Red)
