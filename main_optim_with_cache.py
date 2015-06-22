@@ -24,6 +24,7 @@ try:
 	Handshake()
 	ResetMapHashes()
 	# dfversion = GetDFVersion()
+	map_info = GetMapInfo()
 
 	# get once to use after (material list is huge)
 	tile_type_list = GetTiletypeList()
@@ -39,7 +40,7 @@ try:
 	cam = scene.add_camera(scn, gs.Matrix4.TranslationMatrix(gs.Vector3(112, 62, 112)))
 	cam.camera.SetZoomFactor(gs.FovToZoomFactor(1.57))
 
-	fps = camera.fps_controller(64, 72, 64)
+	fps = camera.fps_controller(128, 72, 64)
 	fps.rot = gs.Vector3(0.5, 0, 0)
 
 	cube = render.create_geometry(geometry.create_cube(1, 1, 1, "iso.mat"))
@@ -59,16 +60,17 @@ try:
 
 	def get_block_simple(new_pos):
 		_pos = gs.Vector3(new_pos)
+		_pos.x = map_info.block_size_x - _pos.x
 		_pos.x *= 16
 		_pos.z *= 16
 
 		block = GetBlock(from_world_to_dfworld(_pos))
 
-		array_has_geo = np.full((18, 18), 0, np.uint8)
-		array_tile_mat_id = np.full((18, 18), 0, np.uint8)
+		array_has_geo = np.full((18, 18), 0, np.int8)
+		array_tile_mat_id = np.full((18, 18), 0, np.int8)
 
 		if block is not None:
-			x, z = 1, 1
+			x, z = 16, 1
 			count_tile = 0
 			for tile in block.tile:
 				shape = tile.type
@@ -76,6 +78,10 @@ try:
 
 				# choose a material
 				block_mat = 0
+				# if material == tile.AIR:
+				# 	block_mat = 0
+				# else:
+				# 	block_mat = 1
 				if tile.flow_size > 0:
 					if tile.liquid_type == tile.MAGMA:
 						block_mat = 2
@@ -98,9 +104,9 @@ try:
 
 				count_tile += 1
 
-				x += 1
-				if x == 17:
-					x = 1
+				x -= 1
+				if x == 0:
+					x = 16
 					z += 1
 
 		array_has_geo[:, 0] = array_has_geo[:, 1]
@@ -160,7 +166,7 @@ try:
 	cache_geo_block = {}
 	update_cache_block = {}
 	update_cache_geo_block = {}
-	current_update_threads = [None] * 8
+	current_update_threads = [None] * 2
 
 
 	class Layer:
@@ -261,16 +267,20 @@ try:
 			count += 1
 
 
-	def get_geo_from_blocks(name_geo, block, upper_block):
-		array_has_geo = np.empty((18, 2, 18), np.uint8)
+	def get_geo_from_blocks(name_geo, upper_name_block, block, upper_block):
+		array_has_geo = np.empty((18, 2, 18), np.int8)
 		array_has_geo[:, 0, :] = block
 		array_has_geo[:, 1, :] = upper_block
+
+		array_mats = np.empty((18, 2, 18), np.int8)
+		array_mats[:, 0, :] = cache_block_mat[name_geo]
+		array_mats[:, 1, :] = cache_block_mat[upper_name_block]
 
 		# empty block don't have geometry
 		if array_has_geo.sum() == 0 or np.average(array_has_geo) == 1:
 			return render.create_geometry(gs.CoreGeometry())
 		else:
-			return geometry_iso.create_iso(array_has_geo, 17, 2, 17, cache_block_mat[name_geo], 1.0, mats_path, name_geo)
+			return geometry_iso.create_iso(array_has_geo, 17, 2, 17, array_mats, 1, mats_path, name_geo)
 
 
 	def update_geo_block():
@@ -296,7 +306,7 @@ try:
 						return counter_update == 4
 
 					if check_block_can_generate_geo(block_pos.x, block_pos.y, block_pos.z) and check_block_can_generate_geo(block_pos.x, block_pos.y + 1, block_pos.z):
-						cache_geo_block[current_layer_block_name] = get_geo_from_blocks(current_layer_block_name, cache_block[current_layer_block_name], cache_block[upper_layer_block_name])
+						cache_geo_block[current_layer_block_name] = get_geo_from_blocks(current_layer_block_name, upper_layer_block_name, cache_block[current_layer_block_name], cache_block[upper_layer_block_name])
 						update_cache_geo_block.pop(name_block)
 						return
 

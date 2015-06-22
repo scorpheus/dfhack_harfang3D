@@ -118,6 +118,23 @@ def GetDFVersion():     # example of how it works, just get the df version
 
 	return out.value
 
+def GetMapInfo():
+
+	# create function request
+	message_request = CoreProtocol.CoreBindRequest()
+	message_request.method = "GetMapInfo"
+	message_request.input_msg = "dfproto.EmptyMessage"
+	message_request.output_msg = "RemoteFortressReader.MapInfo"
+	message_request.plugin = "RemoteFortressReader"
+
+	# the function GetMapInfo just need an empty protobuf in input message, but need a protobuf
+	data_received = GetInfoFromDFHack(message_request, CoreProtocol.EmptyMessage())
+
+	out = remote_fortress.MapInfo()
+	out.ParseFromString(data_received)
+
+	return out
+
 
 def ResetMapHashes():
 

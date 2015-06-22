@@ -393,6 +393,24 @@ cube_base_vtx = [gs.Vector3(-half_size, -half_size, -half_size), gs.Vector3(half
 				 gs.Vector3(-half_size, half_size, -half_size), gs.Vector3(half_size, half_size, -half_size),
 				 gs.Vector3(half_size, half_size, half_size), gs.Vector3(-half_size, half_size, half_size)]
 
+def find_valid_material_in_cube(x, z, mats):
+	mat = mats[x, 0, z]
+	if mat == 0:
+		mat = mats[x, 1, z]
+	if mat == 0 and x+1 < mats.shape[0]:
+		mat = mats[x+1, 0, z]
+		if mat == 0:
+			mat = mats[x+1, 1, z]
+		if mat == 0 and z+1 < mats.shape[2]:
+			mat = mats[x, 0, z+1]
+			if mat == 0:
+				mat = mats[x, 1, z+1]
+			if mat == 0:
+				mat = mats[x+1, 0, z+1]
+				if mat == 0:
+					mat = mats[x+1, 1, z+1]
+
+	return mat
 
 def CreateIsoFBO(array, width, height, length, isolevel, mats):
 	index_array = []
@@ -408,7 +426,7 @@ def CreateIsoFBO(array, width, height, length, isolevel, mats):
 				offset = gs.Vector3(x - 1, y - 1, z - 1)
 				nb_tri = IsoSurface(cube_val, cube_base_vtx, isolevel, index_array, vtx_array, normal_array, offset)
 				for i in range(int(nb_tri)):
-					material_array.append(mats[x][z])
+					material_array.append(find_valid_material_in_cube(x, z, mats))
 
 	return index_array, vtx_array, normal_array, material_array
 
