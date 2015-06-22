@@ -393,22 +393,22 @@ cube_base_vtx = [gs.Vector3(-half_size, -half_size, -half_size), gs.Vector3(half
 				 gs.Vector3(-half_size, half_size, -half_size), gs.Vector3(half_size, half_size, -half_size),
 				 gs.Vector3(half_size, half_size, half_size), gs.Vector3(-half_size, half_size, half_size)]
 
-def find_valid_material_in_cube(x, z, mats):
-	mat = mats[x, 0, z]
+def find_valid_material_in_cube(x, y, z, mats):
+	mat = mats[x, y, z]
 	if mat == 0:
-		mat = mats[x, 1, z]
+		mat = mats[x, y+1, z]
 	if mat == 0 and x+1 < mats.shape[0]:
-		mat = mats[x+1, 0, z]
+		mat = mats[x+1, y, z]
 		if mat == 0:
-			mat = mats[x+1, 1, z]
+			mat = mats[x+1, y+1, z]
 		if mat == 0 and z+1 < mats.shape[2]:
-			mat = mats[x, 0, z+1]
+			mat = mats[x, y, z+1]
 			if mat == 0:
-				mat = mats[x, 1, z+1]
+				mat = mats[x, y+1, z+1]
 			if mat == 0:
-				mat = mats[x+1, 0, z+1]
+				mat = mats[x+1, y, z+1]
 				if mat == 0:
-					mat = mats[x+1, 1, z+1]
+					mat = mats[x+1, y+1, z+1]
 
 	return mat
 
@@ -423,10 +423,10 @@ def CreateIsoFBO(array, width, height, length, isolevel, mats):
 			for z in range(length - 1):
 				cube_val = [array[x, y, z], array[x + 1, y, z], array[x + 1, y, z + 1], array[x, y, z + 1],
 							array[x, y + 1, z], array[x + 1, y + 1, z], array[x + 1, y + 1, z + 1],	array[x, y + 1, z + 1]]
-				offset = gs.Vector3(x - 1, y - 1, z - 1)
+				offset = gs.Vector3(x, y, z)
 				nb_tri = IsoSurface(cube_val, cube_base_vtx, isolevel, index_array, vtx_array, normal_array, offset)
 				for i in range(int(nb_tri)):
-					material_array.append(find_valid_material_in_cube(x, z, mats))
+					material_array.append(find_valid_material_in_cube(x, y, z, mats))
 
 	return index_array, vtx_array, normal_array, material_array
 
@@ -456,15 +456,30 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 			geo.SetMaterial(count, path, True)
 			count += 1
 
-	index_array, vtx_array, normal_array, material_array = CreateIsoFBO(array, width, height, length, isolevel, mats)
+	import numpy as np
+	resolution = 2
+	array_res = np.kron(array, np.ones((resolution, resolution, resolution)))
+	mats_res = np.kron(mats, np.ones((resolution, resolution, resolution)))
+
+	array_copy = np.copy(array_res)
+	kernel_size = 3
+	kernel_size_half = kernel_size // 2
+	for smooth_pass in range(1):
+		for x in range(kernel_size_half, array_res.shape[0] -kernel_size_half-1):
+			for y in range(array_res.shape[1]):
+				for z in range(kernel_size_half, array_res.shape[2] -kernel_size_half-1):
+					array_res[x, y, z] = array_copy[x-kernel_size_half:x+kernel_size_half+1, y, z-kernel_size_half:z+kernel_size_half+1].sum() / kernel_size**2
+
+	index_array, vtx_array, normal_array, material_array = CreateIsoFBO(array_res, array_res.shape[0]-(resolution - 1), array_res.shape[1], array_res.shape[2]-(resolution - 1), isolevel, mats_res)
 
 	# generate vertices
 	if not geo.AllocateVertex(len(vtx_array)):
 		return None
 
 	count = 0
+	inv_scale = gs.Vector3.One/gs.Vector3(resolution, resolution*2-1, resolution)
 	for vtx in vtx_array:
-		geo.SetVertex(count, vtx.x, vtx.y, vtx.z)
+		geo.SetVertex(count, vtx.x*inv_scale.x, vtx.y*inv_scale.y, vtx.z*inv_scale.z)
 		count += 1
 
 	# build polygons

@@ -66,11 +66,11 @@ try:
 
 		block = GetBlock(from_world_to_dfworld(_pos))
 
-		array_has_geo = np.full((18, 18), 0, np.int8)
-		array_tile_mat_id = np.full((18, 18), 0, np.int8)
+		array_has_geo = np.full((17, 17), 0, np.int8)
+		array_tile_mat_id = np.full((17, 17), 0, np.int8)
 
 		if block is not None:
-			x, z = 16, 1
+			x, z = 15, 0
 			count_tile = 0
 			for tile in block.tile:
 				shape = tile.type
@@ -93,7 +93,7 @@ try:
 					block_mat = 3
 				elif shape == tile.TREE or shape == tile.SHRUB or \
 								shape == tile.SAPLING:
-					block_mat = 5
+					block_mat = 0
 
 				array_tile_mat_id[x, z] = block_mat
 
@@ -105,18 +105,14 @@ try:
 				count_tile += 1
 
 				x -= 1
-				if x == 0:
-					x = 16
+				if x < 0:
+					x = 15
 					z += 1
 
-		array_has_geo[:, 0] = array_has_geo[:, 1]
 		array_has_geo[:, -1] = array_has_geo[:, -2]
-		array_has_geo[0, :] = array_has_geo[1, :]
 		array_has_geo[-1, :] = array_has_geo[-2, :]
 
-		array_tile_mat_id[:, 0] = array_tile_mat_id[:, 1]
 		array_tile_mat_id[:, -1] = array_tile_mat_id[:, -2]
-		array_tile_mat_id[0, :] = array_tile_mat_id[1, :]
 		array_tile_mat_id[-1, :] = array_tile_mat_id[-2, :]
 
 		return array_has_geo, array_tile_mat_id
@@ -223,28 +219,20 @@ try:
 					# update neighbour array
 					north_name = hash_from_pos(block_pos.x, block_pos.y, block_pos.z-1)
 					if north_name in cache_block:
-						cache_block[north_name][:, -1] = current_block[:, 1]
-						current_block[:, 0] = cache_block[north_name][:, -2]
-						cache_block_mat[north_name][:, -1] = current_block_mat[:, 1]
-						current_block_mat[:, 0] = cache_block_mat[north_name][:, -2]
+						cache_block[north_name][:, -1] = current_block[:, 0]
+						cache_block_mat[north_name][:, -1] = current_block_mat[:, 0]
 					south_name = hash_from_pos(block_pos.x, block_pos.y, block_pos.z+1)
 					if south_name in cache_block:
-						cache_block[south_name][:, 0] = current_block[:, -2]
-						current_block[:, -1] = cache_block[south_name][:, 1]
-						cache_block_mat[south_name][:, 0] = current_block_mat[:, -2]
-						current_block_mat[:, -1] = cache_block_mat[south_name][:, 1]
+						current_block[:, -1] = cache_block[south_name][:, 0]
+						current_block_mat[:, -1] = cache_block_mat[south_name][:, 0]
 					west_name = hash_from_pos(block_pos.x-1, block_pos.y, block_pos.z)
 					if west_name in cache_block:
-						cache_block[west_name][-1, :] = current_block[1, :]
-						current_block[0, :] = cache_block[west_name][-2, :]
-						cache_block_mat[west_name][-1, :] = current_block_mat[1, :]
-						current_block_mat[0, :] = cache_block_mat[west_name][-2, :]
+						cache_block[west_name][-1, :] = current_block[0, :]
+						cache_block_mat[west_name][-1, :] = current_block_mat[0, :]
 					east_name = hash_from_pos(block_pos.x+1, block_pos.y, block_pos.z)
 					if east_name in cache_block:
-						cache_block[east_name][0, :] = current_block[-2, :]
-						current_block[-1, :] = cache_block[east_name][1, :]
-						cache_block_mat[east_name][0, :] = current_block_mat[-2, :]
-						current_block_mat[-1, :] = cache_block_mat[east_name][1, :]
+						current_block[-1, :] = cache_block[east_name][0, :]
+						current_block_mat[-1, :] = cache_block_mat[east_name][0, :]
 
 					# this block array is setup, ask the update the geo block
 					update_cache_geo_block[name_block] = gs.Vector3(block_pos)
@@ -268,11 +256,11 @@ try:
 
 
 	def get_geo_from_blocks(name_geo, upper_name_block, block, upper_block):
-		array_has_geo = np.empty((18, 2, 18), np.int8)
+		array_has_geo = np.empty((17, 2, 17), np.int8)
 		array_has_geo[:, 0, :] = block
 		array_has_geo[:, 1, :] = upper_block
 
-		array_mats = np.empty((18, 2, 18), np.int8)
+		array_mats = np.empty((17, 2, 17), np.int8)
 		array_mats[:, 0, :] = cache_block_mat[name_geo]
 		array_mats[:, 1, :] = cache_block_mat[upper_name_block]
 
@@ -280,7 +268,7 @@ try:
 		if array_has_geo.sum() == 0 or np.average(array_has_geo) == 1:
 			return render.create_geometry(gs.CoreGeometry())
 		else:
-			return geometry_iso.create_iso(array_has_geo, 17, 2, 17, array_mats, 1, mats_path, name_geo)
+			return geometry_iso.create_iso(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, name_geo)
 
 
 	def update_geo_block():
