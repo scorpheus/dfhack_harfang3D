@@ -4,6 +4,7 @@ from dfhack_connect import *
 import gs
 import gs.plus.render as render
 import gs.plus.input as input
+import gs.plus.scene as scene
 import gs.plus.camera as camera
 import gs.plus.clock as clock
 import gs.plus.geometry as geometry
@@ -21,6 +22,7 @@ def from_world_to_dfworld(new_pos):
 try:
 	connect_socket()
 	Handshake()
+	ResetMapHashes()
 	# dfversion = GetDFVersion()
 
 	# get once to use after (material list is huge)
@@ -30,7 +32,14 @@ try:
 	render.init(1920, 1080, "pkg.core")
 	gs.MountFileDriver(gs.StdFileDriver("."))
 
-	fps = camera.fps_controller(112, 62, 112)
+	scn = scene.new_scene()
+	scene.add_light(scn, gs.Matrix4.TranslationMatrix(gs.Vector3(6, 200, -6)))
+	light_cam = scene.add_light(scn, gs.Matrix4.TranslationMatrix(gs.Vector3(6, 200, -6)))
+	light_cam.light.SetShadow(gs.Light.Shadow_None)
+	cam = scene.add_camera(scn, gs.Matrix4.TranslationMatrix(gs.Vector3(112, 62, 112)))
+	cam.camera.SetZoomFactor(gs.FovToZoomFactor(1.57))
+
+	fps = camera.fps_controller(64, 72, 64)
 	fps.rot = gs.Vector3(0.5, 0, 0)
 
 	cube = render.create_geometry(geometry.create_cube(1, 1, 1, "iso.mat"))
@@ -46,6 +55,8 @@ try:
 		return hash_from_pos(layer_pos.x + x - (layer_size - 1) / 2, layer_pos.y, layer_pos.z + z - (layer_size - 1) / 2)
 
 
+	mats_path = ["empty.mat", "floor.mat", "magma.mat", "rock.mat", "water.mat", "tree.mat"]
+
 	def get_block_simple(new_pos):
 		_pos = gs.Vector3(new_pos)
 		_pos.x *= 16
@@ -53,16 +64,39 @@ try:
 
 		block = GetBlock(from_world_to_dfworld(_pos))
 
-		array_has_geo = np.full((18, 18), 1)
+		array_has_geo = np.full((18, 18), 0, np.uint8)
+		array_tile_mat_id = np.full((18, 18), 0, np.uint8)
 
 		if block is not None:
 			x, z = 1, 1
-			for tile in block.tiles:
-				if tile_type_list.tiletype_list[tile].shape in [remote_fortress.EMPTY] and\
-					tile_type_list.tiletype_list[tile].material != remote_fortress.MAGMA:
+			count_tile = 0
+			for tile in block.tile:
+				shape = tile.type
+				material = tile.tile_material
+
+				# choose a material
+				block_mat = 0
+				if tile.flow_size > 0:
+					if tile.liquid_type == tile.MAGMA:
+						block_mat = 2
+					elif tile.liquid_type == tile.WATER:
+						block_mat = 4
+				elif shape == tile.FLOOR:
+					block_mat = 1
+				elif shape == tile.BOULDER or shape == tile.PEBBLES or shape == tile.WALL or shape == tile.FORTIFICATION:
+					block_mat = 3
+				elif shape == tile.TREE or shape == tile.SHRUB or \
+								shape == tile.SAPLING:
+					block_mat = 5
+
+				array_tile_mat_id[x, z] = block_mat
+
+				if block_mat == 0:
 					array_has_geo[x, z] = 0
 				else:
 					array_has_geo[x, z] = 1
+
+				count_tile += 1
 
 				x += 1
 				if x == 17:
@@ -74,7 +108,12 @@ try:
 		array_has_geo[0, :] = array_has_geo[1, :]
 		array_has_geo[-1, :] = array_has_geo[-2, :]
 
-		return array_has_geo
+		array_tile_mat_id[:, 0] = array_tile_mat_id[:, 1]
+		array_tile_mat_id[:, -1] = array_tile_mat_id[:, -2]
+		array_tile_mat_id[0, :] = array_tile_mat_id[1, :]
+		array_tile_mat_id[-1, :] = array_tile_mat_id[-2, :]
+
+		return array_has_geo, array_tile_mat_id
 
 
 	class UpdateBlockFromDF(threading.Thread):
@@ -82,10 +121,11 @@ try:
 			threading.Thread.__init__(self)
 			self.name_block = name_block
 			self.block = None
+			self.block_mat_id = None
 			self.pos = gs.Vector3(new_pos)
 
 		def run(self):
-			self.block = get_block_simple(self.pos)
+			self.block, self.block_mat_id = get_block_simple(self.pos)
 
 	block_drawn = 0
 
@@ -94,7 +134,7 @@ try:
 		x *= 16
 		z *= 16
 
-		render.geometry3d(x - 1, y, z - 1, geo_block)
+		scn.renderable_system.DrawGeometry(geo_block, gs.Matrix4.TranslationMatrix(gs.Vector3(x - 1, y, z - 1)))
 
 		global block_drawn
 		block_drawn += 1
@@ -116,6 +156,7 @@ try:
 	block_fetched = 0
 	layer_size = 5
 	cache_block = {}
+	cache_block_mat = {}
 	cache_geo_block = {}
 	update_cache_block = {}
 	update_cache_geo_block = {}
@@ -156,7 +197,7 @@ try:
 						draw_geo_block(cache_geo_block[name_block], self.pos.x + x - (layer_size - 1) / 2, self.pos.y, self.pos.z + z - (layer_size - 1) / 2)
 
 	layers = []
-	for i in range(20):
+	for i in range(40):
 		layers.append(Layer())
 
 	def get_cache_block_needed():
@@ -169,6 +210,7 @@ try:
 					name_block = update_thread.name_block
 					block_pos = update_thread.pos
 					current_block = cache_block[name_block] = update_thread.block
+					current_block_mat = cache_block_mat[name_block] = update_thread.block_mat_id
 
 					current_update_threads[count] = None
 
@@ -177,22 +219,31 @@ try:
 					if north_name in cache_block:
 						cache_block[north_name][:, -1] = current_block[:, 1]
 						current_block[:, 0] = cache_block[north_name][:, -2]
+						cache_block_mat[north_name][:, -1] = current_block_mat[:, 1]
+						current_block_mat[:, 0] = cache_block_mat[north_name][:, -2]
 					south_name = hash_from_pos(block_pos.x, block_pos.y, block_pos.z+1)
 					if south_name in cache_block:
 						cache_block[south_name][:, 0] = current_block[:, -2]
 						current_block[:, -1] = cache_block[south_name][:, 1]
+						cache_block_mat[south_name][:, 0] = current_block_mat[:, -2]
+						current_block_mat[:, -1] = cache_block_mat[south_name][:, 1]
 					west_name = hash_from_pos(block_pos.x-1, block_pos.y, block_pos.z)
 					if west_name in cache_block:
 						cache_block[west_name][-1, :] = current_block[1, :]
 						current_block[0, :] = cache_block[west_name][-2, :]
+						cache_block_mat[west_name][-1, :] = current_block_mat[1, :]
+						current_block_mat[0, :] = cache_block_mat[west_name][-2, :]
 					east_name = hash_from_pos(block_pos.x+1, block_pos.y, block_pos.z)
 					if east_name in cache_block:
 						cache_block[east_name][0, :] = current_block[-2, :]
 						current_block[-1, :] = cache_block[east_name][1, :]
+						cache_block_mat[east_name][0, :] = current_block_mat[-2, :]
+						current_block_mat[-1, :] = cache_block_mat[east_name][1, :]
 
 					# this block array is setup, ask the update the geo block
 					update_cache_geo_block[name_block] = gs.Vector3(block_pos)
-					update_cache_block.pop(name_block)
+					if name_block in update_cache_block:
+						update_cache_block.pop(name_block)
 					block_fetched += 1
 
 			elif len(update_cache_block) > count:
@@ -211,7 +262,7 @@ try:
 
 
 	def get_geo_from_blocks(name_geo, block, upper_block):
-		array_has_geo = np.empty((18, 2, 18))
+		array_has_geo = np.empty((18, 2, 18), np.uint8)
 		array_has_geo[:, 0, :] = block
 		array_has_geo[:, 1, :] = upper_block
 
@@ -219,7 +270,7 @@ try:
 		if array_has_geo.sum() == 0 or np.average(array_has_geo) == 1:
 			return render.create_geometry(gs.CoreGeometry())
 		else:
-			return geometry_iso.create_iso(array_has_geo, 18, 2, 18, 1.0, "iso.mat", name_geo)
+			return geometry_iso.create_iso(array_has_geo, 17, 2, 17, cache_block_mat[name_geo], 1.0, mats_path, name_geo)
 
 
 	def update_geo_block():
@@ -254,8 +305,8 @@ try:
 		render.clear()
 
 		dt_sec = clock.update()
-		fps.update(dt_sec)
-		render.set_camera3d(fps.pos.x, fps.pos.y, fps.pos.z, fps.rot.x, fps.rot.y, fps.rot.z)
+		fps.update_and_apply_to_node(cam, dt_sec)
+		light_cam.transform.SetPosition(fps.pos)
 
 		# pos -> blocks dans lequel on peux se deplacer
 		pos.x = fps.pos.x // 16
@@ -287,8 +338,9 @@ try:
 
 		render.text2d(0, 45, "FPS: %.2fHZ - BLOCK FETCHED: %d - BLOCK DRAWN: %d" % (1 / dt_sec, block_fetched, block_drawn), color=gs.Color.Red)
 		render.text2d(0, 25, "FPS.X = %f, FPS.Z = %f" % (fps.pos.x, fps.pos.z), color=gs.Color.Red)
-		render.text2d(0, 5, "POS.X = %f, POS.Z = %f" % (pos.x, pos.z), color=gs.Color.Red)
+		render.text2d(0, 5, "POS.X = %f, POS.X = %f, POS.Z = %f" % (pos.x, pos.y, pos.z), color=gs.Color.Red)
 
+		scene.update_scene(scn, dt_sec)
 		render.flip()
 
 finally:

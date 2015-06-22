@@ -375,7 +375,7 @@ def IsoSurface(cube_val, cube_base_vtx, isolevel, index_array, vtx_array, normal
 		vertlist[11] = Lerp2Vertex(isolevel, cube_base_vtx[3], cube_base_vtx[7], cube_val[3], cube_val[7])
 
 	#    Create the triangles and app to the big list
-	nbtri = len(index_array) / 3
+	nbtri = 0
 	i = 0
 	while triTable[cubeindex][i] != -1:
 		index_array.append(get_index_to_create_it(vtx_array, normal_array, vertlist[triTable[cubeindex][i]] + offset))
@@ -384,7 +384,7 @@ def IsoSurface(cube_val, cube_base_vtx, isolevel, index_array, vtx_array, normal
 		nbtri += 1
 		i += 3
 
-	return nbtri - 1
+	return nbtri
 
 
 half_size = 0.5
@@ -394,23 +394,26 @@ cube_base_vtx = [gs.Vector3(-half_size, -half_size, -half_size), gs.Vector3(half
 				 gs.Vector3(half_size, half_size, half_size), gs.Vector3(-half_size, half_size, half_size)]
 
 
-def CreateIsoFBO(array, width, height, length, isolevel):
+def CreateIsoFBO(array, width, height, length, isolevel, mats):
 	index_array = []
 	vtx_array = []
 	normal_array = []
+	material_array = []
 
 	for x in range(width - 1):
 		for y in range(height - 1):
 			for z in range(length - 1):
-				cube_val = [array[x][y][z], array[x + 1][y][z], array[x + 1][y][z + 1], array[x][y][z + 1],
-							array[x][y + 1][z], array[x + 1][y + 1][z], array[x + 1][y + 1][z + 1],	array[x][y + 1][z + 1]]
+				cube_val = [array[x, y, z], array[x + 1, y, z], array[x + 1, y, z + 1], array[x, y, z + 1],
+							array[x, y + 1, z], array[x + 1, y + 1, z], array[x + 1, y + 1, z + 1],	array[x, y + 1, z + 1]]
 				offset = gs.Vector3(x - 1, y - 1, z - 1)
-				IsoSurface(cube_val, cube_base_vtx, isolevel, index_array, vtx_array, normal_array, offset)
+				nb_tri = IsoSurface(cube_val, cube_base_vtx, isolevel, index_array, vtx_array, normal_array, offset)
+				for i in range(int(nb_tri)):
+					material_array.append(mats[x][z])
 
-	return index_array, vtx_array, normal_array
+	return index_array, vtx_array, normal_array, material_array
 
 
-def create_iso(array, width, height, length, isolevel=0.5, material_path=None, name=None):
+def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=None, name=None):
 	"""Create an iso surface geometry"""
 	if name is None:
 		name = "@gen/iso_%f" % (isolevel)
@@ -425,10 +428,17 @@ def create_iso(array, width, height, length, isolevel=0.5, material_path=None, n
 
 	geo.SetName(name)
 
-	geo.AllocateMaterialTable(1)
-	geo.SetMaterial(0, material_path, True)
+	if type(material_path) is not list:
+		geo.AllocateMaterialTable(1)
+		geo.SetMaterial(0, material_path, True)
+	else:
+		geo.AllocateMaterialTable(len(material_path))
+		count = 0
+		for path in material_path:
+			geo.SetMaterial(count, path, True)
+			count += 1
 
-	index_array, vtx_array, normal_array = CreateIsoFBO(array, width, height, length, isolevel)
+	index_array, vtx_array, normal_array, material_array = CreateIsoFBO(array, width, height, length, isolevel, mats)
 
 	# generate vertices
 	if not geo.AllocateVertex(len(vtx_array)):
@@ -450,6 +460,7 @@ def create_iso(array, width, height, length, isolevel=0.5, material_path=None, n
 		return None
 
 	for n in range(len(index_array) // 3):
+		geo.SetPolygonMaterialIndex(n, int(material_array[n]))
 		geo.SetPolygonBinding(n, [index_array[n * 3], index_array[n * 3 + 1], index_array[n * 3 + 2]])
 
 	geo.ComputeVertexNormal(math.radians(40))

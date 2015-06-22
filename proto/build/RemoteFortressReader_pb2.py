@@ -37,7 +37,7 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='RemoteFortressReader.proto',
   package='RemoteFortressReader',
-  serialized_pb=b('\n\x1aRemoteFortressReader.proto\x12\x14RemoteFortressReader\"\xa6\x02\n\x08Tiletype\x12\n\n\x02id\x18\x01 \x02(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07\x63\x61ption\x18\x03 \x01(\t\x12\x32\n\x05shape\x18\x04 \x01(\x0e\x32#.RemoteFortressReader.TiletypeShape\x12\x36\n\x07special\x18\x05 \x01(\x0e\x32%.RemoteFortressReader.TiletypeSpecial\x12\x38\n\x08material\x18\x06 \x01(\x0e\x32&.RemoteFortressReader.TiletypeMaterial\x12\x36\n\x07variant\x18\x07 \x01(\x0e\x32%.RemoteFortressReader.TiletypeVariant\x12\x11\n\tdirection\x18\x08 \x01(\t\"E\n\x0cTiletypeList\x12\x35\n\rtiletype_list\x18\x01 \x03(\x0b\x32\x1e.RemoteFortressReader.Tiletype\"\xbc\x02\n\x08MapBlock\x12\r\n\x05map_x\x18\x01 \x02(\x05\x12\r\n\x05map_y\x18\x02 \x02(\x05\x12\r\n\x05map_z\x18\x03 \x02(\x05\x12\r\n\x05tiles\x18\x04 \x03(\x05\x12\x30\n\tmaterials\x18\x05 \x03(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\x36\n\x0flayer_materials\x18\x06 \x03(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\x35\n\x0evein_materials\x18\x07 \x03(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\x35\n\x0e\x62\x61se_materials\x18\x08 \x03(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\r\n\x05magma\x18\t \x03(\x05\x12\r\n\x05water\x18\n \x03(\x05\".\n\x07MatPair\x12\x10\n\x08mat_type\x18\x01 \x02(\x05\x12\x11\n\tmat_index\x18\x02 \x02(\x05\";\n\x0f\x43olorDefinition\x12\x0b\n\x03red\x18\x01 \x02(\x05\x12\r\n\x05green\x18\x02 \x02(\x05\x12\x0c\n\x04\x62lue\x18\x03 \x02(\x05\"\x9b\x01\n\x12MaterialDefinition\x12/\n\x08mat_pair\x18\x01 \x02(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\n\n\x02id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12:\n\x0bstate_color\x18\x04 \x01(\x0b\x32%.RemoteFortressReader.ColorDefinition\"O\n\x0cMaterialList\x12?\n\rmaterial_list\x18\x01 \x03(\x0b\x32(.RemoteFortressReader.MaterialDefinition\"Z\n\x0eUnitDefinition\x12\n\n\x02id\x18\x01 \x02(\x05\x12\x0f\n\x07isValid\x18\x02 \x01(\x08\x12\r\n\x05pos_x\x18\x03 \x01(\x05\x12\r\n\x05pos_y\x18\x04 \x01(\x05\x12\r\n\x05pos_z\x18\x05 \x01(\x05\"G\n\x08UnitList\x12;\n\rcreature_list\x18\x01 \x03(\x0b\x32$.RemoteFortressReader.UnitDefinition\"\x7f\n\x0c\x42lockRequest\x12\x15\n\rblocks_needed\x18\x01 \x01(\x05\x12\r\n\x05min_x\x18\x02 \x01(\x05\x12\r\n\x05max_x\x18\x03 \x01(\x05\x12\r\n\x05min_y\x18\x04 \x01(\x05\x12\r\n\x05max_y\x18\x05 \x01(\x05\x12\r\n\x05min_z\x18\x06 \x01(\x05\x12\r\n\x05max_z\x18\x07 \x01(\x05\"]\n\tBlockList\x12\x32\n\nmap_blocks\x18\x01 \x03(\x0b\x32\x1e.RemoteFortressReader.MapBlock\x12\r\n\x05map_x\x18\x02 \x01(\x05\x12\r\n\x05map_y\x18\x03 \x01(\x05\"F\n\x08PlantDef\x12\r\n\x05pos_x\x18\x01 \x02(\x05\x12\r\n\x05pos_y\x18\x02 \x02(\x05\x12\r\n\x05pos_z\x18\x03 \x02(\x05\x12\r\n\x05index\x18\x04 \x02(\x05\"?\n\tPlantList\x12\x32\n\nplant_list\x18\x01 \x03(\x0b\x32\x1e.RemoteFortressReader.PlantDef\"\xb2\x01\n\x08ViewInfo\x12\x12\n\nview_pos_x\x18\x01 \x01(\x05\x12\x12\n\nview_pos_y\x18\x02 \x01(\x05\x12\x12\n\nview_pos_z\x18\x03 \x01(\x05\x12\x13\n\x0bview_size_x\x18\x04 \x01(\x05\x12\x13\n\x0bview_size_y\x18\x05 \x01(\x05\x12\x14\n\x0c\x63ursor_pos_x\x18\x06 \x01(\x05\x12\x14\n\x0c\x63ursor_pos_y\x18\x07 \x01(\x05\x12\x14\n\x0c\x63ursor_pos_z\x18\x08 \x01(\x05\"\xcd\x01\n\x07MapInfo\x12\x14\n\x0c\x62lock_size_x\x18\x01 \x01(\x05\x12\x14\n\x0c\x62lock_size_y\x18\x02 \x01(\x05\x12\x14\n\x0c\x62lock_size_z\x18\x03 \x01(\x05\x12\x13\n\x0b\x62lock_pos_x\x18\x04 \x01(\x05\x12\x13\n\x0b\x62lock_pos_y\x18\x05 \x01(\x05\x12\x13\n\x0b\x62lock_pos_z\x18\x06 \x01(\x05\x12\x12\n\nworld_name\x18\x07 \x01(\t\x12\x1a\n\x12world_name_english\x18\x08 \x01(\t\x12\x11\n\tsave_name\x18\t \x01(\t*\xba\x02\n\rTiletypeShape\x12\x15\n\x08NO_SHAPE\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01\x12\t\n\x05\x45MPTY\x10\x00\x12\t\n\x05\x46LOOR\x10\x01\x12\x0b\n\x07\x42OULDER\x10\x02\x12\x0b\n\x07PEBBLES\x10\x03\x12\x08\n\x04WALL\x10\x04\x12\x11\n\rFORTIFICATION\x10\x05\x12\x0c\n\x08STAIR_UP\x10\x06\x12\x0e\n\nSTAIR_DOWN\x10\x07\x12\x10\n\x0cSTAIR_UPDOWN\x10\x08\x12\x08\n\x04RAMP\x10\t\x12\x0c\n\x08RAMP_TOP\x10\n\x12\r\n\tBROOK_BED\x10\x0b\x12\r\n\tBROOK_TOP\x10\x0c\x12\x0e\n\nTREE_SHAPE\x10\r\x12\x0b\n\x07SAPLING\x10\x0e\x12\t\n\x05SHRUB\x10\x0f\x12\x0f\n\x0b\x45NDLESS_PIT\x10\x10\x12\n\n\x06\x42RANCH\x10\x11\x12\x10\n\x0cTRUNK_BRANCH\x10\x12\x12\x08\n\x04TWIG\x10\x13*\xc4\x01\n\x0fTiletypeSpecial\x12\x17\n\nNO_SPECIAL\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01\x12\n\n\x06NORMAL\x10\x00\x12\x10\n\x0cRIVER_SOURCE\x10\x01\x12\r\n\tWATERFALL\x10\x02\x12\n\n\x06SMOOTH\x10\x03\x12\x0c\n\x08\x46URROWED\x10\x04\x12\x07\n\x03WET\x10\x05\x12\x08\n\x04\x44\x45\x41\x44\x10\x06\x12\n\n\x06WORN_1\x10\x07\x12\n\n\x06WORN_2\x10\x08\x12\n\n\x06WORN_3\x10\t\x12\t\n\x05TRACK\x10\n\x12\x0f\n\x0bSMOOTH_DEAD\x10\x0b*\x8a\x03\n\x10TiletypeMaterial\x12\x18\n\x0bNO_MATERIAL\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01\x12\x07\n\x03\x41IR\x10\x00\x12\x08\n\x04SOIL\x10\x01\x12\t\n\x05STONE\x10\x02\x12\x0b\n\x07\x46\x45\x41TURE\x10\x03\x12\x0e\n\nLAVA_STONE\x10\x04\x12\x0b\n\x07MINERAL\x10\x05\x12\x11\n\rFROZEN_LIQUID\x10\x06\x12\x10\n\x0c\x43ONSTRUCTION\x10\x07\x12\x0f\n\x0bGRASS_LIGHT\x10\x08\x12\x0e\n\nGRASS_DARK\x10\t\x12\r\n\tGRASS_DRY\x10\n\x12\x0e\n\nGRASS_DEAD\x10\x0b\x12\t\n\x05PLANT\x10\x0c\x12\x07\n\x03HFS\x10\r\x12\x0c\n\x08\x43\x41MPFIRE\x10\x0e\x12\x08\n\x04\x46IRE\x10\x0f\x12\t\n\x05\x41SHES\x10\x10\x12\t\n\x05MAGMA\x10\x11\x12\r\n\tDRIFTWOOD\x10\x12\x12\x08\n\x04POOL\x10\x13\x12\t\n\x05\x42ROOK\x10\x14\x12\t\n\x05RIVER\x10\x15\x12\x08\n\x04ROOT\x10\x16\x12\x11\n\rTREE_MATERIAL\x10\x17\x12\x0c\n\x08MUSHROOM\x10\x18\x12\x13\n\x0fUNDERWORLD_GATE\x10\x19*V\n\x0fTiletypeVariant\x12\x17\n\nNO_VARIANT\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01\x12\t\n\x05VAR_1\x10\x00\x12\t\n\x05VAR_2\x10\x01\x12\t\n\x05VAR_3\x10\x02\x12\t\n\x05VAR_4\x10\x03\x42\x02H\x03'))
+  serialized_pb=b('\n\x1aRemoteFortressReader.proto\x12\x14RemoteFortressReader\"\xa6\x02\n\x08Tiletype\x12\n\n\x02id\x18\x01 \x02(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07\x63\x61ption\x18\x03 \x01(\t\x12\x32\n\x05shape\x18\x04 \x01(\x0e\x32#.RemoteFortressReader.TiletypeShape\x12\x36\n\x07special\x18\x05 \x01(\x0e\x32%.RemoteFortressReader.TiletypeSpecial\x12\x38\n\x08material\x18\x06 \x01(\x0e\x32&.RemoteFortressReader.TiletypeMaterial\x12\x36\n\x07variant\x18\x07 \x01(\x0e\x32%.RemoteFortressReader.TiletypeVariant\x12\x11\n\tdirection\x18\x08 \x01(\t\"E\n\x0cTiletypeList\x12\x35\n\rtiletype_list\x18\x01 \x03(\x0b\x32\x1e.RemoteFortressReader.Tiletype\"\xbf\x03\n\x08MapBlock\x12\r\n\x05map_x\x18\x01 \x02(\x05\x12\r\n\x05map_y\x18\x02 \x02(\x05\x12\r\n\x05map_z\x18\x03 \x02(\x05\x12\r\n\x05tiles\x18\x04 \x03(\x05\x12\x30\n\tmaterials\x18\x05 \x03(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\x36\n\x0flayer_materials\x18\x06 \x03(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\x35\n\x0evein_materials\x18\x07 \x03(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\x35\n\x0e\x62\x61se_materials\x18\x08 \x03(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\r\n\x05magma\x18\t \x03(\x05\x12\r\n\x05water\x18\n \x03(\x05\x12\x0e\n\x06hidden\x18\x0b \x03(\x08\x12\r\n\x05light\x18\x0c \x03(\x08\x12\x14\n\x0csubterranean\x18\r \x03(\x08\x12\x0f\n\x07outside\x18\x0e \x03(\x08\x12\x0f\n\x07\x61quifer\x18\x0f \x03(\x08\x12\x16\n\x0ewater_stagnant\x18\x10 \x03(\x08\x12\x12\n\nwater_salt\x18\x11 \x03(\x08\".\n\x07MatPair\x12\x10\n\x08mat_type\x18\x01 \x02(\x05\x12\x11\n\tmat_index\x18\x02 \x02(\x05\";\n\x0f\x43olorDefinition\x12\x0b\n\x03red\x18\x01 \x02(\x05\x12\r\n\x05green\x18\x02 \x02(\x05\x12\x0c\n\x04\x62lue\x18\x03 \x02(\x05\"\x9b\x01\n\x12MaterialDefinition\x12/\n\x08mat_pair\x18\x01 \x02(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\n\n\x02id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12:\n\x0bstate_color\x18\x04 \x01(\x0b\x32%.RemoteFortressReader.ColorDefinition\"O\n\x0cMaterialList\x12?\n\rmaterial_list\x18\x01 \x03(\x0b\x32(.RemoteFortressReader.MaterialDefinition\"Z\n\x0eUnitDefinition\x12\n\n\x02id\x18\x01 \x02(\x05\x12\x0f\n\x07isValid\x18\x02 \x01(\x08\x12\r\n\x05pos_x\x18\x03 \x01(\x05\x12\r\n\x05pos_y\x18\x04 \x01(\x05\x12\r\n\x05pos_z\x18\x05 \x01(\x05\"G\n\x08UnitList\x12;\n\rcreature_list\x18\x01 \x03(\x0b\x32$.RemoteFortressReader.UnitDefinition\"\x7f\n\x0c\x42lockRequest\x12\x15\n\rblocks_needed\x18\x01 \x01(\x05\x12\r\n\x05min_x\x18\x02 \x01(\x05\x12\r\n\x05max_x\x18\x03 \x01(\x05\x12\r\n\x05min_y\x18\x04 \x01(\x05\x12\r\n\x05max_y\x18\x05 \x01(\x05\x12\r\n\x05min_z\x18\x06 \x01(\x05\x12\r\n\x05max_z\x18\x07 \x01(\x05\"]\n\tBlockList\x12\x32\n\nmap_blocks\x18\x01 \x03(\x0b\x32\x1e.RemoteFortressReader.MapBlock\x12\r\n\x05map_x\x18\x02 \x01(\x05\x12\r\n\x05map_y\x18\x03 \x01(\x05\"F\n\x08PlantDef\x12\r\n\x05pos_x\x18\x01 \x02(\x05\x12\r\n\x05pos_y\x18\x02 \x02(\x05\x12\r\n\x05pos_z\x18\x03 \x02(\x05\x12\r\n\x05index\x18\x04 \x02(\x05\"?\n\tPlantList\x12\x32\n\nplant_list\x18\x01 \x03(\x0b\x32\x1e.RemoteFortressReader.PlantDef\"\xb2\x01\n\x08ViewInfo\x12\x12\n\nview_pos_x\x18\x01 \x01(\x05\x12\x12\n\nview_pos_y\x18\x02 \x01(\x05\x12\x12\n\nview_pos_z\x18\x03 \x01(\x05\x12\x13\n\x0bview_size_x\x18\x04 \x01(\x05\x12\x13\n\x0bview_size_y\x18\x05 \x01(\x05\x12\x14\n\x0c\x63ursor_pos_x\x18\x06 \x01(\x05\x12\x14\n\x0c\x63ursor_pos_y\x18\x07 \x01(\x05\x12\x14\n\x0c\x63ursor_pos_z\x18\x08 \x01(\x05\"\xcd\x01\n\x07MapInfo\x12\x14\n\x0c\x62lock_size_x\x18\x01 \x01(\x05\x12\x14\n\x0c\x62lock_size_y\x18\x02 \x01(\x05\x12\x14\n\x0c\x62lock_size_z\x18\x03 \x01(\x05\x12\x13\n\x0b\x62lock_pos_x\x18\x04 \x01(\x05\x12\x13\n\x0b\x62lock_pos_y\x18\x05 \x01(\x05\x12\x13\n\x0b\x62lock_pos_z\x18\x06 \x01(\x05\x12\x12\n\nworld_name\x18\x07 \x01(\t\x12\x1a\n\x12world_name_english\x18\x08 \x01(\t\x12\x11\n\tsave_name\x18\t \x01(\t*\xba\x02\n\rTiletypeShape\x12\x15\n\x08NO_SHAPE\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01\x12\t\n\x05\x45MPTY\x10\x00\x12\t\n\x05\x46LOOR\x10\x01\x12\x0b\n\x07\x42OULDER\x10\x02\x12\x0b\n\x07PEBBLES\x10\x03\x12\x08\n\x04WALL\x10\x04\x12\x11\n\rFORTIFICATION\x10\x05\x12\x0c\n\x08STAIR_UP\x10\x06\x12\x0e\n\nSTAIR_DOWN\x10\x07\x12\x10\n\x0cSTAIR_UPDOWN\x10\x08\x12\x08\n\x04RAMP\x10\t\x12\x0c\n\x08RAMP_TOP\x10\n\x12\r\n\tBROOK_BED\x10\x0b\x12\r\n\tBROOK_TOP\x10\x0c\x12\x0e\n\nTREE_SHAPE\x10\r\x12\x0b\n\x07SAPLING\x10\x0e\x12\t\n\x05SHRUB\x10\x0f\x12\x0f\n\x0b\x45NDLESS_PIT\x10\x10\x12\n\n\x06\x42RANCH\x10\x11\x12\x10\n\x0cTRUNK_BRANCH\x10\x12\x12\x08\n\x04TWIG\x10\x13*\xc4\x01\n\x0fTiletypeSpecial\x12\x17\n\nNO_SPECIAL\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01\x12\n\n\x06NORMAL\x10\x00\x12\x10\n\x0cRIVER_SOURCE\x10\x01\x12\r\n\tWATERFALL\x10\x02\x12\n\n\x06SMOOTH\x10\x03\x12\x0c\n\x08\x46URROWED\x10\x04\x12\x07\n\x03WET\x10\x05\x12\x08\n\x04\x44\x45\x41\x44\x10\x06\x12\n\n\x06WORN_1\x10\x07\x12\n\n\x06WORN_2\x10\x08\x12\n\n\x06WORN_3\x10\t\x12\t\n\x05TRACK\x10\n\x12\x0f\n\x0bSMOOTH_DEAD\x10\x0b*\x8a\x03\n\x10TiletypeMaterial\x12\x18\n\x0bNO_MATERIAL\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01\x12\x07\n\x03\x41IR\x10\x00\x12\x08\n\x04SOIL\x10\x01\x12\t\n\x05STONE\x10\x02\x12\x0b\n\x07\x46\x45\x41TURE\x10\x03\x12\x0e\n\nLAVA_STONE\x10\x04\x12\x0b\n\x07MINERAL\x10\x05\x12\x11\n\rFROZEN_LIQUID\x10\x06\x12\x10\n\x0c\x43ONSTRUCTION\x10\x07\x12\x0f\n\x0bGRASS_LIGHT\x10\x08\x12\x0e\n\nGRASS_DARK\x10\t\x12\r\n\tGRASS_DRY\x10\n\x12\x0e\n\nGRASS_DEAD\x10\x0b\x12\t\n\x05PLANT\x10\x0c\x12\x07\n\x03HFS\x10\r\x12\x0c\n\x08\x43\x41MPFIRE\x10\x0e\x12\x08\n\x04\x46IRE\x10\x0f\x12\t\n\x05\x41SHES\x10\x10\x12\t\n\x05MAGMA\x10\x11\x12\r\n\tDRIFTWOOD\x10\x12\x12\x08\n\x04POOL\x10\x13\x12\t\n\x05\x42ROOK\x10\x14\x12\t\n\x05RIVER\x10\x15\x12\x08\n\x04ROOT\x10\x16\x12\x11\n\rTREE_MATERIAL\x10\x17\x12\x0c\n\x08MUSHROOM\x10\x18\x12\x13\n\x0fUNDERWORLD_GATE\x10\x19*V\n\x0fTiletypeVariant\x12\x17\n\nNO_VARIANT\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01\x12\t\n\x05VAR_1\x10\x00\x12\t\n\x05VAR_2\x10\x01\x12\t\n\x05VAR_3\x10\x02\x12\t\n\x05VAR_4\x10\x03\x42\x02H\x03'))
 
 _TILETYPESHAPE = _descriptor.EnumDescriptor(
   name='TiletypeShape',
@@ -132,8 +132,8 @@ _TILETYPESHAPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=2003,
-  serialized_end=2317,
+  serialized_start=2134,
+  serialized_end=2448,
 )
 
 TiletypeShape = enum_type_wrapper.EnumTypeWrapper(_TILETYPESHAPE)
@@ -198,8 +198,8 @@ _TILETYPESPECIAL = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=2320,
-  serialized_end=2516,
+  serialized_start=2451,
+  serialized_end=2647,
 )
 
 TiletypeSpecial = enum_type_wrapper.EnumTypeWrapper(_TILETYPESPECIAL)
@@ -320,8 +320,8 @@ _TILETYPEMATERIAL = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=2519,
-  serialized_end=2913,
+  serialized_start=2650,
+  serialized_end=3044,
 )
 
 TiletypeMaterial = enum_type_wrapper.EnumTypeWrapper(_TILETYPEMATERIAL)
@@ -354,8 +354,8 @@ _TILETYPEVARIANT = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=2915,
-  serialized_end=3001,
+  serialized_start=3046,
+  serialized_end=3132,
 )
 
 TiletypeVariant = enum_type_wrapper.EnumTypeWrapper(_TILETYPEVARIANT)
@@ -610,6 +610,55 @@ _MAPBLOCK = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='hidden', full_name='RemoteFortressReader.MapBlock.hidden', index=10,
+      number=11, type=8, cpp_type=7, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='light', full_name='RemoteFortressReader.MapBlock.light', index=11,
+      number=12, type=8, cpp_type=7, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='subterranean', full_name='RemoteFortressReader.MapBlock.subterranean', index=12,
+      number=13, type=8, cpp_type=7, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='outside', full_name='RemoteFortressReader.MapBlock.outside', index=13,
+      number=14, type=8, cpp_type=7, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='aquifer', full_name='RemoteFortressReader.MapBlock.aquifer', index=14,
+      number=15, type=8, cpp_type=7, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='water_stagnant', full_name='RemoteFortressReader.MapBlock.water_stagnant', index=15,
+      number=16, type=8, cpp_type=7, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='water_salt', full_name='RemoteFortressReader.MapBlock.water_salt', index=16,
+      number=17, type=8, cpp_type=7, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -620,7 +669,7 @@ _MAPBLOCK = _descriptor.Descriptor(
   is_extendable=False,
   extension_ranges=[],
   serialized_start=421,
-  serialized_end=737,
+  serialized_end=868,
 )
 
 
@@ -654,8 +703,8 @@ _MATPAIR = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=739,
-  serialized_end=785,
+  serialized_start=870,
+  serialized_end=916,
 )
 
 
@@ -696,8 +745,8 @@ _COLORDEFINITION = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=787,
-  serialized_end=846,
+  serialized_start=918,
+  serialized_end=977,
 )
 
 
@@ -745,8 +794,8 @@ _MATERIALDEFINITION = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=849,
-  serialized_end=1004,
+  serialized_start=980,
+  serialized_end=1135,
 )
 
 
@@ -773,8 +822,8 @@ _MATERIALLIST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1006,
-  serialized_end=1085,
+  serialized_start=1137,
+  serialized_end=1216,
 )
 
 
@@ -829,8 +878,8 @@ _UNITDEFINITION = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1087,
-  serialized_end=1177,
+  serialized_start=1218,
+  serialized_end=1308,
 )
 
 
@@ -857,8 +906,8 @@ _UNITLIST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1179,
-  serialized_end=1250,
+  serialized_start=1310,
+  serialized_end=1381,
 )
 
 
@@ -927,8 +976,8 @@ _BLOCKREQUEST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1252,
-  serialized_end=1379,
+  serialized_start=1383,
+  serialized_end=1510,
 )
 
 
@@ -969,8 +1018,8 @@ _BLOCKLIST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1381,
-  serialized_end=1474,
+  serialized_start=1512,
+  serialized_end=1605,
 )
 
 
@@ -1018,8 +1067,8 @@ _PLANTDEF = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1476,
-  serialized_end=1546,
+  serialized_start=1607,
+  serialized_end=1677,
 )
 
 
@@ -1046,8 +1095,8 @@ _PLANTLIST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1548,
-  serialized_end=1611,
+  serialized_start=1679,
+  serialized_end=1742,
 )
 
 
@@ -1123,8 +1172,8 @@ _VIEWINFO = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1614,
-  serialized_end=1792,
+  serialized_start=1745,
+  serialized_end=1923,
 )
 
 
@@ -1207,8 +1256,8 @@ _MAPINFO = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1795,
-  serialized_end=2000,
+  serialized_start=1926,
+  serialized_end=2131,
 )
 
 _TILETYPE.fields_by_name['shape'].enum_type = _TILETYPESHAPE

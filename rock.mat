@@ -1,0 +1,17 @@
+{
+	"Material": {
+		"Shader": "iso.isl",
+		"MaterialValues": {
+			"Value": {
+				"Name": "diffuse_color",
+				"Type": "vec4",
+				"Value": "vec4(0.2549, 0.2237, 0.1050, 1.0000)"
+			},
+			"Value": {
+				"Name": "specular_color",
+				"Type": "vec4",
+				"Value": "vec4(0.5000, 0.5000, 0.5000, 1.0000)"
+			}
+		}
+	}
+}

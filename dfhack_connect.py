@@ -4,6 +4,7 @@ import socket
 import struct
 import proto.build.RemoteFortressReader_pb2 as remote_fortress
 import proto.build.BasicApi_pb2 as BasicApi
+import proto.build.Block_pb2 as Block
 import proto.build.CoreProtocol_pb2 as CoreProtocol
 
 HOST, PORT = "localhost", 5000
@@ -85,6 +86,7 @@ cache_id_function = {}
 
 def GetInfoFromDFHack(message_request, message_input):
 
+	# id_function = GetIDBindFunction(message_request)
 	if message_request.method in cache_id_function:
 		id_function = cache_id_function[message_request.method]
 	else:
@@ -117,6 +119,19 @@ def GetDFVersion():     # example of how it works, just get the df version
 	return out.value
 
 
+def ResetMapHashes():
+
+	# create function request
+	message_request = CoreProtocol.CoreBindRequest()
+	message_request.method = "ResetMapHashes"
+	message_request.input_msg = "dfproto.EmptyMessage"
+	message_request.output_msg = "dfproto.EmptyMessage"
+	message_request.plugin = "RemoteFortressReader"
+
+	# the function GetDFVersion just need an empty protobuf in input message, but need a protobuf
+	GetInfoFromDFHack(message_request, CoreProtocol.EmptyMessage())
+
+
 def GetListUnits():
 
 	# create function request
@@ -140,6 +155,29 @@ def GetListUnits():
 
 
 def GetBlock(pos):
+
+	# create function request
+	message_request = CoreProtocol.CoreBindRequest()
+	message_request.method = "GetBlock"
+	message_request.input_msg = "RemoteFortressReader.BlockRequest"
+	message_request.output_msg = "dfproto.Block"
+	message_request.plugin = "RemoteFortressReader"
+
+	# input message: which part of datablock we want
+	input_block_message = remote_fortress.BlockRequest()
+	input_block_message.min_x = int(pos.x / 16)
+	input_block_message.min_y = int(pos.y / 16)
+	input_block_message.min_z = int(pos.z)
+
+	received = GetInfoFromDFHack(message_request, input_block_message)
+
+	out = Block.Block()
+	out.ParseFromString(received)
+
+	return out
+
+
+def GetBlockComplex(pos):
 	dfblock = GetBlockList(pos, pos+1)
 	return None if len(dfblock.map_blocks) <= 0 else dfblock.map_blocks[0]
 
