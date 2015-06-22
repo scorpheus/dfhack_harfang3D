@@ -149,6 +149,24 @@ def ResetMapHashes():
 	GetInfoFromDFHack(message_request, CoreProtocol.EmptyMessage())
 
 
+def GetAllUnitList():
+
+	# create function request
+	message_request = CoreProtocol.CoreBindRequest()
+	message_request.method = "GetUnitList"
+	message_request.input_msg = "dfproto.EmptyMessage"
+	message_request.output_msg = "RemoteFortressReader.UnitList"
+	message_request.plugin = "RemoteFortressReader"
+
+	# the function GetMapInfo just need an empty protobuf in input message, but need a protobuf
+	data_received = GetInfoFromDFHack(message_request, CoreProtocol.EmptyMessage())
+
+	out = remote_fortress.UnitList()
+	out.ParseFromString(data_received)
+
+	return out
+
+
 def GetListUnits():
 
 	# create function request

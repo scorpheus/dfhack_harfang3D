@@ -43,7 +43,7 @@ try:
 	fps = camera.fps_controller(128, 72, 64)
 	fps.rot = gs.Vector3(0.5, 0, 0)
 
-	cube = render.create_geometry(geometry.create_cube(1, 1, 1, "iso.mat"))
+	cube = render.create_geometry(geometry.create_cube(0.1, 0.6, 0.1, "iso.mat"))
 
 	pos = gs.Vector3(112//16, 62, 112//16)
 
@@ -87,13 +87,13 @@ try:
 						block_mat = 2
 					elif tile.liquid_type == tile.WATER:
 						block_mat = 4
-				elif shape == tile.FLOOR:
-					block_mat = 1
+				# elif shape == tile.FLOOR:
+				# 	block_mat = 1
 				elif shape == tile.BOULDER or shape == tile.PEBBLES or shape == tile.WALL or shape == tile.FORTIFICATION:
 					block_mat = 3
 				elif shape == tile.TREE or shape == tile.SHRUB or \
 								shape == tile.SAPLING:
-					block_mat = 0
+					block_mat = 5
 
 				array_tile_mat_id[x, z] = block_mat
 
@@ -129,6 +129,15 @@ try:
 		def run(self):
 			self.block, self.block_mat_id = get_block_simple(self.pos)
 
+
+	class UpdateUnitListFromDF(threading.Thread):
+		def __init__(self):
+			threading.Thread.__init__(self)
+			self.unit_list = None
+
+		def run(self):
+			self.unit_list = GetListUnits()
+
 	block_drawn = 0
 
 
@@ -140,20 +149,6 @@ try:
 
 		global block_drawn
 		block_drawn += 1
-
-
-	def draw_block(block, x, y, z):
-		x *= 16
-		z *= 16
-
-		global block_drawn
-
-		it = np.nditer(block, flags=['multi_index'])
-		while not it.finished:
-			if it[0] == 0:
-				block_drawn += 1
-				render.geometry3d(it.multi_index[0] + x, y, it.multi_index[1] + z, cube)
-			it.iternext()
 
 	block_fetched = 0
 	layer_size = 5
@@ -298,6 +293,9 @@ try:
 						update_cache_geo_block.pop(name_block)
 						return
 
+	unit_list_thread = UpdateUnitListFromDF()
+	unit_list_thread.run()
+
 	old_pos = gs.Vector3()
 	while not input.key_press(gs.InputDevice.KeyEscape):
 		render.clear()
@@ -333,6 +331,14 @@ try:
 
 		get_cache_block_needed()
 		update_geo_block()
+
+		# update unit draw
+		if not unit_list_thread.is_alive():
+			for unit in unit_list_thread.unit_list.value:
+				scn.renderable_system.DrawGeometry(cube, gs.Matrix4.TranslationMatrix(gs.Vector3(map_info.block_size_x*16 - unit.pos_x, unit.pos_z, unit.pos_y)))
+
+			unit_list_thread.run()
+
 
 		render.text2d(0, 45, "FPS: %.2fHZ - BLOCK FETCHED: %d - BLOCK DRAWN: %d" % (1 / dt_sec, block_fetched, block_drawn), color=gs.Color.Red)
 		render.text2d(0, 25, "FPS.X = %f, FPS.Z = %f" % (fps.pos.x, fps.pos.z), color=gs.Color.Red)

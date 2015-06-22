@@ -412,6 +412,8 @@ def find_valid_material_in_cube(x, y, z, mats):
 
 	return mat
 
+resolution = 2
+
 def CreateIsoFBO(array, width, height, length, isolevel, mats):
 	index_array = []
 	vtx_array = []
@@ -426,7 +428,7 @@ def CreateIsoFBO(array, width, height, length, isolevel, mats):
 				offset = gs.Vector3(x, y, z)
 				nb_tri = IsoSurface(cube_val, cube_base_vtx, isolevel, index_array, vtx_array, normal_array, offset)
 				for i in range(int(nb_tri)):
-					material_array.append(find_valid_material_in_cube(x, y, z, mats))
+					material_array.append(find_valid_material_in_cube(x//2, 0, z//2, mats))
 
 	return index_array, vtx_array, normal_array, material_array
 
@@ -457,9 +459,7 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 			count += 1
 
 	import numpy as np
-	resolution = 2
 	array_res = np.kron(array, np.ones((resolution, resolution, resolution)))
-	mats_res = np.kron(mats, np.ones((resolution, resolution, resolution)))
 
 	array_copy = np.copy(array_res)
 	kernel_size = 3
@@ -470,7 +470,7 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 				for z in range(kernel_size_half, array_res.shape[2] -kernel_size_half-1):
 					array_res[x, y, z] = array_copy[x-kernel_size_half:x+kernel_size_half+1, y, z-kernel_size_half:z+kernel_size_half+1].sum() / kernel_size**2
 
-	index_array, vtx_array, normal_array, material_array = CreateIsoFBO(array_res, array_res.shape[0]-(resolution - 1), array_res.shape[1], array_res.shape[2]-(resolution - 1), isolevel, mats_res)
+	index_array, vtx_array, normal_array, material_array = CreateIsoFBO(array_res, array_res.shape[0]-(resolution - 1), array_res.shape[1], array_res.shape[2]-(resolution - 1), isolevel, mats)
 
 	# generate vertices
 	if not geo.AllocateVertex(len(vtx_array)):
