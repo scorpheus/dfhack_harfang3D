@@ -337,7 +337,7 @@ def IsoSurface(cube_val, cube_base_vtx, isolevel, index_array, vtx_array, normal
 		return 0
 
 	vertlist = [0] * 12
-	#    Find the vertices where the surface intersects the cube
+	#    Find the vertices where the surface intersects the dwarf_geo
 	if edgeTable[cubeindex] & 1:
 		vertlist[0] = Lerp2Vertex(isolevel, cube_base_vtx[0], cube_base_vtx[1], cube_val[0], cube_val[1])
 

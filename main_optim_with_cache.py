@@ -34,7 +34,15 @@ try:
 	gs.MountFileDriver(gs.StdFileDriver("."))
 
 	scn = scene.new_scene()
-	scene.add_light(scn, gs.Matrix4.TranslationMatrix(gs.Vector3(6, 200, -6)))
+	# add lua system
+	engine_env = gs.ScriptEngineEnv(render.get_render_system_async(), render.get_renderer_async(), None)
+
+	lua_system = gs.LuaSystem(engine_env)
+	lua_system.SetExecutionContext(gs.ScriptContextAll )
+	lua_system.Open()
+	scn.AddSystem(lua_system)
+
+	scn.Load('@core/scene_templates/scene.scn', gs.SceneLoadContext(render.get_render_system()))
 	light_cam = scene.add_light(scn, gs.Matrix4.TranslationMatrix(gs.Vector3(6, 200, -6)))
 	light_cam.light.SetShadow(gs.Light.Shadow_None)
 	cam = scene.add_camera(scn, gs.Matrix4.TranslationMatrix(gs.Vector3(112, 62, 112)))
@@ -43,7 +51,8 @@ try:
 	fps = camera.fps_controller(128, 72, 64)
 	fps.rot = gs.Vector3(0.5, 0, 0)
 
-	cube = render.create_geometry(geometry.create_cube(0.1, 0.6, 0.1, "iso.mat"))
+	dwarf_geo = render.create_geometry(geometry.create_cube(0.1, 0.6, 0.1, "iso.mat"))
+	floor_geo = render.create_geometry(geometry.create_cube(1, 0.1, 1, "floor.mat"))
 
 	pos = gs.Vector3(112//16, 62, 112//16)
 
@@ -87,8 +96,8 @@ try:
 						block_mat = 2
 					elif tile.liquid_type == tile.WATER:
 						block_mat = 4
-				# elif shape == tile.FLOOR:
-				# 	block_mat = 1
+				elif shape == tile.FLOOR:
+					block_mat = 1
 				elif shape == tile.BOULDER or shape == tile.PEBBLES or shape == tile.WALL or shape == tile.FORTIFICATION:
 					block_mat = 3
 				elif shape == tile.TREE or shape == tile.SHRUB or \
@@ -97,7 +106,7 @@ try:
 
 				array_tile_mat_id[x, z] = block_mat
 
-				if block_mat == 0:
+				if block_mat == 0 or block_mat == 1:
 					array_has_geo[x, z] = 0
 				else:
 					array_has_geo[x, z] = 1
@@ -191,10 +200,19 @@ try:
 				for x in range(layer_size):
 					name_block = hash_from_layer(self.pos, x, z)
 					if name_block in cache_geo_block:
-						draw_geo_block(cache_geo_block[name_block], self.pos.x + x - (layer_size - 1) / 2, self.pos.y, self.pos.z + z - (layer_size - 1) / 2)
+						pos_block_x, pos_block_y, pos_block_z = self.pos.x + x - (layer_size - 1) / 2, self.pos.y, self.pos.z + z - (layer_size - 1) / 2
+						draw_geo_block(cache_geo_block[name_block], pos_block_x, pos_block_y, pos_block_z)
+						# pos_block_x *= 16
+						# pos_block_z *= 16
+						# mat = cache_block_mat[name_block]
+						# for i in range(16):
+						# 	for j in range(16):
+						# 		if floor
+								# if mat[i, j] == 1:
+								# 	scn.renderable_system.DrawGeometry(floor_geo, gs.Matrix4.TranslationMatrix(gs.Vector3(pos_block_x + i, pos_block_y, pos_block_z + j)))
 
 	layers = []
-	for i in range(40):
+	for i in range(20):
 		layers.append(Layer())
 
 	def get_cache_block_needed():
@@ -236,7 +254,7 @@ try:
 					block_fetched += 1
 
 			elif len(update_cache_block) > count:
-				ordered_update_cache_block = OrderedDict(sorted(update_cache_block.items(), key=lambda t: gs.Vector3.Dist2(gs.Vector3(t[1].x*16, t[1].y, t[1].z*16), fps.pos)))
+				ordered_update_cache_block = OrderedDict(sorted(update_cache_block.items(), key=lambda t: gs.Vector3.Dist2(gs.Vector3(t[1].x, t[1].y, t[1].z), pos)))
 
 				iter_update_block = iter(ordered_update_cache_block.items())
 				name_block, block_pos = None, None
@@ -268,7 +286,7 @@ try:
 
 	def update_geo_block():
 		if len(update_cache_geo_block) > 0:
-			ordered_update_cache_geo = OrderedDict(sorted(update_cache_geo_block.items(), key=lambda t: gs.Vector3.Dist2(gs.Vector3(t[1].x*16, t[1].y, t[1].z*16), fps.pos)))
+			ordered_update_cache_geo = OrderedDict(sorted(update_cache_geo_block.items(), key=lambda t: gs.Vector3.Dist2(gs.Vector3(t[1].x, t[1].y, t[1].z), pos)))
 
 			for name_block, block_pos in ordered_update_cache_geo.items():
 				current_layer_block_name = hash_from_pos(block_pos.x, block_pos.y, block_pos.z)
@@ -335,7 +353,7 @@ try:
 		# update unit draw
 		if not unit_list_thread.is_alive():
 			for unit in unit_list_thread.unit_list.value:
-				scn.renderable_system.DrawGeometry(cube, gs.Matrix4.TranslationMatrix(gs.Vector3(map_info.block_size_x*16 - unit.pos_x, unit.pos_z, unit.pos_y)))
+				scn.renderable_system.DrawGeometry(dwarf_geo, gs.Matrix4.TranslationMatrix(gs.Vector3(map_info.block_size_x*16 - unit.pos_x, unit.pos_z, unit.pos_y)))
 
 			unit_list_thread.run()
 
