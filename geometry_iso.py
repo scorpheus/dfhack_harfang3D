@@ -462,6 +462,8 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 	import numpy as np
 	# increase resolution
 	array_res = np.kron(array, np.ones((resolution, resolution_y, resolution)))
+	for i in range(1, array_res.shape[1]-1):
+		array_res[:, i, :] = array_res[:, 0, :]
 
 	# add floor if there is floor on the bottom
 	it = np.nditer(array_res, flags=['multi_index'])
@@ -480,7 +482,6 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 			for y in range(array_res.shape[1]):
 				for z in range(kernel_size_half, array_res.shape[2] -kernel_size_half-1):
 					array_res[x, y, z] = array_copy[x-kernel_size_half:x+kernel_size_half+1, y, z-kernel_size_half:z+kernel_size_half+1].sum() / kernel_size**2
-
 
 
 	index_array, vtx_array, normal_array, material_array = CreateIsoFBO(array_res, array_res.shape[0]-(resolution - 1), array_res.shape[1], array_res.shape[2]-(resolution - 1), isolevel, mats)
