@@ -413,6 +413,7 @@ def find_valid_material_in_cube(x, y, z, mats):
 	return mat
 
 resolution = 2
+resolution_y = 4
 
 def CreateIsoFBO(array, width, height, length, isolevel, mats):
 	index_array = []
@@ -459,7 +460,17 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 			count += 1
 
 	import numpy as np
-	array_res = np.kron(array, np.ones((resolution, resolution, resolution)))
+	# increase resolution
+	array_res = np.kron(array, np.ones((resolution, resolution_y, resolution)))
+
+	# add floor if there is floor on the bottom
+	it = np.nditer(array_res, flags=['multi_index'])
+	while not it.finished:
+		if mats[it.multi_index[0]//2, 0, it.multi_index[2]//2] == 1:
+			array_res[it.multi_index[0], 0, it.multi_index[2]] = 1
+		if mats[it.multi_index[0]//2, 1, it.multi_index[2]//2] == 1:
+			array_res[it.multi_index[0], array_res.shape[1]-1, it.multi_index[2]] = 1
+		it.iternext()
 
 	array_copy = np.copy(array_res)
 	kernel_size = 3
@@ -470,6 +481,8 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 				for z in range(kernel_size_half, array_res.shape[2] -kernel_size_half-1):
 					array_res[x, y, z] = array_copy[x-kernel_size_half:x+kernel_size_half+1, y, z-kernel_size_half:z+kernel_size_half+1].sum() / kernel_size**2
 
+
+
 	index_array, vtx_array, normal_array, material_array = CreateIsoFBO(array_res, array_res.shape[0]-(resolution - 1), array_res.shape[1], array_res.shape[2]-(resolution - 1), isolevel, mats)
 
 	# generate vertices
@@ -477,7 +490,7 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 		return None
 
 	count = 0
-	inv_scale = gs.Vector3.One/gs.Vector3(resolution, resolution*2-1, resolution)
+	inv_scale = gs.Vector3.One/gs.Vector3(resolution, resolution_y*2-1, resolution)
 	for vtx in vtx_array:
 		geo.SetVertex(count, vtx.x*inv_scale.x, vtx.y*inv_scale.y, vtx.z*inv_scale.z)
 		count += 1

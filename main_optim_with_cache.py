@@ -9,6 +9,7 @@ import gs.plus.camera as camera
 import gs.plus.clock as clock
 import gs.plus.geometry as geometry
 import geometry_iso
+import math
 
 from collections import OrderedDict
 import threading
@@ -154,7 +155,7 @@ try:
 		x *= 16
 		z *= 16
 
-		scn.renderable_system.DrawGeometry(geo_block, gs.Matrix4.TranslationMatrix(gs.Vector3(x - 1, y, z - 1)))
+		scn.renderable_system.DrawGeometry(geo_block, gs.Matrix4.TranslationMatrix(gs.Vector3(x+1, y, z)))
 
 		global block_drawn
 		block_drawn += 1
@@ -207,9 +208,9 @@ try:
 						# mat = cache_block_mat[name_block]
 						# for i in range(16):
 						# 	for j in range(16):
-						# 		if floor
-								# if mat[i, j] == 1:
-								# 	scn.renderable_system.DrawGeometry(floor_geo, gs.Matrix4.TranslationMatrix(gs.Vector3(pos_block_x + i, pos_block_y, pos_block_z + j)))
+						# 		# if floor
+						# 		if mat[i, j] == 1:
+						# 			scn.renderable_system.DrawGeometry(floor_geo, gs.Matrix4.TranslationMatrix(gs.Vector3(pos_block_x + i+1, pos_block_y, pos_block_z + j)))
 
 	layers = []
 	for i in range(20):
@@ -353,10 +354,8 @@ try:
 		# update unit draw
 		if not unit_list_thread.is_alive():
 			for unit in unit_list_thread.unit_list.value:
-				scn.renderable_system.DrawGeometry(dwarf_geo, gs.Matrix4.TranslationMatrix(gs.Vector3(map_info.block_size_x*16 - unit.pos_x, unit.pos_z, unit.pos_y)))
-
+				scn.renderable_system.DrawGeometry(dwarf_geo, gs.Matrix4.TranslationMatrix(gs.Vector3(map_info.block_size_x*16 - unit.pos_x+16, unit.pos_z-0.3, unit.pos_y)))
 			unit_list_thread.run()
-
 
 		render.text2d(0, 45, "FPS: %.2fHZ - BLOCK FETCHED: %d - BLOCK DRAWN: %d" % (1 / dt_sec, block_fetched, block_drawn), color=gs.Color.Red)
 		render.text2d(0, 25, "FPS.X = %f, FPS.Z = %f" % (fps.pos.x, fps.pos.z), color=gs.Color.Red)
