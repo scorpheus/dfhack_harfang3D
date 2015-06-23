@@ -70,6 +70,7 @@ try:
 
 
 	mats_path = ["empty.mat", "floor.mat", "magma.mat", "rock.mat", "water.mat", "tree.mat"]
+	
 
 	def get_block_simple(new_pos):
 		_pos = gs.Vector3(new_pos)
@@ -82,7 +83,7 @@ try:
 		array_has_geo = np.full((17, 17), 0, np.int8)
 		array_tile_mat_id = np.full((17, 17), 0, np.int8)
 
-		if block is not None:
+		if len(block.tile) > 0:
 			x, z = 15, 0
 			count_tile = 0
 			for tile in block.tile:
@@ -97,13 +98,16 @@ try:
 						block_mat = 4
 				elif type.shape == remote_fortress.FLOOR:
 					block_mat = 1
-				elif type.shape == remote_fortress.BOULDER or type.shape == remote_fortress.PEBBLES or \
+				elif type.shape == remote_fortress.BOULDER  or \
 								type.shape == remote_fortress.WALL or type.shape == remote_fortress.FORTIFICATION:
 					block_mat = 3
 				# if type.material == remote_fortress.PLANT:
 				# 	block_mat = 2
 				elif type.shape == remote_fortress.SHRUB or type.shape == remote_fortress.SAPLING:
 					block_mat = 1
+
+				if type.material == remote_fortress.TREE_MATERIAL or type.shape == remote_fortress.TRUNK_BRANCH:
+					block_mat = 0
 
 				array_tile_mat_id[x, z] = block_mat
 
@@ -216,13 +220,13 @@ try:
 
 	dwarf_geo = render.create_geometry(geometry.create_cube(0.1, 0.6, 0.1, "iso.mat"))
 
-
 	layers = []
 	for i in range(20):
 		layers.append(Layer())
 
 	def get_cache_block_needed():
 		global block_fetched
+		global update_cache_block
 		count = 0
 		for update_thread in current_update_get_block_threads:
 			if update_thread is not None:
@@ -254,8 +258,7 @@ try:
 
 					# this block array is setup, ask the update the geo block
 					update_cache_geo_block[name_block] = gs.Vector3(block_pos)
-					if name_block in update_cache_block:
-						update_cache_block.pop(name_block)
+					update_cache_block.pop(name_block)
 					block_fetched += 1
 
 			elif len(update_cache_block) > count:
@@ -273,15 +276,15 @@ try:
 			count += 1
 
 	def update_geo_block():
+		global update_cache_geo_block
 		count = 0
 		for update_thread in current_update_create_geo_threads:
 			if update_thread is not None:
 				if not update_thread.is_alive():
-					if update_thread.current_layer_block_name in update_cache_geo_block:
-						update_cache_geo_block.pop(update_thread.current_layer_block_name)
+					update_cache_geo_block.pop(update_thread.current_layer_block_name)
 					current_update_create_geo_threads[count] = None
 
-			elif len(update_cache_block) > count:
+			elif len(update_cache_geo_block) > count:
 				ordered_update_cache_geo = OrderedDict(sorted(update_cache_geo_block.items(), key=lambda t: gs.Vector3.Dist2(gs.Vector3(t[1].x, t[1].y, t[1].z), pos)))
 
 				for name_block, block_pos in ordered_update_cache_geo.items():
@@ -310,7 +313,6 @@ try:
 
 			count += 1
 
-
 	def get_geo_from_blocks(name_geo, upper_name_block, block, upper_block):
 		array_has_geo = np.empty((17, 2, 17), np.int8)
 		array_has_geo[:, 0, :] = block
@@ -321,38 +323,10 @@ try:
 		array_mats[:, 1, :] = cache_block_mat[upper_name_block]
 
 		# empty block don't have geometry
-		if array_has_geo.sum() == 0 or np.average(array_has_geo) == 1:
-			return render.create_geometry(gs.CoreGeometry())
-		else:
-			return geometry_iso.create_iso(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, name_geo)
-
-	#
-	# def update_geo_block():
-	# 	if len(update_cache_geo_block) > 0:
-	# 		ordered_update_cache_geo = OrderedDict(sorted(update_cache_geo_block.items(), key=lambda t: gs.Vector3.Dist2(gs.Vector3(t[1].x, t[1].y, t[1].z), pos)))
-	#
-	# 		for name_block, block_pos in ordered_update_cache_geo.items():
-	# 			current_layer_block_name = hash_from_pos(block_pos.x, block_pos.y, block_pos.z)
-	# 			upper_layer_block_name = hash_from_pos(block_pos.x, block_pos.y + 1, block_pos.z)
-	#
-	# 			if current_layer_block_name in cache_block and upper_layer_block_name in cache_block:
-	# 				def check_block_can_generate_geo(x, y, z):
-	# 					# can update the geo block because it has all the neighbour
-	# 					counter_update = 0
-	# 					if hash_from_pos(x, y, z-1) in cache_block:
-	# 						counter_update += 1
-	# 					if hash_from_pos(x, y, z+1) in cache_block:
-	# 						counter_update += 1
-	# 					if hash_from_pos(x - 1, y, z) in cache_block:
-	# 						counter_update += 1
-	# 					if hash_from_pos(x + 1, y, z) in cache_block:
-	# 						counter_update += 1
-	# 					return counter_update == 4
-	#
-	# 				if check_block_can_generate_geo(block_pos.x, block_pos.y, block_pos.z) and check_block_can_generate_geo(block_pos.x, block_pos.y + 1, block_pos.z):
-	# 					cache_geo_block[current_layer_block_name] = get_geo_from_blocks(current_layer_block_name, upper_layer_block_name, cache_block[current_layer_block_name], cache_block[upper_layer_block_name])
-	# 					update_cache_geo_block.pop(name_block)
-	# 					return
+		# if array_has_geo.sum() == 0 or np.average(array_has_geo) == 1:
+		# 	return render.create_geometry(gs.CoreGeometry())
+		# else:
+		return geometry_iso.create_iso(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, name_geo)
 
 	unit_list_thread = UpdateUnitListFromDF()
 	unit_list_thread.run()

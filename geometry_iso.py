@@ -429,7 +429,7 @@ def CreateIsoFBO(array, width, height, length, isolevel, mats):
 				offset = gs.Vector3(x, y, z)
 				nb_tri = IsoSurface(cube_val, cube_base_vtx, isolevel, index_array, vtx_array, normal_array, offset)
 				for i in range(int(nb_tri)):
-					material_array.append(find_valid_material_in_cube(x//2, 0, z//2, mats))
+					material_array.append(find_valid_material_in_cube(x//resolution, 0, z//resolution, mats))
 
 	return index_array, vtx_array, normal_array, material_array
 
@@ -468,20 +468,28 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 	# add floor if there is floor on the bottom
 	it = np.nditer(array_res, flags=['multi_index'])
 	while not it.finished:
-		if mats[it.multi_index[0]//2, 0, it.multi_index[2]//2] == 1:
+		if mats[it.multi_index[0]//resolution, 0, it.multi_index[2]//resolution] == 1:
 			array_res[it.multi_index[0], 0, it.multi_index[2]] = 1
-		if mats[it.multi_index[0]//2, 1, it.multi_index[2]//2] == 1:
+		if mats[it.multi_index[0]//resolution, 1, it.multi_index[2]//resolution] == 1:
 			array_res[it.multi_index[0], array_res.shape[1]-1, it.multi_index[2]] = 1
 		it.iternext()
 
+	# empty block don't have geometry
+	if array_res.sum() == 0 or np.average(array_res) == 1:
+		return render.create_geometry(gs.CoreGeometry())
+
 	array_copy = np.copy(array_res)
 	kernel_size = 3
+	kernel = np.array([[0.25, 0.5, 0.25],
+					  [0.5,  1.0, 0.5],
+					  [0.25, 0.5, 0.25]])
+	kernel_sum = kernel.sum()
 	kernel_size_half = kernel_size // 2
 	for smooth_pass in range(1):
 		for x in range(kernel_size_half, array_res.shape[0] -kernel_size_half-1):
 			for y in range(array_res.shape[1]):
 				for z in range(kernel_size_half, array_res.shape[2] -kernel_size_half-1):
-					array_res[x, y, z] = array_copy[x-kernel_size_half:x+kernel_size_half+1, y, z-kernel_size_half:z+kernel_size_half+1].sum() / kernel_size**2
+					array_res[x, y, z] = (array_copy[x-kernel_size_half:x+kernel_size_half+1, y, z-kernel_size_half:z+kernel_size_half+1]*kernel).sum() / kernel_sum
 
 
 	index_array, vtx_array, normal_array, material_array = CreateIsoFBO(array_res, array_res.shape[0]-(resolution - 1), array_res.shape[1], array_res.shape[2]-(resolution - 1), isolevel, mats)
