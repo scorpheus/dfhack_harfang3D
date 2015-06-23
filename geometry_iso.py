@@ -438,6 +438,7 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 	"""Create an iso surface geometry"""
 	if name is None:
 		name = "@gen/iso_%f" % (isolevel)
+	name = str(name)
 
 	geo = render.get_render_system().HasGeometry(name)
 	if geo is not None:

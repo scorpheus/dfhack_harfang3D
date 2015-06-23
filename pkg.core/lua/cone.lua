@@ -1,4 +1,4 @@
--- %{Name=Cone;Type=SceneCreate;Menu=Primitive%}
+-- {"name":"Cone", "category":"Primitive", "editor":["@data/script_integration/register_as_component.py", "@data/script_integration/add_to_scene_create_menu.py"]}
 execution_context = gs.ScriptContextAll
 
 radius = 1 --> float

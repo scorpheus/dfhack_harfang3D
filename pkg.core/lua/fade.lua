@@ -1,3 +1,4 @@
+-- {"name":"Fade", "compatibility":["Node", "Scene"], "category":"Rendering", "editor":["@data/script_integration/register_as_component.py"]}
 execution_context = gs.ScriptContextAll
 
 opacity = 0 --> float

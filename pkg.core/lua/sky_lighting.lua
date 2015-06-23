@@ -1,9 +1,14 @@
+-- {"name":"Sky Lighting", "compatibility":["Node", "Scene"], "category":"Lighting", "editor":["@data/script_integration/register_as_component.py", "@data/script_integration/add_to_scene_create_menu.py"]}
 execution_context = gs.ScriptContextAll
 
 --------------------------------------------------------------------------------
 time_of_day = 12 --> float
 longitude = 0.3 --> float
 attenuation = 1.0 --> float
+
+shadow_range = 150 --> float
+shadow_bias = 0.01 --> float
+shadow_distribution = 0.5 --> float
 --------------------------------------------------------------------------------
 
 dofile("@core/lua/math_common.lua")
@@ -14,7 +19,7 @@ end
 
 function CreateSkyLight(name, enabled_shadow)
 	local node = gs.Node()
-	node:SetDoNotSerialize(true)
+	node:SetInstantiatedBy(this)
 	node:SetName(name)
 
 	local transform = gs.Transform()
@@ -55,6 +60,10 @@ function UpdateLighting()
 	local main_light_c = main_light.light
 	main_light_c:SetDiffuseIntensity(1.0 * attenuation)
 	main_light_c:SetSpecularIntensity(1.0 * attenuation)
+
+	main_light_c:SetShadowRange(shadow_range)
+	main_light_c:SetShadowBias(shadow_bias)
+	main_light_c:SetShadowDistribution(shadow_distribution)
 
 	local back_light_c = back_light.light
 	back_light_c:SetDiffuseIntensity(0.5 * attenuation)

@@ -56,21 +56,32 @@ try:
 	fps.rot = gs.Vector3(0.5, 0, 0)
 
 	dwarf_geo = render.create_geometry(geometry.create_cube(0.1, 0.6, 0.1, "iso.mat"))
-	boulder = render.create_geometry(geometry.create_sphere(0.5, 6, 16, "iso.mat"))
 
 	pos = gs.Vector3(112//16, 62, 112//16)
 
 
 	def hash_from_pos(x, y, z):
-		return str(x + y * 2048 + z * 2048 * 2048)
+		return x + y * 2048 + z * 2048 * 2048
 
 
 	def hash_from_layer(layer_pos, x, z):
 		return hash_from_pos(layer_pos.x + x - (layer_size - 1) / 2, layer_pos.y, layer_pos.z + z - (layer_size - 1) / 2)
 
 
+	block_fetched = 0
+	layer_size = 5
+	cache_props = {}
+	cache_block = {}
+	cache_block_mat = {}
+	cache_geo_block = {}
+	update_cache_block = {}
+	update_cache_geo_block = {}
+	current_update_get_block_threads = [None] * 2
+	current_update_create_geo_threads = [None] * 1
+
 	mats_path = ["empty.mat", "floor.mat", "magma.mat", "rock.mat", "water.mat", "tree.mat"]
-	
+	geos = [render.load_geometry("environment_kit/geo-boulder.geo")]
+
 
 	def get_block_simple(new_pos):
 		_pos = gs.Vector3(new_pos)
@@ -85,7 +96,6 @@ try:
 
 		if len(block.tile) > 0:
 			x, z = 15, 0
-			count_tile = 0
 			for tile in block.tile:
 				type = tile_type_list.tiletype_list[tile.material_index]
 
@@ -96,27 +106,28 @@ try:
 						block_mat = 2
 					elif tile.liquid_type == tile.WATER:
 						block_mat = 4
+					array_has_geo[x, z] = 1
 				elif type.shape == remote_fortress.FLOOR:
 					block_mat = 1
-				elif type.shape == remote_fortress.BOULDER  or \
-								type.shape == remote_fortress.WALL or type.shape == remote_fortress.FORTIFICATION:
+					array_has_geo[x, z] = 0
+				elif type.shape == remote_fortress.BOULDER or type.shape == remote_fortress.PEBBLES:
 					block_mat = 3
+					array_has_geo[x, z] = 0
+					cache_props[hash_from_pos(new_pos.x*16 + x, new_pos.y, new_pos.z*16 + z)] = 0
+				elif type.shape == remote_fortress.WALL or type.shape == remote_fortress.FORTIFICATION:
+					block_mat = 3
+					array_has_geo[x, z] = 1
 				# if type.material == remote_fortress.PLANT:
 				# 	block_mat = 2
 				elif type.shape == remote_fortress.SHRUB or type.shape == remote_fortress.SAPLING:
 					block_mat = 1
+					array_has_geo[x, z] = 0
 
 				if type.material == remote_fortress.TREE_MATERIAL or type.shape == remote_fortress.TRUNK_BRANCH:
 					block_mat = 0
+					array_has_geo[x, z] = 0
 
 				array_tile_mat_id[x, z] = block_mat
-
-				if block_mat == 0 or block_mat == 1:
-					array_has_geo[x, z] = 0
-				else:
-					array_has_geo[x, z] = 1
-
-				count_tile += 1
 
 				x -= 1
 				if x < 0:
@@ -173,17 +184,6 @@ try:
 		global block_drawn
 		block_drawn += 1
 
-	block_fetched = 0
-	layer_size = 5
-	cache_block = {}
-	cache_block_mat = {}
-	cache_geo_block = {}
-	update_cache_block = {}
-	update_cache_geo_block = {}
-	current_update_get_block_threads = [None] * 2
-	current_update_create_geo_threads = [None] * 1
-
-
 	class Layer:
 		def __init__(self):
 			self.pos = gs.Vector3()
@@ -217,6 +217,13 @@ try:
 					if name_block in cache_geo_block:
 						pos_block_x, pos_block_y, pos_block_z = self.pos.x + x - (layer_size - 1) / 2, self.pos.y, self.pos.z + z - (layer_size - 1) / 2
 						draw_geo_block(cache_geo_block[name_block], pos_block_x, pos_block_y, pos_block_z)
+
+						for i in range(16):
+							for j in range(16):
+								pos_x, pos_z = pos_block_x*16 + i, pos_block_z*16 + j
+								name = hash_from_pos(pos_x, pos_block_y, pos_z)
+								if name in cache_props:
+									scn.renderable_system.DrawGeometry(geos[cache_props[name]], gs.Matrix4.TransformationMatrix(gs.Vector3(pos_x+1, pos_block_y*scale_unit_y, pos_z), gs.Vector3(name%5, name%4, name%3)))
 
 	dwarf_geo = render.create_geometry(geometry.create_cube(0.1, 0.6, 0.1, "iso.mat"))
 

@@ -24,6 +24,7 @@ mat4 BuildSkinMatrix()
 {
 	return vBoneMatrix[int(vBoneIndex.x)] * vBoneWeight.x + vBoneMatrix[int(vBoneIndex.y)] * vBoneWeight.y + vBoneMatrix[int(vBoneIndex.z)] * vBoneWeight.z + vBoneMatrix[int(vBoneIndex.w)] * vBoneWeight.w;
 }
+
 mat4 BuildPreviousSkinMatrix()
 {
 	return vPreviousBoneMatrix[int(vBoneIndex.x)] * vBoneWeight.x + vPreviousBoneMatrix[int(vBoneIndex.y)] * vBoneWeight.y + vPreviousBoneMatrix[int(vBoneIndex.z)] * vBoneWeight.z + vPreviousBoneMatrix[int(vBoneIndex.w)] * vBoneWeight.w;
@@ -36,6 +37,15 @@ struct LightModelOut
 {
 	float i_diff;
 	float i_spec;
+};
+
+// get depth buffer value
+float SampleDepthBuffer(tex2D depth_buffer, vec2 uv)
+{
+	vec4 rgba = texture2D(depth_buffer, uv);
+	if (vTechniqueIsForward == 1)
+		return dot(rgba, vec4(1.0, 1/255.0, 1/65025.0, 1/160581375.0));
+	return 1.0;
 };
 
 #endif // COMMON_I

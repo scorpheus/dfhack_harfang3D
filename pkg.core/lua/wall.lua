@@ -1,4 +1,4 @@
--- %{Name=Wall;Type=SceneCreate;Menu=Physic Structure%}
+-- {"name":"Wall", "category":"Physic Structure", "editor":["@data/script_integration/register_as_component.py", "@data/script_integration/add_to_scene_create_menu.py"]}
 execution_context = gs.ScriptContextAll
 
 wall_x = 10 --> float
@@ -129,7 +129,7 @@ function Setup()
 	for h = 0, (nb_brick_y - 1) do
 		for w = 0, (nb_brick_x - 1) do
 			local node = gs.Node()
-			node:SetDoNotSerialize(true)
+			node:SetInstantiatedBy(this)
 
 			node:SetName("brick")
 			local transform = gs.Transform()
@@ -140,8 +140,8 @@ function Setup()
 			object:SetGeometry(render_geo)
 			node:AddComponent(object)
 
-			node:AddComponent(gs.BulletRigidBody())
-			local box_collision = gs.BulletBoxCollision()
+			node:AddComponent(gs.MakeRigidBody())
+			local box_collision = gs.MakeBoxCollision()
 			box_collision:SetDimensions(gs.Vector3(cube_x, cube_y, cube_z))
 			node:AddComponent(box_collision)
 
@@ -162,6 +162,7 @@ function OnEditorSetParameter(name)
 end
 
 function Delete()
+	local scene = this:GetScene()
 	for i = 1, #node_list_wall do
 		scene:RemoveNode(node_list_wall[i])
 	end

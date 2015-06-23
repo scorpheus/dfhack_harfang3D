@@ -2,6 +2,7 @@ in {
 	tex2D diffuse_map;
 	tex2D specular_map;
 	tex2D normal_map;
+	float glossiness = 0.5;
 }
 
 variant {
@@ -32,6 +33,7 @@ variant {
 			%diffuse% = texture2D(diffuse_map, v_uv);
 			%specular% = texture2D(specular_map, v_uv);
 			%normal% = n;
+			%glossiness% = glossiness;
 		%}
 	}
 }
