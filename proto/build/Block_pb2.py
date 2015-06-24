@@ -44,7 +44,7 @@ except ImportError:
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='Block.proto',
   package='dfproto',
-  serialized_pb=b('\n\x0b\x42lock.proto\x12\x07\x64\x66proto\x1a\nTile.proto\x1a\x0bPlant.proto\"d\n\x05\x42lock\x12\t\n\x01x\x18\x01 \x02(\r\x12\t\n\x01y\x18\x02 \x02(\r\x12\t\n\x01z\x18\x03 \x02(\r\x12\x1b\n\x04tile\x18\x04 \x03(\x0b\x32\r.dfproto.Tile\x12\x1d\n\x05plant\x18\x05 \x03(\x0b\x32\x0e.dfproto.Plant\"A\n\tMiniBlock\x12\x0c\n\x04tile\x18\x01 \x03(\r\x12\x13\n\x0bliquid_type\x18\x02 \x03(\r\x12\x11\n\tflow_size\x18\x03 \x03(\rB\x02H\x03'))
+  serialized_pb=b('\n\x0b\x42lock.proto\x12\x07\x64\x66proto\x1a\nTile.proto\x1a\x0bPlant.proto\"d\n\x05\x42lock\x12\t\n\x01x\x18\x01 \x02(\r\x12\t\n\x01y\x18\x02 \x02(\r\x12\t\n\x01z\x18\x03 \x02(\r\x12\x1b\n\x04tile\x18\x04 \x03(\x0b\x32\r.dfproto.Tile\x12\x1d\n\x05plant\x18\x05 \x03(\x0b\x32\x0e.dfproto.Plant\"M\n\tMiniBlock\x12\x10\n\x04tile\x18\x01 \x03(\rB\x02\x10\x01\x12\x17\n\x0bliquid_type\x18\x02 \x03(\rB\x02\x10\x01\x12\x15\n\tflow_size\x18\x03 \x03(\rB\x02\x10\x01\x42\x02H\x03'))
 
 
 
@@ -118,21 +118,21 @@ _MINIBLOCK = _descriptor.Descriptor(
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b('\020\001'))),
     _descriptor.FieldDescriptor(
       name='liquid_type', full_name='dfproto.MiniBlock.liquid_type', index=1,
       number=2, type=13, cpp_type=3, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b('\020\001'))),
     _descriptor.FieldDescriptor(
       name='flow_size', full_name='dfproto.MiniBlock.flow_size', index=2,
       number=3, type=13, cpp_type=3, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=None),
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b('\020\001'))),
   ],
   extensions=[
   ],
@@ -143,7 +143,7 @@ _MINIBLOCK = _descriptor.Descriptor(
   is_extendable=False,
   extension_ranges=[],
   serialized_start=151,
-  serialized_end=216,
+  serialized_end=228,
 )
 
 _BLOCK.fields_by_name['tile'].message_type = Tile_pb2._TILE
@@ -166,4 +166,10 @@ MiniBlock = _reflection.GeneratedProtocolMessageType('MiniBlock', (_message.Mess
 
 DESCRIPTOR.has_options = True
 DESCRIPTOR._options = _descriptor._ParseOptions(descriptor_pb2.FileOptions(), b('H\003'))
+_MINIBLOCK.fields_by_name['tile'].has_options = True
+_MINIBLOCK.fields_by_name['tile']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b('\020\001'))
+_MINIBLOCK.fields_by_name['liquid_type'].has_options = True
+_MINIBLOCK.fields_by_name['liquid_type']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b('\020\001'))
+_MINIBLOCK.fields_by_name['flow_size'].has_options = True
+_MINIBLOCK.fields_by_name['flow_size']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b('\020\001'))
 # @@protoc_insertion_point(module_scope)

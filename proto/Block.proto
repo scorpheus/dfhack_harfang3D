@@ -15,7 +15,7 @@ message Block
 
 message MiniBlock
 {
-    repeated uint32 tile = 1;
-    repeated uint32 liquid_type = 2;
-    repeated uint32 flow_size = 3;
+    repeated uint32 tile = 1 [packed=true];
+    repeated uint32 liquid_type = 2 [packed=true];
+    repeated uint32 flow_size = 3 [packed=true];
 }
