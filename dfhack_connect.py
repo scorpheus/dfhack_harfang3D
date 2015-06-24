@@ -5,6 +5,7 @@ import struct
 import proto.build.RemoteFortressReader_pb2 as remote_fortress
 import proto.build.BasicApi_pb2 as BasicApi
 import proto.build.Block_pb2 as Block
+import proto.build.Tile_pb2 as Tile
 import proto.build.CoreProtocol_pb2 as CoreProtocol
 
 HOST, PORT = "localhost", 5000
@@ -195,7 +196,7 @@ def GetBlock(pos):
 	message_request = CoreProtocol.CoreBindRequest()
 	message_request.method = "GetBlock"
 	message_request.input_msg = "RemoteFortressReader.BlockRequest"
-	message_request.output_msg = "dfproto.Block"
+	message_request.output_msg = "dfproto.MiniBlock"
 	message_request.plugin = "RemoteFortressReader"
 
 	# input message: which part of datablock we want
@@ -206,7 +207,7 @@ def GetBlock(pos):
 
 	received = GetInfoFromDFHack(message_request, input_block_message)
 
-	out = Block.Block()
+	out = Block.MiniBlock()
 	out.ParseFromString(received)
 
 	return out

@@ -44,7 +44,7 @@ except ImportError:
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='Block.proto',
   package='dfproto',
-  serialized_pb=b('\n\x0b\x42lock.proto\x12\x07\x64\x66proto\x1a\nTile.proto\x1a\x0bPlant.proto\"d\n\x05\x42lock\x12\t\n\x01x\x18\x01 \x02(\r\x12\t\n\x01y\x18\x02 \x02(\r\x12\t\n\x01z\x18\x03 \x02(\r\x12\x1b\n\x04tile\x18\x04 \x03(\x0b\x32\r.dfproto.Tile\x12\x1d\n\x05plant\x18\x05 \x03(\x0b\x32\x0e.dfproto.PlantB\x02H\x03'))
+  serialized_pb=b('\n\x0b\x42lock.proto\x12\x07\x64\x66proto\x1a\nTile.proto\x1a\x0bPlant.proto\"d\n\x05\x42lock\x12\t\n\x01x\x18\x01 \x02(\r\x12\t\n\x01y\x18\x02 \x02(\r\x12\t\n\x01z\x18\x03 \x02(\r\x12\x1b\n\x04tile\x18\x04 \x03(\x0b\x32\r.dfproto.Tile\x12\x1d\n\x05plant\x18\x05 \x03(\x0b\x32\x0e.dfproto.Plant\"A\n\tMiniBlock\x12\x0c\n\x04tile\x18\x01 \x03(\r\x12\x13\n\x0bliquid_type\x18\x02 \x03(\r\x12\x11\n\tflow_size\x18\x03 \x03(\rB\x02H\x03'))
 
 
 
@@ -104,14 +104,63 @@ _BLOCK = _descriptor.Descriptor(
   serialized_end=149,
 )
 
+
+_MINIBLOCK = _descriptor.Descriptor(
+  name='MiniBlock',
+  full_name='dfproto.MiniBlock',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='tile', full_name='dfproto.MiniBlock.tile', index=0,
+      number=1, type=13, cpp_type=3, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='liquid_type', full_name='dfproto.MiniBlock.liquid_type', index=1,
+      number=2, type=13, cpp_type=3, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='flow_size', full_name='dfproto.MiniBlock.flow_size', index=2,
+      number=3, type=13, cpp_type=3, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=151,
+  serialized_end=216,
+)
+
 _BLOCK.fields_by_name['tile'].message_type = Tile_pb2._TILE
 _BLOCK.fields_by_name['plant'].message_type = Plant_pb2._PLANT
 DESCRIPTOR.message_types_by_name['Block'] = _BLOCK
+DESCRIPTOR.message_types_by_name['MiniBlock'] = _MINIBLOCK
 
 Block = _reflection.GeneratedProtocolMessageType('Block', (_message.Message,),
     {
       'DESCRIPTOR': _BLOCK,
       # @@protoc_insertion_point(class_scope:dfproto.Block)
+    })
+
+MiniBlock = _reflection.GeneratedProtocolMessageType('MiniBlock', (_message.Message,),
+    {
+      'DESCRIPTOR': _MINIBLOCK,
+      # @@protoc_insertion_point(class_scope:dfproto.MiniBlock)
     })
 
 

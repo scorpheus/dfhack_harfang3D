@@ -12,3 +12,10 @@ message Block
     repeated Tile tile = 4;
     repeated Plant plant = 5;
 }
+
+message MiniBlock
+{
+    repeated uint32 tile = 1;
+    repeated uint32 liquid_type = 2;
+    repeated uint32 flow_size = 3;
+}
