@@ -2,6 +2,7 @@ import gs
 import gs.plus.render as render
 import math
 import random
+import numpy as np
 
 # [256]
 edgeTable = [0x0, 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
@@ -394,6 +395,7 @@ cube_base_vtx = [gs.Vector3(-half_size, -half_size, -half_size), gs.Vector3(half
 				 gs.Vector3(half_size, half_size, half_size), gs.Vector3(-half_size, half_size, half_size)]
 
 def find_valid_material_in_cube(x, y, z, mats):
+	"""find valid material in one of the 8 corners"""
 	mat = mats[x, y, z]
 	if mat == 0:
 		mat = mats[x, y+1, z]
@@ -460,8 +462,7 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 			geo.SetMaterial(count, path, True)
 			count += 1
 
-	import numpy as np
-	# increase resolution
+	# increase size of the array by the resolution
 	array_res = np.kron(array, np.ones((resolution, resolution_y, resolution)))
 	for i in range(1, array_res.shape[1]-1):
 		array_res[:, i, :] = array_res[:, 0, :]
@@ -479,6 +480,7 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 	if array_res.sum() == 0 or np.average(array_res) == 1:
 		return render.create_geometry(gs.CoreGeometry())
 
+	# smooth the value on XZ axis
 	array_copy = np.copy(array_res)
 	kernel_size = 3
 	kernel = np.array([[0.25, 0.5, 0.25],
@@ -492,13 +494,14 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 				for z in range(kernel_size_half, array_res.shape[2] -kernel_size_half-1):
 					array_res[x, y, z] = (array_copy[x-kernel_size_half:x+kernel_size_half+1, y, z-kernel_size_half:z+kernel_size_half+1]*kernel).sum() / kernel_sum
 
-
+	# create the iso surface
 	index_array, vtx_array, normal_array, material_array = CreateIsoFBO(array_res, array_res.shape[0]-(resolution - 1), array_res.shape[1], array_res.shape[2]-(resolution - 1), isolevel, mats)
 
 	# generate vertices
 	if not geo.AllocateVertex(len(vtx_array)):
 		return None
 
+	# send the vertices to the geometry with scaling them down to the right size
 	count = 0
 	inv_scale = gs.Vector3.One/gs.Vector3(resolution, resolution_y*2-1, resolution)
 	for vtx in vtx_array:

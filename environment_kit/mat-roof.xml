@@ -1,0 +1,5 @@
+<Material Shader="@core/surfaces/diffuse.isl">
+    <MaterialValues>
+        <Value Name="diffuse_tex" Type="tex2D" Value="environment_kit/tex-house_roof_color.png"/>
+    </MaterialValues>
+</Material>

@@ -79,6 +79,8 @@ try:
 	current_update_get_block_threads = [None] * 2
 	current_update_create_geo_threads = [None] * 1
 
+	old_pos = gs.Vector3()
+
 	mats_path = ["empty.mat", "floor.mat", "magma.mat", "rock.mat", "water.mat", "tree.mat"]
 	geos = [render.load_geometry("environment_kit/geo-boulder.geo")]
 
@@ -173,7 +175,8 @@ try:
 			self.unit_list = GetListUnits()
 
 	block_drawn = 0
-
+	unit_list_thread = UpdateUnitListFromDF()
+	unit_list_thread.run()
 
 	def draw_geo_block(geo_block, x, y, z):
 		x *= 16
@@ -183,6 +186,7 @@ try:
 
 		global block_drawn
 		block_drawn += 1
+
 
 	class Layer:
 		def __init__(self):
@@ -217,15 +221,17 @@ try:
 					if name_block in cache_geo_block:
 						pos_block_x, pos_block_y, pos_block_z = self.pos.x + x - (layer_size - 1) / 2, self.pos.y, self.pos.z + z - (layer_size - 1) / 2
 						draw_geo_block(cache_geo_block[name_block], pos_block_x, pos_block_y, pos_block_z)
+						draw_props_in_block(pos_block_x, pos_block_y, pos_block_z)
 
-						for i in range(16):
-							for j in range(16):
-								pos_x, pos_z = pos_block_x*16 + i, pos_block_z*16 + j
-								name = hash_from_pos(pos_x, pos_block_y, pos_z)
-								if name in cache_props:
-									scn.renderable_system.DrawGeometry(geos[cache_props[name]], gs.Matrix4.TransformationMatrix(gs.Vector3(pos_x+1, pos_block_y*scale_unit_y, pos_z), gs.Vector3(name%5, name%4, name%3)))
 
-	dwarf_geo = render.create_geometry(geometry.create_cube(0.1, 0.6, 0.1, "iso.mat"))
+	def draw_props_in_block(pos_block_x, pos_block_y, pos_block_z):
+		for i in range(16):
+			for j in range(16):
+				pos_x, pos_z = pos_block_x*16 + i, pos_block_z*16 + j
+				name = hash_from_pos(pos_x, pos_block_y, pos_z)
+				if name in cache_props:
+					scn.renderable_system.DrawGeometry(geos[cache_props[name]], gs.Matrix4.TransformationMatrix(gs.Vector3(pos_x+1, pos_block_y*scale_unit_y, pos_z), gs.Vector3(name%5, name%4, name%3)))
+
 
 	layers = []
 	for i in range(20):
@@ -329,16 +335,8 @@ try:
 		array_mats[:, 0, :] = cache_block_mat[name_geo]
 		array_mats[:, 1, :] = cache_block_mat[upper_name_block]
 
-		# empty block don't have geometry
-		# if array_has_geo.sum() == 0 or np.average(array_has_geo) == 1:
-		# 	return render.create_geometry(gs.CoreGeometry())
-		# else:
 		return geometry_iso.create_iso(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, name_geo)
 
-	unit_list_thread = UpdateUnitListFromDF()
-	unit_list_thread.run()
-
-	old_pos = gs.Vector3()
 	while not input.key_press(gs.InputDevice.KeyEscape):
 		render.clear()
 

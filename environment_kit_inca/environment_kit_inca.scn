@@ -1,0 +1,1283 @@
+{
+	"Scene": {
+		"Editor": {
+			"SceneTools": {}
+		},
+		"Components": {
+			"gs::core::Environment": {
+				"TimeOfDay": 0.725,
+				"AmbientColor": {
+					"r": 0.1843,
+					"g": 0.363,
+					"b": 0.3468,
+					"a": 1.25
+				},
+				"AmbientIntensity": 0.5
+			},
+			"gs::core::LogicScript": {
+				"gs::core::Script": {
+					"Path": "@core/lua/sky_lighting.lua",
+					"Parameters": {
+						"Parameter": {
+							"Name": "time_of_day",
+							"Type": "float",
+							"Value": 17.4
+						},
+						"Parameter": {
+							"Name": "longitude",
+							"Type": "float",
+							"Value": 3.8
+						},
+						"Parameter": {
+							"Name": "attenuation",
+							"Type": "float",
+							"Value": 0.8002
+						}
+					}
+				}
+			}
+		},
+		"Nodes": {
+			"Node": {
+				"Uid": 1,
+				"Name": "chest_bottom",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 24.633,
+							"y": 0.0,
+							"z": 0.0
+						},
+						"Rotation": {
+							"x": 0.0001,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/chest_bottom.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 2,
+				"Name": "chest_gold04",
+				"Components": {
+					"gs::core::Transform": {},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/chest_gold04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 3,
+				"Name": "chest_top",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 0.1139,
+							"y": 1.2139,
+							"z": 1.3015
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/chest_top.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 4,
+				"Name": "temple_snakes_well",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 3.304,
+							"y": 0.2629,
+							"z": 53.4809
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/temple_snakes_well.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 5,
+				"Name": "temple_portal_low",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -15.9482,
+							"y": 0.0632,
+							"z": 53.1157
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/temple_portal_low.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 6,
+				"Name": "tree_palm_03",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -122.7432,
+							"y": 0.0,
+							"z": 100.014
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_palm_03.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 7,
+				"Name": "tree_palm_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -68.0186,
+							"y": 0.0,
+							"z": 96.2989
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_palm_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 8,
+				"Name": "tree_palm_05",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -47.8152,
+							"y": 0.0,
+							"z": 100.014
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_palm_05.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 9,
+				"Name": "stone_high_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -48.0642,
+							"y": 0.0,
+							"z": 32.4787
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_high_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 10,
+				"Name": "temple_pilar_low",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 69.4217,
+							"y": 0.0,
+							"z": 63.161
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/temple_pilar_low.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 11,
+				"Name": "tropical_bush_large",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 13.0652,
+							"y": 0.2909,
+							"z": 3.6193
+						},
+						"Rotation": {
+							"x": 0.2618,
+							"y": 0.0,
+							"z": 0.0001
+						},
+						"Scale": {
+							"x": 0.408,
+							"y": 0.408,
+							"z": 0.408
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tropical_bush_large.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 12,
+				"Name": "tree_long_00",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 54.7272,
+							"y": 0.0,
+							"z": 100.014
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_00.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 13,
+				"Name": "tree_long_01",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 43.0402,
+							"y": 0.0,
+							"z": 100.014
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_01.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 14,
+				"Name": "monkey_bridge",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -262.9486,
+							"y": 0.0,
+							"z": 99.9826
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/monkey_bridge.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 15,
+				"Name": "face_cliff",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 141.8926,
+							"y": 3.8869,
+							"z": 106.39
+						},
+						"Scale": {
+							"x": 5.1821,
+							"y": 5.1821,
+							"z": 5.1821
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/face_cliff.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 16,
+				"Name": "tree_palm_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -83.7761,
+							"y": 0.0,
+							"z": 100.014
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_palm_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 17,
+				"Name": "reed04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 0.0,
+							"y": 0.0,
+							"z": 5.3156
+						},
+						"Scale": {
+							"x": 0.6562,
+							"y": 0.6562,
+							"z": 0.6562
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/reed04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 18,
+				"Name": "tropical_bush_18",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 4.0894,
+							"y": 0.0,
+							"z": 7.5603
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 0.0001,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.2346,
+							"y": 1.2346,
+							"z": 1.2346
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tropical_bush_18.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 19,
+				"Name": "tropical_bush_26",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 4.3787,
+							"y": 0.0,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.9939,
+							"y": 1.9939,
+							"z": 1.9939
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tropical_bush_26.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 20,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 17.5238,
+							"y": 0.0,
+							"z": 100.014
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 21,
+				"Name": "tropical_bush_06",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -0.7742,
+							"y": 0.0,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 3.1339,
+							"y": 3.1339,
+							"z": 3.2356
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tropical_bush_06.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 22,
+				"Name": "pyramid_base",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 46.6787,
+							"y": 0.0,
+							"z": 50.1045
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/pyramid_base.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 23,
+				"Name": "pyramid_top",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 0.6125,
+							"y": 16.6684,
+							"z": 0.6031
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/pyramid_top.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 24,
+				"Name": "stairs_low_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 143.6769,
+							"y": 0.0,
+							"z": 62.4403
+						},
+						"Rotation": {
+							"x": 0.0001,
+							"y": 0.0001,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 2.3288,
+							"y": 2.3288,
+							"z": 2.8102
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stairs_low_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 25,
+				"Name": "stairs_low_03",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 163.277,
+							"y": 0.0,
+							"z": 62.4403
+						},
+						"Rotation": {
+							"x": 0.0001,
+							"y": 0.0,
+							"z": 0.0001
+						},
+						"Scale": {
+							"x": 2.3288,
+							"y": 2.3288,
+							"z": 2.8102
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stairs_low_03.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 26,
+				"Name": "stairs_low_01",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 122.9357,
+							"y": 0.0,
+							"z": 62.4403
+						},
+						"Rotation": {
+							"x": 0.0001,
+							"y": 0.0001,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 2.3288,
+							"y": 2.3288,
+							"z": 2.8102
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stairs_low_01.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 27,
+				"Name": "stairs_low_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 183.2658,
+							"y": 0.0,
+							"z": 62.4403
+						},
+						"Rotation": {
+							"x": 0.0001,
+							"y": 0.0001,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 2.3288,
+							"y": 2.3288,
+							"z": 2.8102
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stairs_low_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 28,
+				"Name": "tree_long_03",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 27.4096,
+							"y": 0.0,
+							"z": 100.014
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_03.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 29,
+				"Name": "tree_long_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 78.9825,
+							"y": 0.0,
+							"z": 100.014
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 30,
+				"Name": "root_0",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -0.238,
+							"y": 0.8853,
+							"z": -16.2014
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/root_0.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 31,
+				"Name": "temple_snake_statue",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 20.3202,
+							"y": 1.8892,
+							"z": 54.203
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 0.0,
+							"z": 0.0001
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/temple_snake_statue.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 32,
+				"Name": "stairs_low_00",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 101.9305,
+							"y": 0.0,
+							"z": 62.4403
+						},
+						"Rotation": {
+							"x": 0.0001,
+							"y": 0.0,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 2.3964,
+							"y": 2.3964,
+							"z": 2.8916
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stairs_low_00.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 33,
+				"Name": "tree_palm_00",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -100.4381,
+							"y": 0.0,
+							"z": 100.014
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_palm_00.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 34,
+				"Name": "root_2",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 5.5947,
+							"y": 0.3988,
+							"z": -15.7629
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/root_2.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 35,
+				"Name": "root_1",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 2.9764,
+							"y": 1.0952,
+							"z": -16.0491
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/root_1.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 36,
+				"Name": "tree_long_05",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 67.1413,
+							"y": 0.0,
+							"z": 100.014
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_05.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 37,
+				"Name": "stone_high_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -67.8554,
+							"y": 0.0,
+							"z": 32.4787
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_high_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 38,
+				"Name": "stone_high_05",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -74.6604,
+							"y": 0.0,
+							"z": 32.4787
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_high_05.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 39,
+				"Name": "stone_high_06",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -84.986,
+							"y": 0.0,
+							"z": 32.4787
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_high_06.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 40,
+				"Name": "stone_high_00",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -31.1126,
+							"y": 0.0,
+							"z": 32.4787
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_high_00.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 41,
+				"Name": "stone_high_01",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -37.3768,
+							"y": 0.0,
+							"z": 32.4787
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_high_01.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 42,
+				"Name": "stone_high_03",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -57.9295,
+							"y": 0.0,
+							"z": 32.4787
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_high_03.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 43,
+				"Name": "fruit_low",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -34.4561,
+							"y": 0.0,
+							"z": 100.014
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 1.3323,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 3.347,
+							"y": 3.7526,
+							"z": 3.347
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/fruit_low.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 44,
+				"Name": "fruit_high",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -38.076,
+							"y": 0.0029,
+							"z": 100.0151
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 1.3323,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 3.347,
+							"y": 3.7526,
+							"z": 3.347
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/fruit_high.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 45,
+				"Name": "tree_naked_med_00",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -69.4906,
+							"y": 0.0,
+							"z": 58.3876
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_naked_med_00.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 46,
+				"Name": "tree_naked_med_01",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -55.1828,
+							"y": 0.0,
+							"z": 56.7488
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_naked_med_01.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 47,
+				"Name": "tree_naked_low_00",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -97.0755,
+							"y": 0.0,
+							"z": 58.3876
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_naked_low_00.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 48,
+				"Name": "tree_naked_low_01",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -83.1321,
+							"y": 0.0,
+							"z": 56.7488
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_naked_low_01.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 49,
+				"Name": "stone_med_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -67.8554,
+							"y": 0.0,
+							"z": 22.0632
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_med_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 50,
+				"Name": "stone_med_03",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -57.9295,
+							"y": 0.0,
+							"z": 22.0632
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_med_03.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 51,
+				"Name": "stone_med_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -48.0642,
+							"y": 0.0,
+							"z": 22.0632
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_med_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 52,
+				"Name": "stone_med_01",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -37.3768,
+							"y": 0.0,
+							"z": 22.0632
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_med_01.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 53,
+				"Name": "stone_med_00",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -31.1126,
+							"y": 0.0,
+							"z": 22.0632
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_med_00.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 54,
+				"Name": "stone_med_06",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -84.986,
+							"y": 0.0,
+							"z": 22.0632
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_med_06.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 55,
+				"Name": "stone_med_05",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -74.6604,
+							"y": 0.0,
+							"z": 22.0632
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_med_05.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 56,
+				"Name": "stone_low_05",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -74.6604,
+							"y": 0.0,
+							"z": 11.3698
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_low_05.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 57,
+				"Name": "stone_low_00",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -31.1126,
+							"y": 0.0,
+							"z": 11.3698
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_low_00.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 58,
+				"Name": "stone_low_01",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -37.3768,
+							"y": 0.0,
+							"z": 11.3698
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_low_01.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 59,
+				"Name": "stone_low_06",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -84.986,
+							"y": 0.0,
+							"z": 11.3698
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_low_06.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 60,
+				"Name": "stone_low_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -67.8554,
+							"y": 0.0,
+							"z": 11.3698
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_low_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 61,
+				"Name": "stone_low_03",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -57.9295,
+							"y": 0.0,
+							"z": 11.3698
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_low_03.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 62,
+				"Name": "stone_low_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -48.0642,
+							"y": 0.0,
+							"z": 11.3698
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_low_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 63,
+				"Name": "temple_pilar_med",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 69.4217,
+							"y": 0.0,
+							"z": 59.002
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/temple_pilar_med.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 64,
+				"Name": "temple_pilar_high",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 69.4217,
+							"y": 0.0,
+							"z": 54.5462
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/temple_pilar_high.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 65,
+				"Name": "temple_portal_high",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -24.5095,
+							"y": 0.0632,
+							"z": 53.1157
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/temple_portal_high.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 66,
+				"Name": "Default Camera",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -162.9738,
+							"y": 80.0718,
+							"z": -68.178
+						},
+						"Rotation": {
+							"x": 0.4885,
+							"y": 0.4811,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0001,
+							"y": 1.0001,
+							"z": 1.0001
+						}
+					},
+					"gs::core::Camera": {
+						"ZNear": 0.1002,
+						"ZFar": 50000.0
+					}
+				}
+			},
+			"Node": {
+				"Uid": 67,
+				"Name": "Plane",
+				"Components": {
+					"gs::core::Transform": {},
+					"gs::core::LogicScript": {
+						"gs::core::Script": {
+							"Path": "@core/lua/plane.lua",
+							"Parameters": {
+								"Parameter": {
+									"Name": "width",
+									"Type": "int",
+									"Value": 500
+								},
+								"Parameter": {
+									"Name": "length",
+									"Type": "int",
+									"Value": 500
+								},
+								"Parameter": {
+									"Name": "subdiv_x",
+									"Type": "int",
+									"Value": 1
+								},
+								"Parameter": {
+									"Name": "subdiv_z",
+									"Type": "int",
+									"Value": 1
+								},
+								"Parameter": {
+									"Name": "material",
+									"Type": "gs::render::sMaterial",
+									"Value": "@core/materials/default.mat"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"NodeHierarchy": {
+			"Link": {
+				"Node": 2,
+				"Parent": 1
+			},
+			"Link": {
+				"Node": 3,
+				"Parent": 1
+			},
+			"Link": {
+				"Node": 23,
+				"Parent": 22
+			}
+		},
+		"Skins": {},
+		"State": {
+			"CurrentCamera": {
+				"Uid": 66
+			}
+		}
+	}
+}

@@ -1,0 +1,27 @@
+{
+	"Material": {
+		"Shader": "@core/surfaces/diffuse_map_specular_map_normal_map.isl",
+		"MaterialValues": {
+			"Value": {
+				"Name": "diffuse_map",
+				"Type": "tex2D",
+				"Value": "environment_kit_inca/diffuse_skeleton.png"
+			},
+			"Value": {
+				"Name": "normal_map",
+				"Type": "tex2D",
+				"Value": "environment_kit_inca/normal_skeleton.png"
+			},
+			"Value": {
+				"Name": "specular_map",
+				"Type": "tex2D",
+				"Value": "environment_kit_inca/spec_skeleton.png"
+			},
+			"Value": {
+				"Name": "glossiness",
+				"Type": "float",
+				"Value": "0.500000"
+			}
+		}
+	}
+}

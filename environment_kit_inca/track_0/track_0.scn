@@ -1,0 +1,1755 @@
+{
+	"Scene": {
+		"Editor": {
+			"SceneTools": {}
+		},
+		"Components": {
+			"gs::core::Environment": {
+				"TimeOfDay": 0.7084,
+				"AmbientColor": {
+					"r": 0.1543,
+					"g": 0.3441,
+					"b": 0.3588,
+					"a": 1.25
+				},
+				"AmbientIntensity": 0.5,
+				"FogColor": {
+					"r": 0.6794,
+					"g": 0.6794,
+					"b": 0.6557
+				},
+				"FogNear": 500.0,
+				"FogFar": 1500.0
+			},
+			"gs::core::LogicScript": {
+				"gs::core::Script": {
+					"Path": "@core/lua/sky_lighting.lua",
+					"Parameters": {
+						"Parameter": {
+							"Name": "time_of_day",
+							"Type": "int",
+							"Value": 17
+						},
+						"Parameter": {
+							"Name": "longitude",
+							"Type": "float",
+							"Value": 6.1
+						},
+						"Parameter": {
+							"Name": "attenuation",
+							"Type": "float",
+							"Value": 0.8501
+						}
+					}
+				}
+			}
+		},
+		"Nodes": {
+			"Node": {
+				"Uid": 1,
+				"Name": "track_0",
+				"Components": {
+					"gs::core::Transform": {},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/track_0/track_0.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 2,
+				"Name": "Default Camera",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -280.6693,
+							"y": 52.6839,
+							"z": -158.4639
+						},
+						"Rotation": {
+							"x": 0.1636,
+							"y": 0.7498,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0001,
+							"y": 1.0001,
+							"z": 1.0001
+						}
+					},
+					"gs::core::Camera": {
+						"ZNear": 0.1001,
+						"ZFar": 50000.0
+					}
+				}
+			},
+			"Node": {
+				"Uid": 5,
+				"Name": "pyramid_top",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 0.6126,
+							"y": 18.8522,
+							"z": 0.6031
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 0.0001,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/pyramid_top.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 6,
+				"Name": "pyramid_base",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -210.8433,
+							"y": -3.4059,
+							"z": 19.4473
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": -2.885,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.5,
+							"y": 1.5,
+							"z": 1.5
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/pyramid_base.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 7,
+				"Name": "stone_low_06",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -176.5767,
+							"y": 1.3078,
+							"z": 94.9521
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_low_06.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 8,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -188.8548,
+							"y": 1.9133,
+							"z": 95.7606
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 3.139,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 9,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -269.9046,
+							"y": 3.4147,
+							"z": 19.6421
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 3.139,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 10,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -323.1949,
+							"y": 1.0905,
+							"z": -6.9486
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 2.4008,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 11,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -237.6065,
+							"y": 5.8619,
+							"z": -42.0738
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 3.139,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 12,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -111.0939,
+							"y": -0.0824,
+							"z": 75.6366
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 3.139,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 13,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -82.9326,
+							"y": 1.9133,
+							"z": 51.6889
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 3.139,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 14,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -302.8835,
+							"y": 5.583,
+							"z": -80.2482
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 2.8432,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 15,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -379.5189,
+							"y": 5.2859,
+							"z": -99.0468
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 1.6415,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 16,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -410.4194,
+							"y": 3.6429,
+							"z": -48.9652
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 2.3248,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 17,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -407.9592,
+							"y": 5.5615,
+							"z": -24.317
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": -2.3771,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 18,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -386.0916,
+							"y": 6.9335,
+							"z": 7.7097
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 2.4898,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 19,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -360.3144,
+							"y": 6.021,
+							"z": 44.3958
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 3.139,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 20,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -347.3856,
+							"y": 7.139,
+							"z": -106.6834
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 3.139,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 21,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -140.2842,
+							"y": 1.9133,
+							"z": -71.7259
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": -2.3273,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 22,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -16.5553,
+							"y": 3.3542,
+							"z": -85.8372
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 1.5918,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 23,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 92.054,
+							"y": 2.9094,
+							"z": -71.428
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 2.3772,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 24,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -18.2878,
+							"y": 13.8539,
+							"z": 25.7177
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 0.7279,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 25,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 13.4449,
+							"y": 21.7671,
+							"z": 24.8118
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": -1.3849,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 26,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 32.2816,
+							"y": 25.3753,
+							"z": 23.8658
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 3.139,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 27,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 73.299,
+							"y": 32.9133,
+							"z": 25.9574
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 2.5447,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 28,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 99.534,
+							"y": 35.7818,
+							"z": 29.5512
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 3.139,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 29,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 204.4984,
+							"y": 39.7965,
+							"z": 134.2961
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 3.139,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 30,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 252.1715,
+							"y": 35.9096,
+							"z": 152.9455
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 1.8379,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 31,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 301.962,
+							"y": 36.1311,
+							"z": 116.0718
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 1.5839,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 32,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 255.1951,
+							"y": 4.1257,
+							"z": -39.2999
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 2.173,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 33,
+				"Name": "tree_long_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 355.9722,
+							"y": 2.3976,
+							"z": -73.7621
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 3.139,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 34,
+				"Name": "tree_long_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -137.6834,
+							"y": 2.0114,
+							"z": 90.9537
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 35,
+				"Name": "tree_long_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -239.1431,
+							"y": 2.0114,
+							"z": 62.2519
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 36,
+				"Name": "tree_long_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -303.6303,
+							"y": 2.0114,
+							"z": 5.0406
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 37,
+				"Name": "tree_long_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -217.0388,
+							"y": 2.0114,
+							"z": -44.5817
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 38,
+				"Name": "tree_long_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -118.416,
+							"y": 2.0114,
+							"z": -54.6778
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 39,
+				"Name": "tree_long_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -220.727,
+							"y": 2.0114,
+							"z": -107.4447
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 40,
+				"Name": "tree_long_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -336.1603,
+							"y": 6.2104,
+							"z": 66.9948
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 41,
+				"Name": "tree_long_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -401.5201,
+							"y": 2.0114,
+							"z": -104.1156
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 42,
+				"Name": "tree_long_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -279.9515,
+							"y": 2.0114,
+							"z": -81.3093
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 43,
+				"Name": "tree_long_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 0.1282,
+							"y": 2.0114,
+							"z": -95.0414
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 44,
+				"Name": "tree_long_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -45.4058,
+							"y": -1.5988,
+							"z": -63.3456
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 45,
+				"Name": "tree_long_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 68.427,
+							"y": 2.0114,
+							"z": -81.8567
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 46,
+				"Name": "tree_long_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 113.4974,
+							"y": 2.0114,
+							"z": -61.8105
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 47,
+				"Name": "tree_long_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 216.2056,
+							"y": 2.0114,
+							"z": -45.3908
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 48,
+				"Name": "tree_long_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 303.9914,
+							"y": 2.0114,
+							"z": -89.3081
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 49,
+				"Name": "tree_long_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 362.9824,
+							"y": 2.0114,
+							"z": -35.9317
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 50,
+				"Name": "tree_long_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 281.3711,
+							"y": 37.7679,
+							"z": 137.2702
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 51,
+				"Name": "face_cliff",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 141.8926,
+							"y": 1.4601,
+							"z": 0.9061
+						},
+						"Scale": {
+							"x": 3.0,
+							"y": 3.0,
+							"z": 3.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/face_cliff.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 52,
+				"Name": "tree_palm_03",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -165.3719,
+							"y": 2.0685,
+							"z": 91.5291
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": -1.3744,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_palm_03.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 53,
+				"Name": "tree_palm_05",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -190.6802,
+							"y": 6.3701,
+							"z": 154.7269
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_palm_05.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 54,
+				"Name": "tree_palm_05",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -325.5661,
+							"y": 6.3701,
+							"z": 77.2128
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": -1.1309,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_palm_05.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 55,
+				"Name": "temple_pilar_high",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -92.9044,
+							"y": -5.4342,
+							"z": -53.3101
+						},
+						"Scale": {
+							"x": 2.0,
+							"y": 2.0,
+							"z": 2.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/temple_pilar_high.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 56,
+				"Name": "temple_pilar_high",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -92.9044,
+							"y": -5.4342,
+							"z": -0.2596
+						},
+						"Scale": {
+							"x": 2.0,
+							"y": 2.0,
+							"z": 2.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/temple_pilar_high.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 57,
+				"Name": "tropical_bush_26",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -87.9332,
+							"y": -6.3964,
+							"z": -50.0881
+						},
+						"Scale": {
+							"x": 1.9939,
+							"y": 1.9939,
+							"z": 1.9939
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tropical_bush_26.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 58,
+				"Name": "tropical_bush_06",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -99.0595,
+							"y": -5.7113,
+							"z": -50.6013
+						},
+						"Scale": {
+							"x": 3.1339,
+							"y": 3.1339,
+							"z": 3.2356
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tropical_bush_06.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 59,
+				"Name": "tropical_bush_18",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -97.9969,
+							"y": -4.0012,
+							"z": -56.8727
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 0.0001,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.2346,
+							"y": 1.2346,
+							"z": 1.2346
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tropical_bush_18.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 60,
+				"Name": "reed04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -96.5505,
+							"y": -5.8215,
+							"z": -48.1039
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/reed04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 61,
+				"Name": "tree_palm_00",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -262.4798,
+							"y": 3.5337,
+							"z": 33.6053
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 0.7514,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_palm_00.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 62,
+				"Name": "tree_long_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -276.1025,
+							"y": 3.907,
+							"z": 20.3115
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 63,
+				"Name": "stone_low_05",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -177.2708,
+							"y": -2.026,
+							"z": 38.6471
+						},
+						"Scale": {
+							"x": 1.25,
+							"y": 1.25,
+							"z": 1.25
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_low_05.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 64,
+				"Name": "stone_low_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -229.9643,
+							"y": 3.4969,
+							"z": 51.3201
+						},
+						"Scale": {
+							"x": 1.25,
+							"y": 1.25,
+							"z": 1.25
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_low_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 65,
+				"Name": "stone_low_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -243.6997,
+							"y": 1.8684,
+							"z": -0.3402
+						},
+						"Scale": {
+							"x": 1.25,
+							"y": 1.25,
+							"z": 1.25
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_low_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 66,
+				"Name": "stone_low_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -191.944,
+							"y": 1.9949,
+							"z": -14.5028
+						},
+						"Scale": {
+							"x": 1.25,
+							"y": 1.25,
+							"z": 1.25
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_low_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 67,
+				"Name": "stone_low_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -96.9187,
+							"y": -2.8068,
+							"z": 6.1935
+						},
+						"Scale": {
+							"x": 1.25,
+							"y": 1.25,
+							"z": 1.25
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/stone_low_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 68,
+				"Name": "tree_palm_05",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -57.7405,
+							"y": -0.7803,
+							"z": -66.7336
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_palm_05.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 69,
+				"Name": "tree_palm_03",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -47.8245,
+							"y": -0.239,
+							"z": -84.447
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_palm_03.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 70,
+				"Name": "tree_naked_med_00",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -30.1298,
+							"y": 0.695,
+							"z": -82.9007
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 0.3142,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.5,
+							"y": 1.5,
+							"z": 1.5
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_naked_med_00.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 71,
+				"Name": "tree_naked_med_00",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 10.3272,
+							"y": 2.4576,
+							"z": -27.8784
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 0.3142,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.5,
+							"y": 1.5,
+							"z": 1.5
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_naked_med_00.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 72,
+				"Name": "tree_long_00",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -2.6538,
+							"y": 0.9295,
+							"z": -19.9736
+						},
+						"Scale": {
+							"x": 1.5,
+							"y": 1.5,
+							"z": 1.5
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit_inca/tree_long_00.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 73,
+				"Name": "Plane",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -1000.0,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::LogicScript": {
+						"gs::core::Script": {
+							"Path": "@core/lua/plane.lua",
+							"Parameters": {
+								"Parameter": {
+									"Name": "width",
+									"Type": "int",
+									"Value": 1000
+								},
+								"Parameter": {
+									"Name": "length",
+									"Type": "int",
+									"Value": 1000
+								},
+								"Parameter": {
+									"Name": "subdiv_x",
+									"Type": "int",
+									"Value": 1
+								},
+								"Parameter": {
+									"Name": "subdiv_z",
+									"Type": "int",
+									"Value": 1
+								},
+								"Parameter": {
+									"Name": "material",
+									"Type": "gs::render::sMaterial",
+									"Value": "@core/materials/default.mat"
+								}
+							}
+						}
+					}
+				}
+			},
+			"Node": {
+				"Uid": 74,
+				"Name": "Plane",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 1000.0,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::LogicScript": {
+						"gs::core::Script": {
+							"Path": "@core/lua/plane.lua",
+							"Parameters": {
+								"Parameter": {
+									"Name": "width",
+									"Type": "int",
+									"Value": 1000
+								},
+								"Parameter": {
+									"Name": "length",
+									"Type": "int",
+									"Value": 1000
+								},
+								"Parameter": {
+									"Name": "subdiv_x",
+									"Type": "int",
+									"Value": 1
+								},
+								"Parameter": {
+									"Name": "subdiv_z",
+									"Type": "int",
+									"Value": 1
+								},
+								"Parameter": {
+									"Name": "material",
+									"Type": "gs::render::sMaterial",
+									"Value": "@core/materials/default.mat"
+								}
+							}
+						}
+					}
+				}
+			},
+			"Node": {
+				"Uid": 75,
+				"Name": "Plane",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 0.0,
+							"y": 0.0,
+							"z": 1000.0
+						}
+					},
+					"gs::core::LogicScript": {
+						"gs::core::Script": {
+							"Path": "@core/lua/plane.lua",
+							"Parameters": {
+								"Parameter": {
+									"Name": "width",
+									"Type": "int",
+									"Value": 3000
+								},
+								"Parameter": {
+									"Name": "length",
+									"Type": "int",
+									"Value": 1000
+								},
+								"Parameter": {
+									"Name": "subdiv_x",
+									"Type": "int",
+									"Value": 1
+								},
+								"Parameter": {
+									"Name": "subdiv_z",
+									"Type": "int",
+									"Value": 1
+								},
+								"Parameter": {
+									"Name": "material",
+									"Type": "gs::render::sMaterial",
+									"Value": "@core/materials/default.mat"
+								}
+							}
+						}
+					}
+				}
+			},
+			"Node": {
+				"Uid": 76,
+				"Name": "Plane",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 0.0,
+							"y": 0.0,
+							"z": -1000.0
+						}
+					},
+					"gs::core::LogicScript": {
+						"gs::core::Script": {
+							"Path": "@core/lua/plane.lua",
+							"Parameters": {
+								"Parameter": {
+									"Name": "width",
+									"Type": "int",
+									"Value": 3000
+								},
+								"Parameter": {
+									"Name": "length",
+									"Type": "int",
+									"Value": 1000
+								},
+								"Parameter": {
+									"Name": "subdiv_x",
+									"Type": "int",
+									"Value": 1
+								},
+								"Parameter": {
+									"Name": "subdiv_z",
+									"Type": "int",
+									"Value": 1
+								},
+								"Parameter": {
+									"Name": "material",
+									"Type": "gs::render::sMaterial",
+									"Value": "@core/materials/default.mat"
+								}
+							}
+						}
+					}
+				}
+			},
+			"Node": {
+				"Uid": 79,
+				"Name": "New Camera",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -17.104,
+							"y": 38.3159,
+							"z": -89.819
+						},
+						"Rotation": {
+							"x": 0.293,
+							"y": -0.8158,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0001,
+							"y": 1.0001,
+							"z": 1.0001
+						}
+					},
+					"gs::core::Camera": {
+						"ZoomFactor": 1.6001,
+						"ZNear": 0.1,
+						"ZFar": 50000.0
+					}
+				}
+			}
+		},
+		"NodeHierarchy": {
+			"Link": {
+				"Node": 5,
+				"Parent": 6
+			}
+		},
+		"Skins": {},
+		"State": {
+			"CurrentCamera": {
+				"Uid": 79
+			}
+		}
+	}
+}
