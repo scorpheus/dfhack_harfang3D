@@ -210,15 +210,17 @@ def GetBlockMemory(pos):
 		block = np.frombuffer(shm_block[(1+3*4):(1+3*4+16*16*2)], dtype=np.uint16)
 		block_flow_size = np.frombuffer(shm_block[(1+3*4+16*16*2):(1+3*4+16*16*2+16*16)], dtype=np.uint8)
 		block_liquid_type = np.frombuffer(shm_block[(1+3*4+16*16*2+16*16):(1+3*4+16*16*2+16*16+16*16)], dtype=np.uint8)
-		block_pos = np.frombuffer(shm_block[1:(1+3*4)], dtype=np.uint32)
+		block_pos = np.frombuffer(shm_block[1:(1+3*4)], dtype=np.int32)
 		shm_block[0] = 0
+		shm_block.flush()
 
 	# if no pos and no block
 	# send another pos
+	shm_pos.seek(0)
 	if pos is not None and shm_pos[0] == 0 and shm_block[0] == 0:
-		shm_pos.seek(0)
-		packed_data = pack('=BIII', 3, int(pos.x), int(pos.y), int(pos.z))
+		packed_data = pack('=Biii', 3, int(pos.x), int(pos.y), int(pos.z))
 		shm_pos.write(packed_data)
+		shm_pos.flush()
 
 	return block_pos, block, block_flow_size, block_liquid_type
 

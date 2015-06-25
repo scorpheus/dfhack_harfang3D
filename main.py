@@ -145,9 +145,8 @@ try:
 		if len(update_cache_block) > 0:
 			ordered_update_cache_block = OrderedDict(sorted(update_cache_block.items(), key=lambda t: gs.Vector3.Dist2(gs.Vector3(t[1].x, t[1].y, t[1].z), pos)))
 
-			iter_update_block = iter(ordered_update_cache_block.items())
 			name_block, block_pos = None, None
-			for name_block, block_pos in iter_update_block:
+			for name_block, block_pos in iter(ordered_update_cache_block.items()):
 				if name_block != update_block_name_in_progress:
 					break
 
@@ -280,7 +279,7 @@ try:
 					if name_block in cache_geo_block:
 						pos_block_x, pos_block_y, pos_block_z = self.pos.x + x - (layer_size - 1) / 2, self.pos.y, self.pos.z + z - (layer_size - 1) / 2
 						draw_geo_block(cache_geo_block[name_block], pos_block_x, pos_block_y, pos_block_z)
-						draw_props_in_block(name_block)
+						# draw_props_in_block(name_block)
 
 
 	layers = []
