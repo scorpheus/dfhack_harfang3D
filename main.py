@@ -17,14 +17,13 @@ import time
 from enum import Enum
 
 
-class building_type(Enum):
+class building_type():
 	NONE = -1
 	Chair, Bed, Table, Coffin, FarmPlot, Furnace, TradeDepot, Shop, Door, Floodgate, Box, Weaponrack, \
 	Armorstand, Workshop, Cabinet, Statue, WindowGlass, WindowGem, Well, Bridge, RoadDirt, RoadPaved, SiegeEngine, \
 	Trap, AnimalTrap, Support, ArcheryTarget, Chain, Cage, Stockpile, Civzone, Weapon, Wagon, ScrewPump, \
 	Construction, Hatch, GrateWall, GrateFloor, BarsVertical, BarsFloor, GearAssembly, AxleHorizontal, AxleVertical, \
 	WaterWheel, Windmill, TractionBench, Slab, Nest, NestBox, Hive, Rollers = range(51)
-
 
 scale_unit_y = 1.0
 
@@ -77,10 +76,31 @@ try:
 		return hash_from_pos(layer_pos.x + x - (layer_size - 1) / 2, layer_pos.y, layer_pos.z + z - (layer_size - 1) / 2)
 
 
+	geos = [render.load_geometry("environment_kit_inca/stone_high_03.geo"), render.load_geometry("environment_kit_inca/stone_high_01.geo")]
+	building_geos = {building_type.Chair: None, building_type.Bed: None, building_type.Table: None,
+					 building_type.Coffin: None, building_type.FarmPlot: None, building_type.Furnace: None,
+					 building_type.TradeDepot: None, building_type.Shop: None, building_type.Door: render.load_geometry("environment_kit/geo-door.geo"),
+					 building_type.Floodgate: None, building_type.Box: None, building_type.Weaponrack: None,
+					 building_type.Armorstand: None, building_type.Workshop: None, building_type.Cabinet: None,
+					 building_type.Statue: None, building_type.WindowGlass: None, building_type.WindowGem: None,
+					 building_type.Well: None, building_type.Bridge: None, building_type.RoadDirt: None,
+					 building_type.RoadPaved: None, building_type.SiegeEngine: None, building_type.Trap: None,
+					 building_type.AnimalTrap: None, building_type.Support: None, building_type.ArcheryTarget: None,
+					 building_type.Chain: None, building_type.Cage: None, building_type.Stockpile: None, building_type.Civzone: None,
+					 building_type.Weapon: None, building_type.Wagon: None, building_type.ScrewPump: None, building_type.Construction: render.load_geometry("environment_kit/geo-egypt_wall.geo"),
+					 building_type.Hatch: None, building_type.GrateWall: None, building_type.GrateFloor: None, building_type.BarsVertical: None,
+					 building_type.BarsFloor: None, building_type.GearAssembly: None, building_type.AxleHorizontal: None, building_type.AxleVertical: None,
+					 building_type.WaterWheel: None, building_type.Windmill: None, building_type.TractionBench: None,
+					 building_type.Slab: None, building_type.Nest: None, building_type.NestBox: None,
+					 building_type.Hive: None, building_type.Rollers: None}
+
+
+
 	block_fetched = 0
 	layer_size = 5
 	cache_block = {}
 	cache_block_props = {}
+	cache_block_building = {}
 	cache_block_mat = {}
 	cache_geo_block = {}
 	update_cache_block = {}
@@ -91,13 +111,16 @@ try:
 	old_pos = gs.Vector3()
 
 	mats_path = ["empty.mat", "floor.mat", "magma.mat", "rock.mat", "water.mat", "tree.mat"]
-	geos = [render.load_geometry("environment_kit/geo-boulder.geo")]
+	# precompile material
+	for mat in mats_path:
+		render.create_geometry(geometry.create_cube(0.1, 0.6, 0.1, mat))
 
 	def parse_block(block, block_flow_size, block_liquid_type, block_building, block_pos):
 
 		array_has_geo = np.full((17, 17), 0, np.int8)
 		array_tile_mat_id = np.full((17, 17), 0, np.int8)
 		array_props = []
+		array_building = []
 
 		x, z = 15, 0
 		for tile, flow_size, liquid_type, building in zip(block, block_flow_size, block_liquid_type, block_building):
@@ -115,10 +138,14 @@ try:
 				elif type.shape == remote_fortress.FLOOR:
 					block_mat = 1
 					array_has_geo[x, z] = 0
-				elif type.shape == remote_fortress.BOULDER or type.shape == remote_fortress.PEBBLES:
+				elif type.shape == remote_fortress.BOULDER:
 					block_mat = 3
 					array_has_geo[x, z] = 0
 					array_props.append((gs.Vector3(block_pos.x*16 + x, block_pos.y, block_pos.z*16 + z), 0))
+				elif type.shape == remote_fortress.PEBBLES:
+					block_mat = 3
+					array_has_geo[x, z] = 0
+					array_props.append((gs.Vector3(block_pos.x*16 + x, block_pos.y, block_pos.z*16 + z), 1))
 				elif type.shape == remote_fortress.WALL or type.shape == remote_fortress.FORTIFICATION:
 					block_mat = 3
 					array_has_geo[x, z] = 1
@@ -137,8 +164,7 @@ try:
 
 				# add props
 				if building != -1:
-					if building == building_type.Door:
-						array_props.append((gs.Vector3(block_pos.x*16 + x, block_pos.y, block_pos.z*16 + z), 1))
+					array_building.append((gs.Vector3(block_pos.x*16 + x, block_pos.y, block_pos.z*16 + z), building))
 
 			x -= 1
 			if x < 0:
@@ -151,7 +177,7 @@ try:
 		array_tile_mat_id[:, -1] = array_tile_mat_id[:, -2]
 		array_tile_mat_id[-1, :] = array_tile_mat_id[-2, :]
 
-		return array_has_geo, array_tile_mat_id, array_props
+		return array_has_geo, array_tile_mat_id, array_props, array_building
 
 	def check_block_to_update():
 		global block_fetched
@@ -191,13 +217,14 @@ try:
 				new_pos = gs.Vector3(float(map_info.block_size_x - array_pos[0]), float(array_pos[2]), float(array_pos[1]))
 
 				# parse the return array
-				current_block, current_block_mat, current_block_props = parse_block(block, block_flow_size, block_liquid_type, block_building, new_pos)
+				current_block, current_block_mat, current_block_props, current_block_building = parse_block(block, block_flow_size, block_liquid_type, block_building, new_pos)
 
 				# register the block in the cache
 				name_block = hash_from_pos(new_pos.x, new_pos.y, new_pos.z)
 				cache_block[name_block] = current_block
 				cache_block_mat[name_block] = current_block_mat
 				cache_block_props[name_block] = current_block_props
+				cache_block_building[name_block] = current_block_building
 
 				# update neighbour array
 				north_name = hash_from_pos(new_pos.x, new_pos.y, new_pos.z-1)
@@ -219,7 +246,8 @@ try:
 
 				# this block array is setup, ask the update the geo block
 				update_cache_geo_block[name_block] = gs.Vector3(new_pos)
-				update_cache_block.pop(name_block)
+				if name_block in update_cache_block: # this is a hack there is problem , sometime the block is updated twice
+					update_cache_block.pop(name_block)
 				block_fetched += 1
 
 
@@ -239,9 +267,10 @@ try:
 		def __init__(self, current_layer_block_name, upper_layer_block_name):
 			threading.Thread.__init__(self)
 			self.current_layer_block_name, self.upper_layer_block_name = current_layer_block_name, upper_layer_block_name
+			self.geo = None
 
 		def run(self):
-			cache_geo_block[self.current_layer_block_name] = create_iso_geo_from_block(self.current_layer_block_name, self.upper_layer_block_name, cache_block[self.current_layer_block_name], cache_block[self.upper_layer_block_name])
+			self.geo = create_iso_geo_from_block(self.current_layer_block_name, self.upper_layer_block_name, cache_block[self.current_layer_block_name], cache_block[self.upper_layer_block_name])
 
 	class UpdateUnitListFromDF(threading.Thread):
 		def __init__(self):
@@ -253,8 +282,10 @@ try:
 
 	block_drawn = 0
 	props_drawn = 0
+	thread_block_update = threading.Thread(target=check_block_to_update)
+	thread_block_update.start()
 	unit_list_thread = UpdateUnitListFromDF()
-	unit_list_thread.run()
+	unit_list_thread.start()
 
 	def draw_geo_block(geo_block, x, y, z):
 		x *= 16
@@ -267,9 +298,17 @@ try:
 
 	def draw_props_in_block(name_block):
 		for prop in cache_block_props[name_block]:
-			scn.renderable_system.DrawGeometry(geos[prop[1]], gs.Matrix4.TransformationMatrix(gs.Vector3(prop[0].x+1, prop[0].y*scale_unit_y, prop[0].z), gs.Vector3(name_block%5, name_block%4, name_block%3)))
+			scn.renderable_system.DrawGeometry(geos[prop[1]], gs.Matrix4.TransformationMatrix(gs.Vector3(prop[0].x+1, prop[0].y*scale_unit_y, prop[0].z), gs.Vector3(0, (name_block%628)*0.01, 0), gs.Vector3(0.25, 0.25, 0.25)))
 			global props_drawn
 			props_drawn += 1
+
+	def draw_building_in_block(name_block):
+		for building in cache_block_building[name_block]:
+			if building_geos[building[1]] is not None:
+				scn.renderable_system.DrawGeometry(building_geos[building[1]], gs.Matrix4.TransformationMatrix(gs.Vector3(building[0].x+1, building[0].y*scale_unit_y, building[0].z), gs.Vector3(0, 0, 0), gs.Vector3(0.25, 0.25, 0.25)))
+				global props_drawn
+				props_drawn += 1
+
 
 	class Layer:
 		def __init__(self):
@@ -308,7 +347,8 @@ try:
 					name_block = hash_from_layer(self.pos, x, z)
 					if name_block in cache_geo_block:
 						draw_geo_block(cache_geo_block[name_block], block_pos.x, block_pos.y, block_pos.z)
-						# draw_props_in_block(name_block)
+						draw_props_in_block(name_block)
+						draw_building_in_block(name_block)
 
 					block_pos.x += 1
 				block_pos.x -= layer_size
@@ -316,15 +356,17 @@ try:
 
 
 	layers = []
-	for i in range(20):
+	for i in range(40):
 		layers.append(Layer())
 
 	def update_geo_block():
 		global update_cache_geo_block
+		global cache_geo_block
 		count = 0
 		for update_thread in current_update_create_geo_threads:
 			if update_thread is not None:
 				if not update_thread.is_alive():
+					cache_geo_block[update_thread.current_layer_block_name] = update_thread.geo
 					update_cache_geo_block.pop(update_thread.current_layer_block_name)
 					current_update_create_geo_threads[count] = None
 
@@ -351,14 +393,14 @@ try:
 
 						if check_block_can_generate_geo(block_pos.x, block_pos.y, block_pos.z) and check_block_can_generate_geo(block_pos.x, block_pos.y + 1, block_pos.z):
 							update_thread = UpdateCreateGeo(current_layer_block_name, upper_layer_block_name)
-							update_thread.run()
+							update_thread.start()
 							current_update_create_geo_threads[count] = update_thread
 							break
 
 			count += 1
 
 
-	#main loop
+	# main loop
 	while not input.key_press(gs.InputDevice.KeyEscape):
 		render.clear()
 
@@ -392,7 +434,9 @@ try:
 			layer.draw()
 
 		first_time = time.process_time()
-		check_block_to_update()
+		if not thread_block_update.is_alive():
+			thread_block_update = threading.Thread(target=check_block_to_update)
+			thread_block_update.start()
 		get_df_time = time.process_time() - first_time
 
 		first_time = time.process_time()
@@ -400,10 +444,11 @@ try:
 		get_iso_time = time.process_time() - first_time
 
 		# update unit draw
-		# if not unit_list_thread.is_alive():
-		# 	for unit in unit_list_thread.unit_list.value:
-		# 		scn.renderable_system.DrawGeometry(dwarf_geo, gs.Matrix4.TranslationMatrix(gs.Vector3(map_info.block_size_x*16 - unit.pos_x+16, (unit.pos_z+0.3)*scale_unit_y, unit.pos_y)))
-		# 	unit_list_thread.run()
+		if not unit_list_thread.is_alive():
+			for unit in unit_list_thread.unit_list.value:
+				scn.renderable_system.DrawGeometry(dwarf_geo, gs.Matrix4.TranslationMatrix(gs.Vector3(map_info.block_size_x*16 - unit.pos_x+16, (unit.pos_z+0.3)*scale_unit_y, unit.pos_y)))
+			unit_list_thread = UpdateUnitListFromDF()
+			unit_list_thread.start()
 
 		render.text2d(0, 45, "ISO: %2.5f - DF: %2.5f - BLOCK FETCHED: %d - BLOCK DRAWN: %d - PROPS DRAWN: %d - FPS: %.2fHZ" % (get_iso_time, get_df_time, block_fetched, block_drawn, props_drawn, 1 / dt_sec), color=gs.Color.Red)
 		render.text2d(0, 25, "FPS.X = %f, FPS.Z = %f" % (fps.pos.x, fps.pos.z), color=gs.Color.Red)

@@ -221,7 +221,7 @@ def GetBlockMemory(pos):
 		block_liquid_type = np.frombuffer(shm_block[start_id:end_id], dtype=np.uint8)
 		start_id = end_id
 		end_id += 16*16
-		block_building = np.frombuffer(shm_block[start_id:end_id], dtype=np.uint8)
+		block_building = np.frombuffer(shm_block[start_id:end_id], dtype=np.int8)
 		block_pos = np.frombuffer(shm_block[1:(1+3*4)], dtype=np.int32)
 		shm_block[0] = 0
 		shm_block.flush()
