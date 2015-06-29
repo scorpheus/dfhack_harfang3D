@@ -108,7 +108,7 @@ try:
 	update_cache_block = {}
 	update_block_name_in_progress = ""
 	update_cache_geo_block = {}
-	current_update_create_geo_threads = [None] * 1
+	current_update_create_geo_threads = [None] * 4
 
 	old_pos = gs.Vector3()
 
@@ -364,7 +364,12 @@ try:
 	def update_geo_block():
 		global update_cache_geo_block
 		global cache_geo_block
+
+		if len(update_cache_geo_block) <= 0:
+			return
+
 		count = 0
+
 		for update_thread in current_update_create_geo_threads:
 			if update_thread is not None:
 				if not update_thread.is_alive():
@@ -375,7 +380,19 @@ try:
 			elif len(update_cache_geo_block) > count:
 				ordered_update_cache_geo = OrderedDict(sorted(update_cache_geo_block.items(), key=lambda t: gs.Vector3.Dist2(gs.Vector3(t[1].x, t[1].y, t[1].z), pos)))
 
-				for name_block, block_pos in ordered_update_cache_geo.items():
+				# get a not already updating Node
+				name_block, block_pos = None, None
+				is_already_used = False
+				for name_block, block_pos in iter(ordered_update_cache_geo.items()):
+					# check if not update by another thread
+					is_already_used = False
+					for thread in current_update_create_geo_threads:
+						if thread is not None and thread.current_layer_block_name == name_block:
+							is_already_used = True
+					if not is_already_used:
+						break
+
+				if not is_already_used:
 					current_layer_block_name = hash_from_pos(block_pos.x, block_pos.y, block_pos.z)
 					upper_layer_block_name = hash_from_pos(block_pos.x, block_pos.y + 1, block_pos.z)
 
@@ -397,7 +414,6 @@ try:
 							update_thread = UpdateCreateGeo(current_layer_block_name, upper_layer_block_name)
 							update_thread.start()
 							current_update_create_geo_threads[count] = update_thread
-							break
 
 			count += 1
 
