@@ -28,6 +28,8 @@ class building_type():
 scale_unit_y = 1.0
 
 
+gs.plus.create_workers()
+
 def from_world_to_dfworld(new_pos):
 	return gs.Vector3(new_pos.x, new_pos.z, new_pos.y)
 
@@ -112,8 +114,8 @@ try:
 
 	mats_path = ["empty.mat", "floor.mat", "magma.mat", "rock.mat", "water.mat", "tree.mat"]
 	# precompile material
-	for mat in mats_path:
-		render.create_geometry(geometry.create_cube(0.1, 0.6, 0.1, mat))
+	# for mat in mats_path:
+	# 	render.create_geometry(geometry.create_cube(0.1, 0.6, 0.1, mat))
 
 	def parse_block(block, block_flow_size, block_liquid_type, block_building, block_pos):
 
@@ -433,11 +435,10 @@ try:
 			layer.fill()
 			layer.draw()
 
-		first_time = time.process_time()
+		# get the block info from df
 		if not thread_block_update.is_alive():
 			thread_block_update = threading.Thread(target=check_block_to_update)
 			thread_block_update.start()
-		get_df_time = time.process_time() - first_time
 
 		first_time = time.process_time()
 		update_geo_block()
@@ -450,7 +451,7 @@ try:
 			unit_list_thread = UpdateUnitListFromDF()
 			unit_list_thread.start()
 
-		render.text2d(0, 45, "ISO: %2.5f - DF: %2.5f - BLOCK FETCHED: %d - BLOCK DRAWN: %d - PROPS DRAWN: %d - FPS: %.2fHZ" % (get_iso_time, get_df_time, block_fetched, block_drawn, props_drawn, 1 / dt_sec), color=gs.Color.Red)
+		render.text2d(0, 45, "ISO: %2.5f - BLOCK FETCHED: %d - BLOCK DRAWN: %d - PROPS DRAWN: %d - FPS: %.2fHZ" % (get_iso_time, block_fetched, block_drawn, props_drawn, 1 / dt_sec), color=gs.Color.Red)
 		render.text2d(0, 25, "FPS.X = %f, FPS.Z = %f" % (fps.pos.x, fps.pos.z), color=gs.Color.Red)
 		render.text2d(0, 5, "POS.X = %f, POS.Y = %f, POS.Z = %f" % (pos.x, pos.y, pos.z), color=gs.Color.Red)
 
