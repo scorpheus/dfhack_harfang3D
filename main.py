@@ -426,7 +426,6 @@ try:
 
 	def update_geo_block():
 		global update_cache_geo_block
-		global cache_geo_block
 
 		if len(update_cache_geo_block) <= 0:
 			return
@@ -438,34 +437,27 @@ try:
 
 		# get a not already updating Node
 		for name_block, block_pos in iter(ordered_update_cache_geo.items()):
-			# check if not update by another thread
-			is_already_used = False
-			for thread in current_update_create_geo_threads:
-				if thread is not None and thread.current_layer_block_name == name_block:
-					is_already_used = True
+			current_layer_block_name = hash_from_pos(block_pos.x, block_pos.y, block_pos.z)
+			upper_layer_block_name = hash_from_pos(block_pos.x, block_pos.y + 1, block_pos.z)
 
-			if not is_already_used:
-				current_layer_block_name = hash_from_pos(block_pos.x, block_pos.y, block_pos.z)
-				upper_layer_block_name = hash_from_pos(block_pos.x, block_pos.y + 1, block_pos.z)
+			if current_layer_block_name in cache_block and upper_layer_block_name in cache_block:
+				def check_block_can_generate_geo(x, y, z):
+					# can update the geo block because it has all the neighbour
+					counter_update = 0
+					if hash_from_pos(x, y, z-1) in cache_block:
+						counter_update += 1
+					if hash_from_pos(x, y, z+1) in cache_block:
+						counter_update += 1
+					if hash_from_pos(x - 1, y, z) in cache_block:
+						counter_update += 1
+					if hash_from_pos(x + 1, y, z) in cache_block:
+						counter_update += 1
+					return counter_update == 4
 
-				if current_layer_block_name in cache_block and upper_layer_block_name in cache_block:
-					def check_block_can_generate_geo(x, y, z):
-						# can update the geo block because it has all the neighbour
-						counter_update = 0
-						if hash_from_pos(x, y, z-1) in cache_block:
-							counter_update += 1
-						if hash_from_pos(x, y, z+1) in cache_block:
-							counter_update += 1
-						if hash_from_pos(x - 1, y, z) in cache_block:
-							counter_update += 1
-						if hash_from_pos(x + 1, y, z) in cache_block:
-							counter_update += 1
-						return counter_update == 4
-
-					if check_block_can_generate_geo(block_pos.x, block_pos.y, block_pos.z) and check_block_can_generate_geo(block_pos.x, block_pos.y + 1, block_pos.z):
-						cache_geo_block[current_layer_block_name] = create_iso_geo_from_block(current_layer_block_name, upper_layer_block_name, cache_block[current_layer_block_name], cache_block[upper_layer_block_name])
-						update_cache_geo_block.pop(current_layer_block_name)
-						break
+				if check_block_can_generate_geo(block_pos.x, block_pos.y, block_pos.z) and check_block_can_generate_geo(block_pos.x, block_pos.y + 1, block_pos.z):
+					cache_geo_block[current_layer_block_name] = create_iso_geo_from_block(current_layer_block_name, upper_layer_block_name, cache_block[current_layer_block_name], cache_block[upper_layer_block_name])
+					update_cache_geo_block.pop(current_layer_block_name)
+					break
 
 	def on_frame_complete():
 		state = render.get_render_system().GetViewState()
@@ -510,13 +502,10 @@ try:
 
 		# get the block info from df
 		check_block_to_update()
-		# if not thread_block_update.is_alive():
-		# 	thread_block_update = threading.Thread(target=check_block_to_update)
-		# 	thread_block_update.start()
 
-		# first_time = time.process_time()
-		# update_geo_block()
-		# get_iso_time = time.process_time() - first_time
+		if not thread_block_update.is_alive():
+			thread_block_update = threading.Thread(target=update_geo_block)
+			thread_block_update.start()
 
 		# update unit draw
 		# if not unit_list_thread.is_alive():
