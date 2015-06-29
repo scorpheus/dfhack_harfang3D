@@ -200,9 +200,8 @@ shm_pos = mmap.mmap(0, 1+3*4, "Local\\df_pos")
 shm_block[0] = 0
 shm_pos[0] = 0
 
-def GetBlockMemory(pos):
+def GetBlockMemory():
 	get_buffer = shm_block[0] != 0
-	send_pos = shm_pos[0] == 0
 
 	block = None
 	block_pos = None
@@ -226,6 +225,11 @@ def GetBlockMemory(pos):
 		shm_block[0] = 0
 		shm_block.flush()
 
+	return block_pos, block, block_flow_size, block_liquid_type, block_building
+
+def SendPos(pos):
+	send_pos = shm_pos[0] == 0
+
 	# if no pos and no block
 	# send another pos
 	if pos is not None and send_pos:
@@ -233,8 +237,6 @@ def GetBlockMemory(pos):
 		shm_pos.write(packed_data)
 		shm_pos.flush()
 		shm_pos.seek(0)
-
-	return block_pos, block, block_flow_size, block_liquid_type, block_building
 
 def GetBlock(pos):
 

@@ -110,7 +110,6 @@ try:
 	cache_block_mat = {}
 	cache_geo_block = {}
 	update_cache_block = {}
-	update_block_name_in_progress = ""
 	update_cache_geo_block = {}
 	current_update_create_geo_threads = [None] * 1
 
@@ -188,74 +187,60 @@ try:
 	def check_block_to_update():
 		global block_fetched
 		global update_cache_block
-		global update_block_name_in_progress
 
-		_pos = None
+		# get the previous block asked (with different pos)
+		array_pos, block, block_flow_size, block_liquid_type, block_building = GetBlockMemory()
 
+		if block is not None:
+			new_pos = gs.Vector3(float(map_info.block_size_x - array_pos[0]), float(array_pos[2]), float(array_pos[1]))
+
+			# parse the return array
+			current_block, current_block_mat, current_block_props, current_block_building = parse_block(block, block_flow_size, block_liquid_type, block_building, new_pos)
+
+			# register the block in the cache
+			name_block = hash_from_pos(new_pos.x, new_pos.y, new_pos.z)
+			cache_block[name_block] = current_block
+			cache_block_mat[name_block] = current_block_mat
+			cache_block_props[name_block] = current_block_props
+			cache_block_building[name_block] = current_block_building
+
+			# update neighbour array
+			north_name = hash_from_pos(new_pos.x, new_pos.y, new_pos.z-1)
+			if north_name in cache_block:
+				cache_block[north_name][:, -1] = current_block[:, 0]
+				cache_block_mat[north_name][:, -1] = current_block_mat[:, 0]
+			south_name = hash_from_pos(new_pos.x, new_pos.y, new_pos.z+1)
+			if south_name in cache_block:
+				current_block[:, -1] = cache_block[south_name][:, 0]
+				current_block_mat[:, -1] = cache_block_mat[south_name][:, 0]
+			west_name = hash_from_pos(new_pos.x-1, new_pos.y, new_pos.z)
+			if west_name in cache_block:
+				cache_block[west_name][-1, :] = current_block[0, :]
+				cache_block_mat[west_name][-1, :] = current_block_mat[0, :]
+			east_name = hash_from_pos(new_pos.x+1, new_pos.y, new_pos.z)
+			if east_name in cache_block:
+				current_block[-1, :] = cache_block[east_name][0, :]
+				current_block_mat[-1, :] = cache_block_mat[east_name][0, :]
+
+			# this block array is setup, ask the update the geo block
+			update_cache_geo_block[name_block] = gs.Vector3(new_pos)
+			if name_block in update_cache_block:
+				update_cache_block.pop(name_block)
+			block_fetched += 1
+
+		#
 		if len(update_cache_block) > 0:
+			# send the pos to update
 			pos_in_front = fps_pos_in_front_2d(2)
-			ordered_update_cache_block = OrderedDict(sorted(update_cache_block.items(), key=lambda t: gs.Vector3.Dist2(gs.Vector3(t[1].x*16, t[1].y*scale_unit_y, t[1].z*16), pos_in_front)))
+			name_pos_block = min(update_cache_block.items(), key=lambda t: (t[1].x*16-pos_in_front.x) * (t[1].x*16-pos_in_front.x) + (t[1].y*scale_unit_y -pos_in_front.y) * (t[1].y*scale_unit_y -pos_in_front.y) + (t[1].z*16 - pos_in_front.z) * (t[1].z*16 - pos_in_front.z))
+			name_block, block_pos = name_pos_block[0], name_pos_block[1]
+			_pos = gs.Vector3(block_pos)
+			_pos.x = map_info.block_size_x - _pos.x
+			SendPos(from_world_to_dfworld(_pos))
 
-			name_block, block_pos = None, None
-			for name_block, block_pos in iter(ordered_update_cache_block.items()):
-				if name_block != update_block_name_in_progress:
-					break
+		# print(len(update_cache_block))
 
-			# get the pos to update
-			if block_pos is not None and name_block != update_block_name_in_progress:
-				_pos = gs.Vector3(block_pos)
-				_pos.x = map_info.block_size_x - _pos.x
-				_pos = from_world_to_dfworld(_pos)
-			else:
-				update_block_name_in_progress = ""
 
-			if update_block_name_in_progress == "":
-				update_block_name_in_progress = name_block
-
-			# send a pos to get and get the previous block asked (with different pos)
-			array_pos, block, block_flow_size, block_liquid_type, block_building = GetBlockMemory(_pos)
-
-			if block is not None:
-				if len(update_cache_block) > 0:
-					update_block_name_in_progress = name_block
-				else:
-					update_block_name_in_progress = ""
-
-				new_pos = gs.Vector3(float(map_info.block_size_x - array_pos[0]), float(array_pos[2]), float(array_pos[1]))
-
-				# parse the return array
-				current_block, current_block_mat, current_block_props, current_block_building = parse_block(block, block_flow_size, block_liquid_type, block_building, new_pos)
-
-				# register the block in the cache
-				name_block = hash_from_pos(new_pos.x, new_pos.y, new_pos.z)
-				cache_block[name_block] = current_block
-				cache_block_mat[name_block] = current_block_mat
-				cache_block_props[name_block] = current_block_props
-				cache_block_building[name_block] = current_block_building
-
-				# update neighbour array
-				north_name = hash_from_pos(new_pos.x, new_pos.y, new_pos.z-1)
-				if north_name in cache_block:
-					cache_block[north_name][:, -1] = current_block[:, 0]
-					cache_block_mat[north_name][:, -1] = current_block_mat[:, 0]
-				south_name = hash_from_pos(new_pos.x, new_pos.y, new_pos.z+1)
-				if south_name in cache_block:
-					current_block[:, -1] = cache_block[south_name][:, 0]
-					current_block_mat[:, -1] = cache_block_mat[south_name][:, 0]
-				west_name = hash_from_pos(new_pos.x-1, new_pos.y, new_pos.z)
-				if west_name in cache_block:
-					cache_block[west_name][-1, :] = current_block[0, :]
-					cache_block_mat[west_name][-1, :] = current_block_mat[0, :]
-				east_name = hash_from_pos(new_pos.x+1, new_pos.y, new_pos.z)
-				if east_name in cache_block:
-					current_block[-1, :] = cache_block[east_name][0, :]
-					current_block_mat[-1, :] = cache_block_mat[east_name][0, :]
-
-				# this block array is setup, ask the update the geo block
-				update_cache_geo_block[name_block] = gs.Vector3(new_pos)
-				if name_block in update_cache_block: # this is a hack there is problem , sometime the block is updated twice
-					update_cache_block.pop(name_block)
-				block_fetched += 1
 
 
 	def create_iso_geo_from_block(name_geo, upper_name_block, block, upper_block):
@@ -269,6 +254,13 @@ try:
 
 		return geometry_iso.create_iso(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, name_geo)
 
+
+	class UpdateGetBlock(threading.Thread):
+		def __init__(self):
+			threading.Thread.__init__(self)
+
+		def run(self):
+			self.unit_list = GetListUnits()
 
 	class UpdateCreateGeo(threading.Thread):
 		def __init__(self, current_layer_block_name, upper_layer_block_name):
@@ -376,6 +368,62 @@ try:
 	for i in range(11):
 		layers.append(Layer())
 
+	# def update_geo_block():
+	# 	global update_cache_geo_block
+	# 	global cache_geo_block
+	#
+	# 	if len(update_cache_geo_block) <= 0:
+	# 		return
+	#
+	# 	count = 0
+	#
+	# 	for update_thread in current_update_create_geo_threads:
+	# 		if update_thread is not None:
+	# 			if not update_thread.is_alive():
+	# 				cache_geo_block[update_thread.current_layer_block_name] = update_thread.geo
+	# 				update_cache_geo_block.pop(update_thread.current_layer_block_name)
+	# 				current_update_create_geo_threads[count] = None
+	#
+	# 		elif len(update_cache_geo_block) > count:
+	# 			pos_in_front = fps_pos_in_front_2d(2)
+	#
+	# 			ordered_update_cache_geo = OrderedDict(sorted(update_cache_geo_block.items(), key=lambda t: (t[1].x*16-pos_in_front.x) * (t[1].x*16-pos_in_front.x) + (t[1].y*scale_unit_y -pos_in_front.y) * (t[1].y*scale_unit_y -pos_in_front.y) + (t[1].z*16 - pos_in_front.z) * (t[1].z*16 - pos_in_front.z)))
+	# 			# ordered_update_cache_geo = OrderedDict(sorted(update_cache_geo_block.items(), key=lambda t: gs.Vector3.Dist2(gs.Vector3(t[1].x*16, t[1].y*scale_unit_y, t[1].z*16), pos_in_front)))
+	#
+	# 			# get a not already updating Node
+	# 			for name_block, block_pos in iter(ordered_update_cache_geo.items()):
+	# 				# check if not update by another thread
+	# 				is_already_used = False
+	# 				for thread in current_update_create_geo_threads:
+	# 					if thread is not None and thread.current_layer_block_name == name_block:
+	# 						is_already_used = True
+	#
+	# 				if not is_already_used:
+	# 					current_layer_block_name = hash_from_pos(block_pos.x, block_pos.y, block_pos.z)
+	# 					upper_layer_block_name = hash_from_pos(block_pos.x, block_pos.y + 1, block_pos.z)
+	#
+	# 					if current_layer_block_name in cache_block and upper_layer_block_name in cache_block:
+	# 						def check_block_can_generate_geo(x, y, z):
+	# 							# can update the geo block because it has all the neighbour
+	# 							counter_update = 0
+	# 							if hash_from_pos(x, y, z-1) in cache_block:
+	# 								counter_update += 1
+	# 							if hash_from_pos(x, y, z+1) in cache_block:
+	# 								counter_update += 1
+	# 							if hash_from_pos(x - 1, y, z) in cache_block:
+	# 								counter_update += 1
+	# 							if hash_from_pos(x + 1, y, z) in cache_block:
+	# 								counter_update += 1
+	# 							return counter_update == 4
+	#
+	# 						if check_block_can_generate_geo(block_pos.x, block_pos.y, block_pos.z) and check_block_can_generate_geo(block_pos.x, block_pos.y + 1, block_pos.z):
+	# 							update_thread = UpdateCreateGeo(current_layer_block_name, upper_layer_block_name)
+	# 							update_thread.start()
+	# 							current_update_create_geo_threads[count] = update_thread
+	# 							break
+	#
+	# 		count += 1
+
 	def update_geo_block():
 		global update_cache_geo_block
 		global cache_geo_block
@@ -383,54 +431,41 @@ try:
 		if len(update_cache_geo_block) <= 0:
 			return
 
-		count = 0
+		pos_in_front = fps_pos_in_front_2d(2)
 
-		for update_thread in current_update_create_geo_threads:
-			if update_thread is not None:
-				if not update_thread.is_alive():
-					cache_geo_block[update_thread.current_layer_block_name] = update_thread.geo
-					update_cache_geo_block.pop(update_thread.current_layer_block_name)
-					current_update_create_geo_threads[count] = None
+		ordered_update_cache_geo = OrderedDict(sorted(update_cache_geo_block.items(), key=lambda t: (t[1].x*16-pos_in_front.x) * (t[1].x*16-pos_in_front.x) + (t[1].y*scale_unit_y -pos_in_front.y) * (t[1].y*scale_unit_y -pos_in_front.y) + (t[1].z*16 - pos_in_front.z) * (t[1].z*16 - pos_in_front.z)))
+		# ordered_update_cache_geo = OrderedDict(sorted(update_cache_geo_block.items(), key=lambda t: gs.Vector3.Dist2(gs.Vector3(t[1].x*16, t[1].y*scale_unit_y, t[1].z*16), pos_in_front)))
 
-			elif len(update_cache_geo_block) > count:
-				pos_in_front = fps_pos_in_front_2d(2)
-				ordered_update_cache_geo = OrderedDict(sorted(update_cache_geo_block.items(), key=lambda t: gs.Vector3.Dist2(gs.Vector3(t[1].x*16, t[1].y*scale_unit_y, t[1].z*16), pos_in_front)))
+		# get a not already updating Node
+		for name_block, block_pos in iter(ordered_update_cache_geo.items()):
+			# check if not update by another thread
+			is_already_used = False
+			for thread in current_update_create_geo_threads:
+				if thread is not None and thread.current_layer_block_name == name_block:
+					is_already_used = True
 
-				# get a not already updating Node
-				for name_block, block_pos in iter(ordered_update_cache_geo.items()):
-					# check if not update by another thread
-					is_already_used = False
-					for thread in current_update_create_geo_threads:
-						if thread is not None and thread.current_layer_block_name == name_block:
-							is_already_used = True
+			if not is_already_used:
+				current_layer_block_name = hash_from_pos(block_pos.x, block_pos.y, block_pos.z)
+				upper_layer_block_name = hash_from_pos(block_pos.x, block_pos.y + 1, block_pos.z)
 
-					if not is_already_used:
-						current_layer_block_name = hash_from_pos(block_pos.x, block_pos.y, block_pos.z)
-						upper_layer_block_name = hash_from_pos(block_pos.x, block_pos.y + 1, block_pos.z)
+				if current_layer_block_name in cache_block and upper_layer_block_name in cache_block:
+					def check_block_can_generate_geo(x, y, z):
+						# can update the geo block because it has all the neighbour
+						counter_update = 0
+						if hash_from_pos(x, y, z-1) in cache_block:
+							counter_update += 1
+						if hash_from_pos(x, y, z+1) in cache_block:
+							counter_update += 1
+						if hash_from_pos(x - 1, y, z) in cache_block:
+							counter_update += 1
+						if hash_from_pos(x + 1, y, z) in cache_block:
+							counter_update += 1
+						return counter_update == 4
 
-						if current_layer_block_name in cache_block and upper_layer_block_name in cache_block:
-							def check_block_can_generate_geo(x, y, z):
-								# can update the geo block because it has all the neighbour
-								counter_update = 0
-								if hash_from_pos(x, y, z-1) in cache_block:
-									counter_update += 1
-								if hash_from_pos(x, y, z+1) in cache_block:
-									counter_update += 1
-								if hash_from_pos(x - 1, y, z) in cache_block:
-									counter_update += 1
-								if hash_from_pos(x + 1, y, z) in cache_block:
-									counter_update += 1
-								return counter_update == 4
-
-							if check_block_can_generate_geo(block_pos.x, block_pos.y, block_pos.z) and check_block_can_generate_geo(block_pos.x, block_pos.y + 1, block_pos.z):
-								update_thread = UpdateCreateGeo(current_layer_block_name, upper_layer_block_name)
-								update_thread.start()
-								current_update_create_geo_threads[count] = update_thread
-								break
-
-			count += 1
-
-
+					if check_block_can_generate_geo(block_pos.x, block_pos.y, block_pos.z) and check_block_can_generate_geo(block_pos.x, block_pos.y + 1, block_pos.z):
+						cache_geo_block[current_layer_block_name] = create_iso_geo_from_block(current_layer_block_name, upper_layer_block_name, cache_block[current_layer_block_name], cache_block[upper_layer_block_name])
+						update_cache_geo_block.pop(current_layer_block_name)
+						break
 
 	def on_frame_complete():
 		state = render.get_render_system().GetViewState()
@@ -474,20 +509,21 @@ try:
 			layer.draw()
 
 		# get the block info from df
-		if not thread_block_update.is_alive():
-			thread_block_update = threading.Thread(target=check_block_to_update)
-			thread_block_update.start()
+		check_block_to_update()
+		# if not thread_block_update.is_alive():
+		# 	thread_block_update = threading.Thread(target=check_block_to_update)
+		# 	thread_block_update.start()
 
 		# first_time = time.process_time()
-		update_geo_block()
+		# update_geo_block()
 		# get_iso_time = time.process_time() - first_time
 
 		# update unit draw
-		if not unit_list_thread.is_alive():
-			for unit in unit_list_thread.unit_list.value:
-				scn.renderable_system.DrawGeometry(dwarf_geo, gs.Matrix4.TranslationMatrix(gs.Vector3(map_info.block_size_x*16 - unit.pos_x+16, (unit.pos_z+0.3)*scale_unit_y, unit.pos_y)))
-			unit_list_thread = UpdateUnitListFromDF()
-			unit_list_thread.start()
+		# if not unit_list_thread.is_alive():
+		# 	for unit in unit_list_thread.unit_list.value:
+		# 		scn.renderable_system.DrawGeometry(dwarf_geo, gs.Matrix4.TranslationMatrix(gs.Vector3(map_info.block_size_x*16 - unit.pos_x+16, (unit.pos_z+0.3)*scale_unit_y, unit.pos_y)))
+		# 	unit_list_thread = UpdateUnitListFromDF()
+		# 	unit_list_thread.start()
 
 		render.text2d(0, 45, "BLOCK FETCHED: %d - BLOCK DRAWN: %d - PROPS DRAWN: %d - FPS: %.2fHZ" % (block_fetched, block_drawn, props_drawn, 1 / dt_sec), color=gs.Color.Red)
 		render.text2d(0, 25, "FPS.X = %f, FPS.Z = %f" % (fps.pos.x, fps.pos.z), color=gs.Color.Red)
