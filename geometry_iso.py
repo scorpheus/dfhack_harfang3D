@@ -478,7 +478,7 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 
 	# empty block don't have geometry
 	if array_res.sum() == 0 or np.average(array_res) == 1:
-		return render.create_geometry(gs.CoreGeometry())
+		return None #render.create_geometry(gs.CoreGeometry())
 
 	# smooth the value on XZ axis
 	array_copy = np.copy(array_res)
