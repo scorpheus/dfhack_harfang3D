@@ -27,7 +27,7 @@ class building_type():
 scale_unit_y = 1.0
 
 
-gs.plus.create_workers()
+# gs.plus.create_workers()
 
 def from_world_to_dfworld(new_pos):
 	return gs.Vector3(new_pos.x, new_pos.z, new_pos.y)
@@ -231,7 +231,8 @@ try:
 		if len(update_cache_block) > 0:
 			# send the pos to update
 			pos_in_front = fps_pos_in_front_2d(2)
-			name_pos_block = min(update_cache_block.items(), key=lambda t: (t[1].x*16-pos_in_front.x) * (t[1].x*16-pos_in_front.x) + (t[1].y*scale_unit_y -pos_in_front.y) * (t[1].y*scale_unit_y -pos_in_front.y) + (t[1].z*16 - pos_in_front.z) * (t[1].z*16 - pos_in_front.z))
+			# name_pos_block = min(update_cache_block.items(), key=lambda t: (t[1].x*16-pos_in_front.x) * (t[1].x*16-pos_in_front.x) + (t[1].y*scale_unit_y -pos_in_front.y) * (t[1].y*scale_unit_y -pos_in_front.y) + (t[1].z*16 - pos_in_front.z) * (t[1].z*16 - pos_in_front.z))
+			name_pos_block = min(update_cache_block.items(), key=lambda t: (t[1].x-pos_in_front.x/16) * (t[1].x-pos_in_front.x/16) + (t[1].y -pos_in_front.y/scale_unit_y) * (t[1].y-pos_in_front.y/scale_unit_y ) + (t[1].z - pos_in_front.z/16) * (t[1].z - pos_in_front.z/16))
 			name_block, block_pos = name_pos_block[0], name_pos_block[1]
 			_pos = gs.Vector3(block_pos)
 			_pos.x = map_info.block_size_x - _pos.x
@@ -248,24 +249,9 @@ try:
 		array_mats[:, 0, :] = cache_block_mat[name_geo]
 		array_mats[:, 1, :] = cache_block_mat[upper_name_block]
 
-		return geometry_iso.create_iso(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, name_geo)
+		return geometry_iso.create_iso_c(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, name_geo)
+		# return geometry_iso.create_iso(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, name_geo)
 
-
-	class UpdateGetBlock(threading.Thread):
-		def __init__(self):
-			threading.Thread.__init__(self)
-
-		def run(self):
-			self.unit_list = GetListUnits()
-
-	class UpdateCreateGeo(threading.Thread):
-		def __init__(self, current_layer_block_name, upper_layer_block_name):
-			threading.Thread.__init__(self)
-			self.current_layer_block_name, self.upper_layer_block_name = current_layer_block_name, upper_layer_block_name
-			self.geo = None
-
-		def run(self):
-			self.geo = create_iso_geo_from_block(self.current_layer_block_name, self.upper_layer_block_name, cache_block[self.current_layer_block_name], cache_block[self.upper_layer_block_name])
 
 	class UpdateUnitListFromDF(threading.Thread):
 		def __init__(self):
@@ -359,7 +345,7 @@ try:
 
 
 	layers = []
-	for i in range(11):
+	for i in range(40):
 		layers.append(Layer())
 
 	def update_geo_block():
@@ -370,8 +356,7 @@ try:
 			return
 
 		pos_in_front = fps_pos_in_front_2d(2)
-		ordered_update_cache_geo = OrderedDict(sorted(update_cache_geo_block.items(), key=lambda t: (t[1].x*16-pos_in_front.x) * (t[1].x*16-pos_in_front.x) + (t[1].y*scale_unit_y -pos_in_front.y) * (t[1].y*scale_unit_y -pos_in_front.y) + (t[1].z*16 - pos_in_front.z) * (t[1].z*16 - pos_in_front.z)))
-		# ordered_update_cache_geo = OrderedDict(sorted(update_cache_geo_block.items(), key=lambda t: gs.Vector3.Dist2(gs.Vector3(t[1].x*16, t[1].y*scale_unit_y, t[1].z*16), pos_in_front)))
+		ordered_update_cache_geo = OrderedDict(sorted(update_cache_geo_block.items(), key=lambda t: (t[1].x-pos_in_front.x/16) * (t[1].x-pos_in_front.x/16) + (t[1].y -pos_in_front.y/scale_unit_y) * (t[1].y-pos_in_front.y/scale_unit_y ) + (t[1].z - pos_in_front.z/16) * (t[1].z - pos_in_front.z/16)))
 
 		# get a not already updating Node
 		for name_block, block_pos in iter(ordered_update_cache_geo.items()):
@@ -407,7 +392,7 @@ try:
 
 	# launch thread to create iso from block
 	thread_geo_update = threading.Thread(target=update_geo_block)
-	thread_geo_update.start()
+	# thread_geo_update.start()
 
 	# main loop
 	while not input.key_press(gs.InputDevice.KeyEscape):
@@ -445,9 +430,10 @@ try:
 		# get the block info from df
 		check_block_to_update()
 		#
-		if not thread_geo_update.is_alive():
-			thread_geo_update = threading.Thread(target=update_geo_block)
-			thread_geo_update.start()
+		update_geo_block()
+		# if not thread_geo_update.is_alive():
+		# 	thread_geo_update = threading.Thread(target=update_geo_block)
+		# 	thread_geo_update.start()
 
 		# update unit draw
 		# if not unit_list_thread.is_alive():
