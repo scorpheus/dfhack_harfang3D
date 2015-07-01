@@ -114,7 +114,7 @@ try:
 
 	old_pos = gs.Vector3()
 
-	mats_path = ["empty.mat", "floor.mat", "magma.mat", "rock.mat", "water.mat", "tree.mat"]
+	mats_path = ["empty.mat", "floor.mat", "magma.mat", "rock.mat", "water.mat", "tree.mat", "floor.mat", "floor.mat"]
 	# precompile material
 	# for mat in mats_path:
 	# 	render.create_geometry(geometry.create_cube(0.1, 0.6, 0.1, mat))
@@ -141,6 +141,12 @@ try:
 					array_has_geo[x, z] = 1
 				elif type.shape == remote_fortress.FLOOR:
 					block_mat = 1
+					array_has_geo[x, z] = 0
+				elif type.shape == remote_fortress.RAMP:
+					block_mat = 6
+					array_has_geo[x, z] = 0
+				elif type.shape == remote_fortress.RAMP_TOP:
+					block_mat = 7
 					array_has_geo[x, z] = 0
 				elif type.shape == remote_fortress.BOULDER:
 					block_mat = 3
@@ -196,13 +202,6 @@ try:
 			# parse the return array
 			current_block, current_block_mat, current_block_props, current_block_building = parse_block(block, block_flow_size, block_liquid_type, block_building, new_pos)
 
-			# register the block in the cache
-			name_block = hash_from_pos(new_pos.x, new_pos.y, new_pos.z)
-			cache_block[name_block] = current_block
-			cache_block_mat[name_block] = current_block_mat
-			cache_block_props[name_block] = current_block_props
-			cache_block_building[name_block] = current_block_building
-
 			# update neighbour array
 			north_name = hash_from_pos(new_pos.x, new_pos.y, new_pos.z-1)
 			if north_name in cache_block:
@@ -220,6 +219,13 @@ try:
 			if east_name in cache_block:
 				current_block[-1, :] = cache_block[east_name][0, :]
 				current_block_mat[-1, :] = cache_block_mat[east_name][0, :]
+
+			# register the block in the cache
+			name_block = hash_from_pos(new_pos.x, new_pos.y, new_pos.z)
+			cache_block[name_block] = current_block
+			cache_block_mat[name_block] = current_block_mat
+			cache_block_props[name_block] = current_block_props
+			cache_block_building[name_block] = current_block_building
 
 			# this block array is setup, ask the update the geo block
 			update_cache_geo_block[name_block] = gs.Vector3(new_pos)
@@ -365,16 +371,7 @@ try:
 			if current_layer_block_name in cache_block and upper_layer_block_name in cache_block:
 				def check_block_can_generate_geo(x, y, z):
 					# can update the geo block because it has all the neighbour
-					counter_update = 0
-					if hash_from_pos(x, y, z-1) in cache_block:
-						counter_update += 1
-					if hash_from_pos(x, y, z+1) in cache_block:
-						counter_update += 1
-					if hash_from_pos(x - 1, y, z) in cache_block:
-						counter_update += 1
-					if hash_from_pos(x + 1, y, z) in cache_block:
-						counter_update += 1
-					return counter_update == 4
+					return hash_from_pos(x, y, z+1) in cache_block and hash_from_pos(x + 1, y, z) in cache_block
 
 				if check_block_can_generate_geo(block_pos.x, block_pos.y, block_pos.z) and check_block_can_generate_geo(block_pos.x, block_pos.y + 1, block_pos.z):
 					cache_geo_block[current_layer_block_name] = create_iso_geo_from_block(current_layer_block_name, upper_layer_block_name, cache_block[current_layer_block_name], cache_block[upper_layer_block_name])
