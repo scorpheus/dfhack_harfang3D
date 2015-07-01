@@ -231,7 +231,6 @@ try:
 		if len(update_cache_block) > 0:
 			# send the pos to update
 			pos_in_front = fps_pos_in_front_2d(2)
-			# name_pos_block = min(update_cache_block.items(), key=lambda t: (t[1].x*16-pos_in_front.x) * (t[1].x*16-pos_in_front.x) + (t[1].y*scale_unit_y -pos_in_front.y) * (t[1].y*scale_unit_y -pos_in_front.y) + (t[1].z*16 - pos_in_front.z) * (t[1].z*16 - pos_in_front.z))
 			name_pos_block = min(update_cache_block.items(), key=lambda t: (t[1].x-pos_in_front.x/16) * (t[1].x-pos_in_front.x/16) + (t[1].y -pos_in_front.y/scale_unit_y) * (t[1].y-pos_in_front.y/scale_unit_y ) + (t[1].z - pos_in_front.z/16) * (t[1].z - pos_in_front.z/16))
 			name_block, block_pos = name_pos_block[0], name_pos_block[1]
 			_pos = gs.Vector3(block_pos)
