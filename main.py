@@ -13,7 +13,6 @@ import geometry_iso
 from collections import OrderedDict
 import threading
 import numpy as np
-import time
 
 
 class building_type():
@@ -111,6 +110,7 @@ try:
 	cache_geo_block = {}
 	update_cache_block = {}
 	update_cache_geo_block = {}
+	counter_block_to_remove = {}
 
 	old_pos = gs.Vector3()
 
@@ -321,6 +321,7 @@ try:
 					name_block = hash_from_layer(self.pos, x, z)
 					if name_block not in cache_block and name_block not in update_cache_block:
 						update_cache_block[name_block] = gs.Vector3(block_pos)
+						counter_block_to_remove[name_block] = 1000
 
 					block_pos.x += 1
 				block_pos.x -= layer_size
@@ -336,6 +337,9 @@ try:
 			for z in range(layer_size):
 				for x in range(layer_size):
 					name_block = hash_from_layer(self.pos, x, z)
+					if name_block in counter_block_to_remove:
+						counter_block_to_remove[name_block] = counter_block_to_remove[name_block]+1 if counter_block_to_remove[name_block] < 2000 else 2000
+
 					if name_block in cache_geo_block and cache_geo_block[name_block] is not None:
 						draw_geo_block(cache_geo_block[name_block], block_pos.x, block_pos.y, block_pos.z)
 						# draw_props_in_block(name_block)
@@ -377,6 +381,27 @@ try:
 					cache_geo_block[current_layer_block_name] = create_iso_geo_from_block(current_layer_block_name, upper_layer_block_name, cache_block[current_layer_block_name], cache_block[upper_layer_block_name])
 					update_cache_geo_block.pop(current_layer_block_name)
 					break
+
+	def check_to_delete_far_block():
+		global cache_block, cache_block_props, cache_block_building, cache_block_mat, cache_geo_block, update_cache_block, update_cache_geo_block
+		for name, counter in list(counter_block_to_remove.items()):
+			counter_block_to_remove[name] -= 1
+			if counter < 0:	# to far , remove this block fromeverywhere
+				counter_block_to_remove.pop(name)
+				if name in cache_block:
+					cache_block.pop(name)
+				if name in cache_block_props:
+					cache_block_props.pop(name)
+				if name in cache_block_building:
+					cache_block_building.pop(name)
+				if name in cache_block_mat:
+					cache_block_mat.pop(name)
+				if name in cache_geo_block:
+					cache_geo_block.pop(name)
+				if name in update_cache_block:
+					update_cache_block.pop(name)
+				if name in update_cache_geo_block:
+					update_cache_geo_block.pop(name)
 
 	def on_frame_complete():
 		state = render.get_render_system().GetViewState()
@@ -437,6 +462,9 @@ try:
 		# 		scn.renderable_system.DrawGeometry(dwarf_geo, gs.Matrix4.TranslationMatrix(gs.Vector3(map_info.block_size_x*16 - unit.pos_x+16, (unit.pos_z+0.3)*scale_unit_y, unit.pos_y)))
 		# 	unit_list_thread = UpdateUnitListFromDF()
 		# 	unit_list_thread.start()
+
+		# check if needed to remove block not used
+		check_to_delete_far_block()
 
 		render.text2d(0, 45, "BLOCK FETCHED: %d - BLOCK DRAWN: %d - PROPS DRAWN: %d - FPS: %.2fHZ" % (block_fetched, block_drawn, props_drawn, 1 / dt_sec), color=gs.Color.Red)
 		render.text2d(0, 25, "FPS.X = %f, FPS.Z = %f" % (fps.pos.x, fps.pos.z), color=gs.Color.Red)
