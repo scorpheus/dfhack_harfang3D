@@ -27,7 +27,7 @@ class building_type():
 scale_unit_y = 1.0
 
 
-# gs.plus.create_workers()
+gs.plus.create_workers()
 
 def from_world_to_dfworld(new_pos):
 	return gs.Vector3(new_pos.x, new_pos.z, new_pos.y)

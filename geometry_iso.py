@@ -462,19 +462,19 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 		return None
 
 	# # smooth the value on XZ axis
-	# array_copy = np.copy(array_res)
-	# kernel_size = 3
-	# kernel = np.array([[0.25, 0.5, 0.25],
-	# 				  [0.5,  1.0, 0.5],
-	# 				  [0.25, 0.5, 0.25]])
-	# kernel_sum = kernel.sum()
-	# kernel_size_half = kernel_size // 2
-	# for smooth_pass in range(1):
-	# 	for x in range(kernel_size_half, array_res.shape[0] -kernel_size_half-1):
-	# 		for y in range(array_res.shape[1]):
-	# 			for z in range(kernel_size_half, array_res.shape[2] -kernel_size_half-1):
-	# 				array_res[x, y, z] = (array_copy[x-kernel_size_half:x+kernel_size_half+1, y, z-kernel_size_half:z+kernel_size_half+1]*kernel).sum() / kernel_sum
-
+	# # array_copy = np.copy(array_res)
+	# # kernel_size = 3
+	# # kernel = np.array([[0.25, 0.5, 0.25],
+	# # 				  [0.5,  1.0, 0.5],
+	# # 				  [0.25, 0.5, 0.25]])
+	# # kernel_sum = kernel.sum()
+	# # kernel_size_half = kernel_size // 2
+	# # for smooth_pass in range(1):
+	# # 	for x in range(kernel_size_half, array_res.shape[0] -kernel_size_half-1):
+	# # 		for y in range(array_res.shape[1]):
+	# # 			for z in range(kernel_size_half, array_res.shape[2] -kernel_size_half-1):
+	# # 				array_res[x, y, z] = (array_copy[x-kernel_size_half:x+kernel_size_half+1, y, z-kernel_size_half:z+kernel_size_half+1]*kernel).sum() / kernel_sum
+	#
 	w, h, d = array_res.shape[0]-(resolution - 1), array_res.shape[1], array_res.shape[2]-(resolution - 1)
 
 	# check floor
@@ -483,6 +483,17 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 	#
 	# id = np.where(mats[:, 1, :] == 1)
 	# array[id[0], array.shape[1]-1, id[1]] = 1
+	#
+	# # for the ramp, if ramp down, add 1 to half the height
+	# id = np.where(mats[:, 0, :] == 6)
+	# array[id[0], :array.shape[1]*0.5, id[1]] = 1
+	#
+	# id = np.where(mats[:, 1, :] == 6)
+	# array[id[0], array.shape[1]-1, id[1]] = 1
+	#
+	# if array.sum() == 0 or np.average(array) == 1:
+	# 	return None
+
 	# w, h, d = array.shape[0], array.shape[1], array.shape[2]
 
 	field = gs.BinaryBlob()
@@ -498,8 +509,8 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 
 
 	for x in range(w):
-		for z in range(d):
-			for y in range(h):
+		for y in range(h):
+			for z in range(d):
 				write_to_field(x, y, z, float(array_res[x, y, z]))
 				# write_to_field(x, y, z, float(array[x, y, z]))
 
@@ -520,7 +531,7 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 	# mat = render.load_material("iso.mat")
 	mat = render.load_material("@core/materials/default.mat")
 	geo = gs.RenderGeometry()
-	gs.IsoSurfaceToRenderGeometry(iso, geo, mat)
+	gs.IsoSurfaceToRenderGeometry(render.get_render_system(), iso, geo, mat)
 
 	return geo
 
