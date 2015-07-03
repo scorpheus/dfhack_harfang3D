@@ -1,0 +1,49 @@
+{
+	"Scene": {
+		"Components": {
+			"gs::core::Environment": {
+				"AmbientColor": {
+					"r": 0.4001,
+					"g": 0.4001,
+					"b": 0.4001
+				},
+				"FogColor": {
+					"r": 1.0,
+					"g": 1.0,
+					"b": 1.0
+				}
+			}
+		},
+		"Nodes": {
+			"Node": {
+				"Uid": 1,
+				"Name": "default_dwarf",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 0.0106,
+							"y": 0.0,
+							"z": 0.0278
+						},
+						"Rotation": {
+							"x": 0.0,
+							"y": 0.0,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 0.0254,
+							"y": 0.0254,
+							"z": 0.0254
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "minecraft_assets/default_dwarf/default_dwarf.geo"
+					}
+				}
+			}
+		},
+		"NodeHierarchy": {},
+		"Skins": {},
+		"State": {}
+	}
+}

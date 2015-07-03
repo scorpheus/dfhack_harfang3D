@@ -1,0 +1,1 @@
+<info plugin="FBX Importer" base_name="default_dwarf" url="minecraft_assets/default_dwarf.fbx"><config geometry_scale="1.0" fix_geometry_orientation="True" scale="1.0" material_policy="skip" scene_policy="skip" output="minecraft_assets/default_dwarf" texture_policy="skip" geometry_policy="overwrite" recalculate_tangent="True" /></info>
