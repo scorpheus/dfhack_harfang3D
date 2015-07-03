@@ -507,7 +507,6 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 		o = (w * d * y + w * z + x) * 4
 		field.WriteFloatAt(v, o)
 
-
 	for x in range(w):
 		for y in range(h):
 			for z in range(d):
@@ -535,11 +534,14 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 
 	return geo
 
-
+count = 0
 def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=None, name=None):
+	global count
 	"""Create an iso surface geometry"""
-	if name is None:
-		name = "@gen/iso_%f" % (isolevel)
+	# if name is None:
+	name = "@gen/iso_%f%s%d" % (isolevel, name, count)
+
+	count +=1
 	name = str(name)
 
 	geo = render.get_render_system().HasGeometry(name)

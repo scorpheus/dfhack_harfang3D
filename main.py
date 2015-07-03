@@ -26,7 +26,7 @@ class building_type():
 scale_unit_y = 1.0
 
 
-gs.plus.create_workers()
+# gs.plus.create_workers()
 
 def from_world_to_dfworld(new_pos):
 	return gs.Vector3(new_pos.x, new_pos.z, new_pos.y)
@@ -254,8 +254,8 @@ try:
 		array_mats[:, 0, :] = cache_block_mat[name_geo]
 		array_mats[:, 1, :] = cache_block_mat[upper_name_block]
 
-		return geometry_iso.create_iso_c(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, name_geo)
-		# return geometry_iso.create_iso(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, name_geo)
+		# return geometry_iso.create_iso_c(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, name_geo)
+		return geometry_iso.create_iso(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, name_geo)
 
 
 	class UpdateUnitListFromDF(threading.Thread):
@@ -319,7 +319,10 @@ try:
 			for z in range(layer_size):
 				for x in range(layer_size):
 					name_block = hash_from_layer(self.pos, x, z)
-					if name_block not in cache_block and name_block not in update_cache_block:
+
+					# if block not available or if it currently used a lot, then re update it
+					if (name_block not in cache_block and name_block not in update_cache_block) or \
+							(name_block in counter_block_to_remove and counter_block_to_remove[name_block] >= 1200):
 						update_cache_block[name_block] = gs.Vector3(block_pos)
 						counter_block_to_remove[name_block] = 1000
 
@@ -338,7 +341,7 @@ try:
 				for x in range(layer_size):
 					name_block = hash_from_layer(self.pos, x, z)
 					if name_block in counter_block_to_remove:
-						counter_block_to_remove[name_block] = counter_block_to_remove[name_block]+1 if counter_block_to_remove[name_block] < 2000 else 2000
+						counter_block_to_remove[name_block] = counter_block_to_remove[name_block]+2 if counter_block_to_remove[name_block] < 2000 else 2000
 
 					if name_block in cache_geo_block and cache_geo_block[name_block] is not None:
 						draw_geo_block(cache_geo_block[name_block], block_pos.x, block_pos.y, block_pos.z)
@@ -383,7 +386,7 @@ try:
 					break
 
 	def check_to_delete_far_block():
-		global cache_block, cache_block_props, cache_block_building, cache_block_mat, cache_geo_block, update_cache_block, update_cache_geo_block
+		global cache_block, cache_block_props, cache_block_building, cache_block_mat, cache_geo_block, update_cache_block, update_cache_geo_block, counter_block_to_remove
 		for name, counter in list(counter_block_to_remove.items()):
 			counter_block_to_remove[name] -= 1
 			if counter < 0:	# to far , remove this block fromeverywhere
@@ -412,7 +415,7 @@ try:
 	scn.GetRenderSignals().frame_complete_signal.Connect(on_frame_complete)
 
 	# launch thread to create iso from block
-	thread_geo_update = threading.Thread(target=update_geo_block)
+	# thread_geo_update = threading.Thread(target=update_geo_block)
 	# thread_geo_update.start()
 
 	# main loop
