@@ -1,5 +1,8 @@
 {
 	"Scene": {
+		"Editor": {
+			"SceneTools": {}
+		},
 		"Components": {
 			"gs::core::Environment": {
 				"AmbientColor": {
@@ -25,11 +28,6 @@
 							"y": 0.0,
 							"z": 0.0278
 						},
-						"Rotation": {
-							"x": 0.0,
-							"y": 0.0,
-							"z": 0.0
-						},
 						"Scale": {
 							"x": 0.0254,
 							"y": 0.0254,
@@ -40,10 +38,41 @@
 						"Geometry": "minecraft_assets/default_dwarf/default_dwarf.geo"
 					}
 				}
+			},
+			"Node": {
+				"Uid": 2,
+				"Name": "Default Camera",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -1.9549,
+							"y": 1.4136,
+							"z": 2.8058
+						},
+						"Rotation": {
+							"x": 0.3012,
+							"y": 2.5549,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0001,
+							"y": 1.0001,
+							"z": 1.0001
+						}
+					},
+					"gs::core::Camera": {
+						"ZNear": 0.1,
+						"ZFar": 50000.0
+					}
+				}
 			}
 		},
 		"NodeHierarchy": {},
 		"Skins": {},
-		"State": {}
+		"State": {
+			"CurrentCamera": {
+				"Uid": 2
+			}
+		}
 	}
 }
