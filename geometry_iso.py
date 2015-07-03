@@ -526,8 +526,8 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 	# if not gs.PolygoniseIsoSurface(w, h, d, field, isolevel, iso):
 	# 	return None
 
-	# mat = render.load_material("iso.mat")
-	mat = render.load_material("@core/materials/default.mat")
+	mat = render.load_material("rock.mat")
+	# mat = render.load_material("@core/materials/default.mat")
 	geo = gs.RenderGeometry()
 	gs.IsoSurfaceToRenderGeometry(render.get_render_system(), iso, geo, mat)
 

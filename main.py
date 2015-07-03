@@ -83,19 +83,29 @@ try:
 
 
 	geos = [render.load_geometry("environment_kit_inca/stone_high_03.geo"), render.load_geometry("environment_kit_inca/stone_high_01.geo")]
-	building_geos = {building_type.Chair: None, building_type.Bed: None, building_type.Table: None,
+	building_geos = {building_type.Chair: None, building_type.Bed: None,
+					 building_type.Table: {'g':render.load_geometry("environment_kit/geo-table.geo"), 'o':gs.Matrix4.Identity},
 					 building_type.Coffin: None, building_type.FarmPlot: None, building_type.Furnace: None,
-					 building_type.TradeDepot: None, building_type.Shop: None, building_type.Door: render.load_geometry("environment_kit/geo-door.geo"),
-					 building_type.Floodgate: None, building_type.Box: None, building_type.Weaponrack: None,
-					 building_type.Armorstand: None, building_type.Workshop: None, building_type.Cabinet: None,
-					 building_type.Statue: None, building_type.WindowGlass: None, building_type.WindowGem: None,
+					 building_type.TradeDepot: None, building_type.Shop: None,
+					 building_type.Door: {'g':render.load_geometry("environment_kit/geo-door.geo"), 'o':gs.Matrix4.Identity},
+					 building_type.Floodgate: None,
+					 building_type.Box: {'g':render.load_geometry("environment_kit_inca/chest_top.geo"), 'o':gs.Matrix4.Identity},
+					 building_type.Weaponrack: None,
+					 building_type.Armorstand: None, building_type.Workshop: None,
+					 building_type.Cabinet: {'g':render.load_geometry("environment_kit/geo-bookshelf.geo"), 'o':gs.Matrix4.Identity},
+					 building_type.Statue: {'g':render.load_geometry("environment_kit/geo-greece_column.geo"), 'o':gs.Matrix4.RotationMatrix(gs.Vector3(-1.57, 0, 0))},
+					 building_type.WindowGlass: None, building_type.WindowGem: None,
 					 building_type.Well: None, building_type.Bridge: None, building_type.RoadDirt: None,
 					 building_type.RoadPaved: None, building_type.SiegeEngine: None, building_type.Trap: None,
 					 building_type.AnimalTrap: None, building_type.Support: None, building_type.ArcheryTarget: None,
-					 building_type.Chain: None, building_type.Cage: None, building_type.Stockpile: None, building_type.Civzone: None,
-					 building_type.Weapon: None, building_type.Wagon: None, building_type.ScrewPump: None, building_type.Construction: render.load_geometry("environment_kit/geo-egypt_wall.geo"),
-					 building_type.Hatch: None, building_type.GrateWall: None, building_type.GrateFloor: None, building_type.BarsVertical: None,
-					 building_type.BarsFloor: None, building_type.GearAssembly: None, building_type.AxleHorizontal: None, building_type.AxleVertical: None,
+					 building_type.Chain: None, building_type.Cage: None, building_type.Stockpile: None,
+					 building_type.Civzone: None,
+					 building_type.Weapon: None, building_type.Wagon: None, building_type.ScrewPump: None,
+					 building_type.Construction: {'g':render.load_geometry("environment_kit/geo-egypt_wall.geo"), 'o':gs.Matrix4.Identity},
+					 building_type.Hatch: None, building_type.GrateWall: None, building_type.GrateFloor: None,
+					 building_type.BarsVertical: None,
+					 building_type.BarsFloor: None, building_type.GearAssembly: None,
+					 building_type.AxleHorizontal: None, building_type.AxleVertical: None,
 					 building_type.WaterWheel: None, building_type.Windmill: None, building_type.TractionBench: None,
 					 building_type.Slab: None, building_type.Nest: None, building_type.NestBox: None,
 					 building_type.Hive: None, building_type.Rollers: None}
@@ -286,7 +296,7 @@ try:
 	def draw_building_in_block(name_block):
 		for building in cache_block_building[name_block]:
 			if building_geos[building[1]] is not None:
-				scn.renderable_system.DrawGeometry(building_geos[building[1]], gs.Matrix4.TransformationMatrix(gs.Vector3(building[0].x+1, building[0].y*scale_unit_y, building[0].z), gs.Vector3(0, 0, 0), gs.Vector3(0.25, 0.25, 0.25)))
+				scn.renderable_system.DrawGeometry(building_geos[building[1]]["g"], gs.Matrix4.TransformationMatrix(gs.Vector3(building[0].x+1, building[0].y*scale_unit_y, building[0].z), gs.Vector3(0, 0, 0), gs.Vector3(0.25, 0.25, 0.25)) * building_geos[building[1]]["o"])
 				global props_drawn
 				props_drawn += 1
 
