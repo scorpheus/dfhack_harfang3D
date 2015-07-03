@@ -32,13 +32,13 @@ float ComputeShadowPCF(vec3 pixel_view_pos, mat4 projection, texShadow shadow_ma
 float ComputeLinearLightShadowPCF(vec3 pixel_view_pos)
 {
 	if (pixel_view_pos.z < vLightPSSMSliceDistance.x)
-		return ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix0, vLightShadowMap0);
+		return ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix[0], vLightShadowMap);
 	else if (pixel_view_pos.z < vLightPSSMSliceDistance.y)
-		return ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix1, vLightShadowMap0);
+		return ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix[1], vLightShadowMap);
 	else if (pixel_view_pos.z < vLightPSSMSliceDistance.z)
-		return ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix2, vLightShadowMap0);
+		return ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix[2], vLightShadowMap);
 	else if (pixel_view_pos.z < vLightPSSMSliceDistance.w) {
-		float pcf = ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix3, vLightShadowMap0);
+		float pcf = ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix[3], vLightShadowMap);
 		float ramp_len = (vLightPSSMSliceDistance.w - vLightPSSMSliceDistance.z) * 0.25;
 		float ramp_k = clamp((pixel_view_pos.z - (vLightPSSMSliceDistance.w - ramp_len)) / ramp_len, 0.0, 1.0);
 		return pcf * (1.0 - ramp_k) + ramp_k;
@@ -51,19 +51,19 @@ float ComputePointLightShadowPCF(vec3 pixel_view_pos)
 	vec3 dir = normalize(_mtx_mul(vViewToLightMatrix, vec4(pixel_view_pos, 1.0)).xyz);
 
 	if ((dir.z > 0.0) && (dir.x > -dir.z) && (dir.x < dir.z) && (dir.y > -dir.z) && (dir.y < dir.z))
-		return ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix0, vLightShadowMap0);
+		return ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix[0], vLightShadowMap);
 	else if ((dir.z < 0.0) && (dir.x > dir.z) && (dir.x < -dir.z) && (dir.y > dir.z) && (dir.y < -dir.z))
-		return ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix2, vLightShadowMap0);
+		return ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix[2], vLightShadowMap);
 
 	else if ((dir.x > 0.0) && (dir.y > -dir.x) && (dir.y < dir.x) && (dir.z > -dir.x) && (dir.z < dir.x))
-		return ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix1, vLightShadowMap0);
+		return ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix[1], vLightShadowMap);
 	else if ((dir.x < 0.0) && (dir.y > dir.x) && (dir.y < -dir.x) && (dir.z > dir.x) && (dir.z < -dir.x))
-		return ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix3, vLightShadowMap0);
+		return ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix[3], vLightShadowMap);
 
 	else if ((dir.y > 0.0) && (dir.x > -dir.y) && (dir.x < dir.y) && (dir.z > -dir.y) && (dir.z < dir.y))
-		return ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix5, vLightShadowMap0);
+		return ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix[5], vLightShadowMap);
 	else if ((dir.y < 0.0) && (dir.x > dir.y) && (dir.x < -dir.y) && (dir.z > dir.y) && (dir.z < -dir.y))
-		return ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix4, vLightShadowMap0);
+		return ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix[4], vLightShadowMap);
 
 	return 1.0;
 }

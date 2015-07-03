@@ -23,7 +23,7 @@ variant {
 				discard;
 			vec3 pixel_view_pos = (forward / forward.z) * (norm_dpth.w - vLightState.w);
 
-			float pcf = ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix0, vLightShadowMap0);
+			float pcf = ComputeShadowPCF(pixel_view_pos, vLightShadowMatrix[0], vLightShadowMap);
 
 			if (pcf > 0.0) {
 				// normal in view-model space
