@@ -69,7 +69,7 @@ try:
 	fps.rot = gs.Vector3(0.5, 0, 0)
 
 	# dwarf_geo = render.create_geometry(geometry.create_cube(0.1, 0.6, 0.1, "iso.mat"))
-	dwarf_geo = render.load_geometry("@core/res/robot.geo")
+	dwarf_geo = render.load_geometry("minecraft_assets/default_dwarf/default_dwarf.geo")
 	cube_geo = render.create_geometry(geometry.create_cube(1, 1*scale_unit_y, 1, "iso.mat"))
 
 	pos = gs.Vector3(112//16, 62, 112//16)
@@ -462,7 +462,7 @@ try:
 		update_dwarf_pos()
 		for dwarf in dwarfs_pos.values():
 			d_pos = dwarf[0]
-			scn.renderable_system.DrawGeometry(dwarf_geo, gs.Matrix4.TransformationMatrix(gs.Vector3(map_info.block_size_x*16 - d_pos.x+16, (d_pos.z)*scale_unit_y, d_pos.y), dwarf[1], gs.Vector3(0.25, 0.25, 0.25)))
+			scn.renderable_system.DrawGeometry(dwarf_geo, gs.Matrix4.TransformationMatrix(gs.Vector3(map_info.block_size_x*16 - d_pos.x+16, (d_pos.z)*scale_unit_y, d_pos.y), dwarf[1], gs.Vector3(0.01, 0.01, 0.01)))
 
 		# check if needed to remove block not used
 		check_to_delete_far_block()
