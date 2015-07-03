@@ -34,9 +34,12 @@ def update_dwarf_pos():
 		if unit_list_thread.unit_list is not None:
 			for unit in unit_list_thread.unit_list.value:
 				if unit.unit_id in dwarfs_pos:
-					dwarfs_pos[unit.unit_id] += (gs.Vector3(unit.pos_x, unit.pos_y, unit.pos_z) - dwarfs_pos[unit.unit_id])*0.5
+					d = gs.Vector3(unit.pos_x, unit.pos_y, unit.pos_z) - dwarfs_pos[unit.unit_id][0]
+					if d.Len2() != 0:
+						dwarfs_pos[unit.unit_id][1] = gs.Matrix3.LookAt(gs.Vector3(-d.x, d.z, d.y).Normalized())
+					dwarfs_pos[unit.unit_id][0] += d*0.5
 				else:
-					dwarfs_pos[unit.unit_id] = gs.Vector3(unit.pos_x, unit.pos_y, unit.pos_z)
+					dwarfs_pos[unit.unit_id] = [gs.Vector3(unit.pos_x, unit.pos_y, unit.pos_z), gs.Matrix3.Identity]
 		unit_list_thread = UpdateUnitListFromDF()
 		unit_list_thread.start()
 

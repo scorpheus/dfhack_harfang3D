@@ -68,7 +68,8 @@ try:
 	fps = camera.fps_controller(128, 74*scale_unit_y, 64)
 	fps.rot = gs.Vector3(0.5, 0, 0)
 
-	dwarf_geo = render.create_geometry(geometry.create_cube(0.1, 0.6, 0.1, "iso.mat"))
+	# dwarf_geo = render.create_geometry(geometry.create_cube(0.1, 0.6, 0.1, "iso.mat"))
+	dwarf_geo = render.load_geometry("@core/res/robot.geo")
 	cube_geo = render.create_geometry(geometry.create_cube(1, 1*scale_unit_y, 1, "iso.mat"))
 
 	pos = gs.Vector3(112//16, 62, 112//16)
@@ -256,7 +257,7 @@ try:
 
 		# print(len(update_cache_block))
 
-	def create_iso_geo_from_block(name_geo, upper_name_block, block, upper_block):
+	def create_iso_geo_from_block(name_geo, upper_name_block, block, upper_block, block_pos):
 		array_has_geo = np.empty((17, 2, 17), np.int8)
 		array_has_geo[:, 0, :] = block
 		array_has_geo[:, 1, :] = upper_block
@@ -265,7 +266,7 @@ try:
 		array_mats[:, 0, :] = cache_block_mat[name_geo]
 		array_mats[:, 1, :] = cache_block_mat[upper_name_block]
 
-		return geometry_iso.create_iso_c(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path)
+		return geometry_iso.create_iso_c(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, block_pos)
 		# return geometry_iso.create_iso(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, name_geo)
 
 	block_drawn = 0
@@ -322,9 +323,9 @@ try:
 
 					# if block not available or if it currently used a lot, then re update it
 					if (name_block not in cache_block and name_block not in update_cache_block) or \
-							(name_block in counter_block_to_remove and counter_block_to_remove[name_block] >= 700):
+							(name_block in counter_block_to_remove and counter_block_to_remove[name_block][0] >= 700):
 						update_cache_block[name_block] = gs.Vector3(block_pos)
-						counter_block_to_remove[name_block] = 500
+						counter_block_to_remove[name_block] = [500, gs.Vector3(block_pos)]
 
 					block_pos.x += 1
 				block_pos.x -= layer_size
@@ -341,7 +342,7 @@ try:
 				for x in range(layer_size):
 					name_block = hash_from_layer(self.pos, x, z)
 					if name_block in counter_block_to_remove:
-						counter_block_to_remove[name_block] = counter_block_to_remove[name_block]+2 if counter_block_to_remove[name_block] < 1000 else 1000
+						counter_block_to_remove[name_block][0] = counter_block_to_remove[name_block][0]+2 if counter_block_to_remove[name_block][0] < 1000 else 1000
 
 					if name_block in cache_geo_block and cache_geo_block[name_block] is not None:
 						draw_geo_block(cache_geo_block[name_block], block_pos.x, block_pos.y, block_pos.z)
@@ -381,30 +382,35 @@ try:
 					return hash_from_pos(x, y, z+1) in cache_block and hash_from_pos(x + 1, y, z) in cache_block
 
 				if check_block_can_generate_geo(block_pos.x, block_pos.y, block_pos.z) and check_block_can_generate_geo(block_pos.x, block_pos.y + 1, block_pos.z):
-					cache_geo_block[current_layer_block_name] = create_iso_geo_from_block(current_layer_block_name, upper_layer_block_name, cache_block[current_layer_block_name], cache_block[upper_layer_block_name])
+					cache_geo_block[current_layer_block_name] = create_iso_geo_from_block(current_layer_block_name, upper_layer_block_name, cache_block[current_layer_block_name], cache_block[upper_layer_block_name], block_pos)
 					update_cache_geo_block.pop(current_layer_block_name)
 					break
 
 	def check_to_delete_far_block():
 		global cache_block, cache_block_props, cache_block_building, cache_block_mat, cache_geo_block, update_cache_block, update_cache_geo_block, counter_block_to_remove
-		for name, counter in list(counter_block_to_remove.items()):
-			counter_block_to_remove[name] -= 1
-			if counter < 0:	# to far , remove this block fromeverywhere
-				counter_block_to_remove.pop(name)
-				if name in cache_block:
-					cache_block.pop(name)
-				if name in cache_block_props:
-					cache_block_props.pop(name)
-				if name in cache_block_building:
-					cache_block_building.pop(name)
-				if name in cache_block_mat:
-					cache_block_mat.pop(name)
-				if name in cache_geo_block:
-					cache_geo_block.pop(name)
-				if name in update_cache_block:
-					update_cache_block.pop(name)
-				if name in update_cache_geo_block:
-					update_cache_geo_block.pop(name)
+		for name, counter_pos in list(counter_block_to_remove.items()):
+			counter_block_to_remove[name][0] -= 1
+			if counter_block_to_remove[name][0] < 0: # too far , remove this block fromeverywhere
+				#check the 2 around are disactivated
+				temp_pos = counter_block_to_remove[name][1]
+				name_west = hash_from_pos(temp_pos.x - 1, temp_pos.y, temp_pos.z)
+				name_north = hash_from_pos(temp_pos.x, temp_pos.y, temp_pos.z - 1)
+				if (name_west not in counter_block_to_remove or counter_block_to_remove[name_west][0] < 0) and (name_north not in counter_block_to_remove or counter_block_to_remove[name_north][0] < 0):
+					counter_block_to_remove.pop(name)
+					if name in cache_block:
+						cache_block.pop(name)
+					if name in cache_block_props:
+						cache_block_props.pop(name)
+					if name in cache_block_building:
+						cache_block_building.pop(name)
+					if name in cache_block_mat:
+						cache_block_mat.pop(name)
+					if name in cache_geo_block:
+						cache_geo_block.pop(name)
+					if name in update_cache_block:
+						update_cache_block.pop(name)
+					if name in update_cache_geo_block:
+						update_cache_geo_block.pop(name)
 
 	def on_frame_complete():
 		state = render.get_render_system().GetViewState()
@@ -454,12 +460,14 @@ try:
 
 		# update unit draw
 		update_dwarf_pos()
-		for d_pos in dwarfs_pos.values():
-			scn.renderable_system.DrawGeometry(dwarf_geo, gs.Matrix4.TranslationMatrix(gs.Vector3(map_info.block_size_x*16 - d_pos.x+16, (d_pos.z+0.3)*scale_unit_y, d_pos.y)))
+		for dwarf in dwarfs_pos.values():
+			d_pos = dwarf[0]
+			scn.renderable_system.DrawGeometry(dwarf_geo, gs.Matrix4.TransformationMatrix(gs.Vector3(map_info.block_size_x*16 - d_pos.x+16, (d_pos.z)*scale_unit_y, d_pos.y), dwarf[1], gs.Vector3(0.25, 0.25, 0.25)))
 
 		# check if needed to remove block not used
 		check_to_delete_far_block()
 
+		render.text2d(0, 65, "CACHE GEO: %d - CACHE BLOCK: %d" % (len(cache_geo_block), len(cache_block)), color=gs.Color.Red)
 		render.text2d(0, 45, "BLOCK FETCHED: %d - BLOCK DRAWN: %d - PROPS DRAWN: %d - FPS: %.2fHZ" % (block_fetched, block_drawn, props_drawn, 1 / dt_sec), color=gs.Color.Red)
 		render.text2d(0, 25, "FPS.X = %f, FPS.Z = %f" % (fps.pos.x, fps.pos.z), color=gs.Color.Red)
 		render.text2d(0, 5, "POS.X = %f, POS.Y = %f, POS.Z = %f" % (pos.x, pos.y, pos.z), color=gs.Color.Red)

@@ -435,7 +435,11 @@ def CreateIsoFBO(array, width, height, length, isolevel, mats):
 
 	return index_array, vtx_array, normal_array, material_array
 
-def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path=None):
+import noise
+
+def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path=None, pos= None):
+
+	inv_scale = gs.Vector3.One/gs.Vector3(resolution, resolution_y*2-1, resolution)
 
 	# increase size of the array by the resolution
 	array_res = np.kron(array, np.ones((resolution, resolution_y, resolution)))
@@ -459,6 +463,12 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 
 	if array_res.sum() == 0 or np.average(array_res) == 1:
 		return None
+
+	it = np.nditer(array_res, flags=['multi_index'])
+	while not it.finished:
+		if array_res[it.multi_index[0], it.multi_index[1], it.multi_index[2]] == 1:
+			array_res[it.multi_index[0], it.multi_index[1], it.multi_index[2]] = noise.snoise3((it.multi_index[0]*inv_scale.x+pos.x*16)*100, (it.multi_index[1]*inv_scale.y+pos.y)*100, (it.multi_index[2]*inv_scale.z+pos.z*16)*100)*0.25+0.75
+		it.iternext()
 
 	# smooth the value on XZ axis
 	# array_copy = np.copy(array_res)
@@ -520,14 +530,12 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 	# 	it.iternext()
 
 	iso = gs.IsoSurface()
-
-	inv_scale = gs.Vector3.One/gs.Vector3(resolution, resolution_y*2-1, resolution)
 	gs.PolygoniseIsoSurface(w, h, d, field, isolevel, iso, inv_scale)
 	# if not gs.PolygoniseIsoSurface(w, h, d, field, isolevel, iso):
 	# 	return None
 
-	mat = render.load_material("rock.mat")
-	# mat = render.load_material("@core/materials/default.mat")
+	# mat = render.load_material("tree.mat")
+	mat = render.load_material("@core/materials/default.mat")
 	geo = gs.RenderGeometry()
 	gs.IsoSurfaceToRenderGeometry(render.get_render_system(), iso, geo, mat)
 
