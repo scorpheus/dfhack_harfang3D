@@ -254,8 +254,8 @@ try:
 		array_mats[:, 0, :] = cache_block_mat[name_geo]
 		array_mats[:, 1, :] = cache_block_mat[upper_name_block]
 
-		# return geometry_iso.create_iso_c(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, name_geo)
-		return geometry_iso.create_iso(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, name_geo)
+		return geometry_iso.create_iso_c(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, name_geo)
+		# return geometry_iso.create_iso(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, name_geo)
 
 
 	class UpdateUnitListFromDF(threading.Thread):
@@ -322,9 +322,9 @@ try:
 
 					# if block not available or if it currently used a lot, then re update it
 					if (name_block not in cache_block and name_block not in update_cache_block) or \
-							(name_block in counter_block_to_remove and counter_block_to_remove[name_block] >= 1200):
+							(name_block in counter_block_to_remove and counter_block_to_remove[name_block] >= 700):
 						update_cache_block[name_block] = gs.Vector3(block_pos)
-						counter_block_to_remove[name_block] = 1000
+						counter_block_to_remove[name_block] = 500
 
 					block_pos.x += 1
 				block_pos.x -= layer_size
@@ -341,12 +341,12 @@ try:
 				for x in range(layer_size):
 					name_block = hash_from_layer(self.pos, x, z)
 					if name_block in counter_block_to_remove:
-						counter_block_to_remove[name_block] = counter_block_to_remove[name_block]+2 if counter_block_to_remove[name_block] < 2000 else 2000
+						counter_block_to_remove[name_block] = counter_block_to_remove[name_block]+2 if counter_block_to_remove[name_block] < 1000 else 1000
 
 					if name_block in cache_geo_block and cache_geo_block[name_block] is not None:
 						draw_geo_block(cache_geo_block[name_block], block_pos.x, block_pos.y, block_pos.z)
-						# draw_props_in_block(name_block)
-						# draw_building_in_block(name_block)
+						draw_props_in_block(name_block)
+						draw_building_in_block(name_block)
 
 					# if name_block in cache_block:
 					# 	draw_cube_block(name_block, block_pos)
@@ -414,10 +414,6 @@ try:
 
 	scn.GetRenderSignals().frame_complete_signal.Connect(on_frame_complete)
 
-	# launch thread to create iso from block
-	# thread_geo_update = threading.Thread(target=update_geo_block)
-	# thread_geo_update.start()
-
 	# main loop
 	while not input.key_press(gs.InputDevice.KeyEscape):
 		render.clear()
@@ -455,16 +451,13 @@ try:
 		check_block_to_update()
 		#
 		update_geo_block()
-		# if not thread_geo_update.is_alive():
-		# 	thread_geo_update = threading.Thread(target=update_geo_block)
-		# 	thread_geo_update.start()
 
 		# update unit draw
-		# if not unit_list_thread.is_alive():
-		# 	for unit in unit_list_thread.unit_list.value:
-		# 		scn.renderable_system.DrawGeometry(dwarf_geo, gs.Matrix4.TranslationMatrix(gs.Vector3(map_info.block_size_x*16 - unit.pos_x+16, (unit.pos_z+0.3)*scale_unit_y, unit.pos_y)))
-		# 	unit_list_thread = UpdateUnitListFromDF()
-		# 	unit_list_thread.start()
+		if not unit_list_thread.is_alive():
+			for unit in unit_list_thread.unit_list.value:
+				scn.renderable_system.DrawGeometry(dwarf_geo, gs.Matrix4.TranslationMatrix(gs.Vector3(map_info.block_size_x*16 - unit.pos_x+16, (unit.pos_z+0.3)*scale_unit_y, unit.pos_y)))
+			unit_list_thread = UpdateUnitListFromDF()
+			unit_list_thread.start()
 
 		# check if needed to remove block not used
 		check_to_delete_far_block()
