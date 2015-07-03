@@ -9,6 +9,7 @@ import gs.plus.camera as camera
 import gs.plus.clock as clock
 import gs.plus.geometry as geometry
 import geometry_iso
+from update_dwarf import *
 
 from collections import OrderedDict
 import threading
@@ -26,7 +27,7 @@ class building_type():
 scale_unit_y = 1.0
 
 
-# gs.plus.create_workers()
+gs.plus.create_workers()
 
 def from_world_to_dfworld(new_pos):
 	return gs.Vector3(new_pos.x, new_pos.z, new_pos.y)
@@ -237,7 +238,7 @@ try:
 		if len(update_cache_block) > 0:
 			# send the pos to update
 			pos_in_front = fps_pos_in_front_2d(2)
-			name_pos_block = min(update_cache_block.items(), key=lambda t: (t[1].x-pos_in_front.x/16) * (t[1].x-pos_in_front.x/16) + (t[1].y -pos_in_front.y/scale_unit_y) * (t[1].y-pos_in_front.y/scale_unit_y ) + (t[1].z - pos_in_front.z/16) * (t[1].z - pos_in_front.z/16))
+			name_pos_block = min(update_cache_block.items(), key=lambda t: (t[1].x-pos_in_front.x/16)**2 + ((t[1].y -pos_in_front.y/scale_unit_y)/1.5)**2 + (t[1].z - pos_in_front.z/16)**2)
 			name_block, block_pos = name_pos_block[0], name_pos_block[1]
 			_pos = gs.Vector3(block_pos)
 			_pos.x = map_info.block_size_x - _pos.x
@@ -254,22 +255,11 @@ try:
 		array_mats[:, 0, :] = cache_block_mat[name_geo]
 		array_mats[:, 1, :] = cache_block_mat[upper_name_block]
 
-		return geometry_iso.create_iso_c(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, name_geo)
+		return geometry_iso.create_iso_c(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path)
 		# return geometry_iso.create_iso(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, name_geo)
-
-
-	class UpdateUnitListFromDF(threading.Thread):
-		def __init__(self):
-			threading.Thread.__init__(self)
-			self.unit_list = None
-
-		def run(self):
-			self.unit_list = GetListUnits()
 
 	block_drawn = 0
 	props_drawn = 0
-	unit_list_thread = UpdateUnitListFromDF()
-	unit_list_thread.start()
 
 	def draw_geo_block(geo_block, x, y, z):
 		x *= 16
@@ -368,7 +358,7 @@ try:
 			return
 
 		pos_in_front = fps_pos_in_front_2d(2)
-		ordered_update_cache_geo = OrderedDict(sorted(update_cache_geo_block.items(), key=lambda t: (t[1].x-pos_in_front.x/16) * (t[1].x-pos_in_front.x/16) + (t[1].y -pos_in_front.y/scale_unit_y) * (t[1].y-pos_in_front.y/scale_unit_y ) + (t[1].z - pos_in_front.z/16) * (t[1].z - pos_in_front.z/16)))
+		ordered_update_cache_geo = OrderedDict(sorted(update_cache_geo_block.items(), key=lambda t: (t[1].x-pos_in_front.x/16)**2 + ((t[1].y -pos_in_front.y/scale_unit_y)/1.5)**2 + (t[1].z - pos_in_front.z/16)**2))
 
 		# get a not already updating Node
 		for name_block, block_pos in iter(ordered_update_cache_geo.items()):
@@ -453,11 +443,9 @@ try:
 		update_geo_block()
 
 		# update unit draw
-		if not unit_list_thread.is_alive():
-			for unit in unit_list_thread.unit_list.value:
-				scn.renderable_system.DrawGeometry(dwarf_geo, gs.Matrix4.TranslationMatrix(gs.Vector3(map_info.block_size_x*16 - unit.pos_x+16, (unit.pos_z+0.3)*scale_unit_y, unit.pos_y)))
-			unit_list_thread = UpdateUnitListFromDF()
-			unit_list_thread.start()
+		update_dwarf_pos()
+		for d_pos in dwarfs_pos.values():
+			scn.renderable_system.DrawGeometry(dwarf_geo, gs.Matrix4.TranslationMatrix(gs.Vector3(map_info.block_size_x*16 - d_pos.x+16, (d_pos.z+0.3)*scale_unit_y, d_pos.y)))
 
 		# check if needed to remove block not used
 		check_to_delete_far_block()

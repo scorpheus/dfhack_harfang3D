@@ -435,8 +435,7 @@ def CreateIsoFBO(array, width, height, length, isolevel, mats):
 
 	return index_array, vtx_array, normal_array, material_array
 
-
-def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path=None, name=None):
+def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path=None):
 
 	# increase size of the array by the resolution
 	array_res = np.kron(array, np.ones((resolution, resolution_y, resolution)))
@@ -461,20 +460,20 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 	if array_res.sum() == 0 or np.average(array_res) == 1:
 		return None
 
-	# # smooth the value on XZ axis
-	# # array_copy = np.copy(array_res)
-	# # kernel_size = 3
-	# # kernel = np.array([[0.25, 0.5, 0.25],
-	# # 				  [0.5,  1.0, 0.5],
-	# # 				  [0.25, 0.5, 0.25]])
-	# # kernel_sum = kernel.sum()
-	# # kernel_size_half = kernel_size // 2
-	# # for smooth_pass in range(1):
-	# # 	for x in range(kernel_size_half, array_res.shape[0] -kernel_size_half-1):
-	# # 		for y in range(array_res.shape[1]):
-	# # 			for z in range(kernel_size_half, array_res.shape[2] -kernel_size_half-1):
-	# # 				array_res[x, y, z] = (array_copy[x-kernel_size_half:x+kernel_size_half+1, y, z-kernel_size_half:z+kernel_size_half+1]*kernel).sum() / kernel_sum
-	#
+	# smooth the value on XZ axis
+	# array_copy = np.copy(array_res)
+	# kernel_size = 3
+	# kernel = np.array([[0.25, 0.5, 0.25],
+	# 				  [0.5,  1.0, 0.5],
+	# 				  [0.25, 0.5, 0.25]])
+	# kernel_sum = kernel.sum()
+	# kernel_size_half = kernel_size // 2
+	# for smooth_pass in range(1):
+	# 	for x in range(kernel_size_half, array_res.shape[0] -kernel_size_half-1):
+	# 		for y in range(array_res.shape[1]):
+	# 			for z in range(kernel_size_half, array_res.shape[2] -kernel_size_half-1):
+	# 				array_res[x, y, z] = (array_copy[x-kernel_size_half:x+kernel_size_half+1, y, z-kernel_size_half:z+kernel_size_half+1]*kernel).sum() / kernel_sum
+
 	w, h, d = array_res.shape[0]-(resolution - 1), array_res.shape[1], array_res.shape[2]-(resolution - 1)
 
 	# check floor
