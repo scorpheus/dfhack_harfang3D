@@ -46,6 +46,11 @@ float SampleDepthBuffer(tex2D depth_buffer, vec2 uv)
 	if (vTechniqueIsForward == 1)
 		return dot(rgba, vec4(1.0, 1/255.0, 1/65025.0, 1/160581375.0));
 	return 1.0;
-};
+}
+
+// Eye enumeration
+const float EyeMono = 0;
+const float EyeStereoLeft = 1;
+const float EyeStereoRight = 2;
 
 #endif // COMMON_I

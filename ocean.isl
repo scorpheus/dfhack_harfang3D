@@ -162,7 +162,7 @@ variant {
         //    %normal% = normalize(tangent_matrix * n);
 
 			vec3 color = getSeaColor(p, n, tangent_view_dir, dist);
-			%diffuse% = vec4(pow(color, vec3(0.75)), 1.0);
+			%diffuse% = pow(color, vec3(0.75));
 		%}
 	}
 }

@@ -62182,6 +62182,6 @@
         </Set>
     </UV>
     <Materials>
-        <Material Name="environment_kit/mat-wall.xml"/>
+        <Material Name="environment_kit/mat-wall.mat"/>
     </Materials>
 </Geometry>

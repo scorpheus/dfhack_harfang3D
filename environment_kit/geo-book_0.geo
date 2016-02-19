@@ -556,6 +556,6 @@
         </Set>
     </UV>
     <Materials>
-        <Material Name="environment_kit/mat-bookshelf.xml"/>
+        <Material Name="environment_kit/mat-bookshelf.mat"/>
     </Materials>
 </Geometry>

@@ -21030,6 +21030,6 @@
 		</Set>
 	</UV>
 	<Materials>
-		<Material Name="environment_kit/mat-Default.xml"/>
+		<Material Name="environment_kit/mat-Default.mat"/>
 	</Materials>
 </Geometry>

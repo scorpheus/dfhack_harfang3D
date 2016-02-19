@@ -1,6 +1,6 @@
 {
 	"Material": {
-		"Shader": "magma.isl",
+		"Shader": "iso.isl",
 		"MaterialValues": {
 			"Value": {
 				"Name": "diffuse_color",

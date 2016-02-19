@@ -17674,6 +17674,6 @@
         </Set>
     </UV>
     <Materials>
-        <Material Name="environment_kit/mat-greece_column.xml"/>
+        <Material Name="environment_kit/mat-greece_column.mat"/>
     </Materials>
 </Geometry>

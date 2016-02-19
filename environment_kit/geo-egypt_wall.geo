@@ -15866,6 +15866,6 @@
         </Set>
     </UV>
     <Materials>
-        <Material Name="environment_kit/mat-egypt_block.xml"/>
+        <Material Name="environment_kit/mat-egypt_block.mat"/>
     </Materials>
 </Geometry>

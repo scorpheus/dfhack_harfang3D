@@ -1,247 +1,547 @@
-<Scene>
-	<Editor>
-		<SceneTools/>
-	</Editor>
-	<Components>
-		<gs::core::Environment FogNear="50.000000" FogFar="150.000000">
-			<BackgroundColor r="0.286259" g="0.335790" b="0.365072"/>
-			<AmbientColor r="0.355337" g="0.450294" b="0.511116"/>
-			<FogColor r="0.383124" g="0.492866" b="0.558724"/>
-		</gs::core::Environment>
-	</Components>
-	<Nodes>
-		<Node Uid="1" Name="door">
-			<Components>
-				<gs::core::Transform>
-					<Position x="2.483470" y="0.000000" z="0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-door.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="2" Name="ground">
-			<Components>
-				<gs::core::Transform>
-					<Position x="0.000000" y="0.000000" z="-0.719000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-ground.geo"/>
-				<gs::core::BoxCollision>
-					<gs::core::Collision Mass="0.000000" SelfMask="0" CollisionMask="0">
-						<Matrix m13="-0.066000"/>
-					</gs::core::Collision>
-					<Dimensions x="10.000000" y="0.200000" z="10.000000"/>
-				</gs::core::BoxCollision>
-				<gs::core::RigidBody Restitution="0.100000">
-					<Gravity x="0.000000" y="0.000000" z="0.000000"/>
-				</gs::core::RigidBody>
-			</Components>
-		</Node>
-		<Node Uid="3" Name="table">
-			<Components>
-				<gs::core::Transform>
-					<Position x="11.098720" y="0.000000" z="0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-table.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="4" Name="pole">
-			<Components>
-				<gs::core::Transform>
-					<Position x="-8.742103" y="0.000000" z="0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-pole.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="5" Name="boulder">
-			<Components>
-				<gs::core::Transform>
-					<Position x="-5.382308" y="2.138991" z="0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-boulder.geo"/>
-				<gs::core::SphereCollision Radius="0.500000">
-					<gs::core::Collision SelfMask="0" CollisionMask="0"/>
-				</gs::core::SphereCollision>
-				<gs::core::RigidBody Restitution="0.250000"/>
-			</Components>
-		</Node>
-		<Node Uid="6" Name="plank_0">
-			<Components>
-				<gs::core::Transform>
-					<Position x="-6.660863" y="0.022339" z="0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-plank_0.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="7" Name="plank_1">
-			<Components>
-				<gs::core::Transform>
-					<Position x="-7.537892" y="0.022339" z="0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-plank_1.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="8" Name="plank_2">
-			<Components>
-				<gs::core::Transform>
-					<Position x="-8.465016" y="0.022339" z="0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-plank_2.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="9" Name="house_roof">
-			<Components>
-				<gs::core::Transform>
-					<Position x="7.466675" y="0.386055" z="0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-house_roof.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="10" Name="bookshelf">
-			<Components>
-				<gs::core::Transform>
-					<Position x="13.129656" y="-0.003002" z="0.083928"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-bookshelf.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="11" Name="book_1">
-			<Components>
-				<gs::core::Transform>
-					<Position x="13.088728" y="1.376903" z="0.158346"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-book_1.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="12" Name="book_0">
-			<Components>
-				<gs::core::Transform>
-					<Position x="12.853746" y="1.376903" z="0.158346"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-book_0.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="13" Name="book_2">
-			<Components>
-				<gs::core::Transform>
-					<Position x="13.288063" y="1.376903" z="0.158346"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-book_2.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="14" Name="house_kit_2">
-			<Components>
-				<gs::core::Transform>
-					<Position x="6.840137" y="1.400004" z="-5.324504"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-house_kit_2.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="15" Name="house_kit_0">
-			<Components>
-				<gs::core::Transform>
-					<Position x="2.269835" y="1.399996" z="-5.306659"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-house_kit_0.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="16" Name="house_kit_1">
-			<Components>
-				<gs::core::Transform>
-					<Position x="-4.940981" y="1.400000" z="-5.311839"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-house_kit_1.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="17" Name="New Light">
-			<Components>
-				<gs::core::Transform>
-					<Rotation x="0.644027" y="-2.484476" z="-0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Light Model="Linear" Shadow="ShadowMap" SpecularIntensity="1.000000">
-					<SpecularColor r="1.000000" g="1.000000" b="1.000000"/>
-				</gs::core::Light>
-			</Components>
-		</Node>
-		<Node Uid="18" Name="door">
-			<Components>
-				<gs::core::Transform>
-					<Position x="-3.725214" y="0.000000" z="0.000001"/>
-					<Rotation x="-0.000000" y="-3.141593" z="0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-door.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="19" Name="boulder">
-			<Components>
-				<gs::core::Transform>
-					<Position x="-5.267273" y="4.106987" z="0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-boulder.geo"/>
-				<gs::core::SphereCollision Radius="0.500000">
-					<gs::core::Collision SelfMask="0" CollisionMask="0"/>
-				</gs::core::SphereCollision>
-				<gs::core::RigidBody Restitution="0.250000"/>
-			</Components>
-		</Node>
-		<Node Uid="20" Name="boulder">
-			<Components>
-				<gs::core::Transform>
-					<Position x="-5.382308" y="5.942239" z="-0.155532"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-boulder.geo"/>
-				<gs::core::SphereCollision Radius="0.500000">
-					<gs::core::Collision SelfMask="0" CollisionMask="0"/>
-				</gs::core::SphereCollision>
-				<gs::core::RigidBody Restitution="0.250000"/>
-			</Components>
-		</Node>
-		<Node Uid="21" Name="ground">
-			<Components>
-				<gs::core::Transform>
-					<Position x="-10.000000" y="0.000000" z="-0.719000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-ground.geo"/>
-				<gs::core::BoxCollision>
-					<gs::core::Collision Mass="0.000000" SelfMask="0" CollisionMask="0">
-						<Matrix m13="-0.066000"/>
-					</gs::core::Collision>
-					<Dimensions x="10.000000" y="0.200000" z="10.000000"/>
-				</gs::core::BoxCollision>
-				<gs::core::RigidBody Restitution="0.100000">
-					<Gravity x="0.000000" y="0.000000" z="0.000000"/>
-				</gs::core::RigidBody>
-			</Components>
-		</Node>
-		<Node Uid="22" Name="ground">
-			<Components>
-				<gs::core::Transform>
-					<Position x="10.000000" y="0.000000" z="-0.719000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-ground.geo"/>
-				<gs::core::BoxCollision>
-					<gs::core::Collision Mass="0.000000" SelfMask="0" CollisionMask="0">
-						<Matrix m13="-0.066000"/>
-					</gs::core::Collision>
-					<Dimensions x="10.000000" y="0.200000" z="10.000000"/>
-				</gs::core::BoxCollision>
-				<gs::core::RigidBody Restitution="0.100000">
-					<Gravity x="0.000000" y="0.000000" z="0.000000"/>
-				</gs::core::RigidBody>
-			</Components>
-		</Node>
-		<Node Uid="23" Name="Default Camera">
-			<Components>
-				<gs::core::Transform>
-					<Position x="-14.624587" y="10.533827" z="17.205208"/>
-					<Rotation x="0.409292" y="2.432683" z="0.000000"/>
-					<Scale x="0.999998" y="1.000000" z="1.000000"/>
-				</gs::core::Transform>
-				<gs::core::Camera ZNear="0.100000" ZFar="50000.000000"/>
-			</Components>
-		</Node>
-	</Nodes>
-	<NodeHierarchy/>
-	<Skins/>
-	<State>
-		<CurrentCamera Uid="23"/>
-	</State>
-</Scene>
+{
+	"Scene": {
+		"Editor": {
+			"SceneTools": {}
+		},
+		"Components": {
+			"gs::core::Environment": {
+				"BackgroundColor": {
+					"r": 0.2864,
+					"g": 0.33580000000000007,
+					"b": 0.36510000000000006
+				},
+				"AmbientColor": {
+					"r": 0.3554,
+					"g": 0.4504,
+					"b": 0.5114000000000001
+				},
+				"FogColor": {
+					"r": 0.38320000000000006,
+					"g": 0.49310000000000006,
+					"b": 0.5588000000000001
+				},
+				"FogNear": 50.0,
+				"FogFar": 150.0
+			}
+		},
+		"Nodes": {
+			"Node": {
+				"Uid": 1,
+				"Name": "door",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 2.4836,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-door.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 2,
+				"Name": "ground",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 0.0,
+							"y": 0.0,
+							"z": -0.7189
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-ground.geo"
+					},
+					"gs::core::BoxCollision": {
+						"gs::core::Collision": {
+							"Mass": 0.0,
+							"Matrix": {
+								"m13": -0.0658
+							},
+							"SelfMask": 0,
+							"CollisionMask": 0
+						},
+						"Dimensions": {
+							"x": 10.0,
+							"y": 0.2003,
+							"z": 10.0
+						}
+					},
+					"gs::core::RigidBody": {
+						"Restitution": 0.10020000000000001,
+						"Gravity": {
+							"x": 0.0,
+							"y": -9.81,
+							"z": 0.0
+						}
+					}
+				}
+			},
+			"Node": {
+				"Uid": 3,
+				"Name": "table",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 11.0988,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-table.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 4,
+				"Name": "pole",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -8.741900000000002,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-pole.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 5,
+				"Name": "boulder",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -5.3821,
+							"y": 2.1390000000000004,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-boulder.geo"
+					},
+					"gs::core::SphereCollision": {
+						"gs::core::Collision": {
+							"SelfMask": 0,
+							"CollisionMask": 0
+						},
+						"Radius": 0.5
+					},
+					"gs::core::RigidBody": {
+						"Restitution": 0.25,
+						"Gravity": {
+							"x": 0.0,
+							"y": -9.81,
+							"z": 0.0
+						}
+					}
+				}
+			},
+			"Node": {
+				"Uid": 6,
+				"Name": "plank_0",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -6.6606000000000009,
+							"y": 0.0224,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-plank_0.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 7,
+				"Name": "plank_1",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -7.5377,
+							"y": 0.0224,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-plank_1.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 8,
+				"Name": "plank_2",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -8.465,
+							"y": 0.0224,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-plank_2.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 9,
+				"Name": "house_roof",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 7.466900000000001,
+							"y": 0.3861,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-house_roof.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 10,
+				"Name": "bookshelf",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 13.129700000000002,
+							"y": -0.003,
+							"z": 0.084
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-bookshelf.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 11,
+				"Name": "book_1",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 13.0889,
+							"y": 1.377,
+							"z": 0.1584
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-book_1.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 12,
+				"Name": "book_0",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 12.853800000000002,
+							"y": 1.377,
+							"z": 0.1584
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-book_0.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 13,
+				"Name": "book_2",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 13.288300000000002,
+							"y": 1.377,
+							"z": 0.1584
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-book_2.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 14,
+				"Name": "house_kit_2",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 6.8402,
+							"y": 1.4001000000000002,
+							"z": -5.3245000000000008
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-house_kit_2.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 15,
+				"Name": "house_kit_0",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 2.27,
+							"y": 1.4000000000000002,
+							"z": -5.3066
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-house_kit_0.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 16,
+				"Name": "house_kit_1",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -4.9408,
+							"y": 1.4000000000000002,
+							"z": -5.3118
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-house_kit_1.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 17,
+				"Name": "New Light",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 3.2326,
+							"y": 3.9736000000000004,
+							"z": 4.1895
+						},
+						"Rotation": {
+							"x": 0.6438,
+							"y": -2.5302000000000004,
+							"z": -0.0275
+						}
+					},
+					"gs::core::Light": {
+						"Model": "Linear",
+						"Shadow": "ShadowMap",
+						"SpecularColor": {
+							"r": 1.0,
+							"g": 1.0,
+							"b": 1.0
+						},
+						"SpecularIntensity": 1.0
+					}
+				}
+			},
+			"Node": {
+				"Uid": 18,
+				"Name": "door",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -3.7251000000000005,
+							"y": 0.0,
+							"z": 0.0001
+						},
+						"Rotation": {
+							"x": -0.0,
+							"y": -3.1414,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-door.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 19,
+				"Name": "boulder",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -5.267,
+							"y": 4.107,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-boulder.geo"
+					},
+					"gs::core::SphereCollision": {
+						"gs::core::Collision": {
+							"SelfMask": 0,
+							"CollisionMask": 0
+						},
+						"Radius": 0.5
+					},
+					"gs::core::RigidBody": {
+						"Restitution": 0.25,
+						"Gravity": {
+							"x": 0.0,
+							"y": -9.81,
+							"z": 0.0
+						}
+					}
+				}
+			},
+			"Node": {
+				"Uid": 20,
+				"Name": "boulder",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -5.3821,
+							"y": 5.9423,
+							"z": -0.1553
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-boulder.geo"
+					},
+					"gs::core::SphereCollision": {
+						"gs::core::Collision": {
+							"SelfMask": 0,
+							"CollisionMask": 0
+						},
+						"Radius": 0.5
+					},
+					"gs::core::RigidBody": {
+						"Restitution": 0.25,
+						"Gravity": {
+							"x": 0.0,
+							"y": -9.81,
+							"z": 0.0
+						}
+					}
+				}
+			},
+			"Node": {
+				"Uid": 21,
+				"Name": "ground",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -10.0,
+							"y": 0.0,
+							"z": -0.7189
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-ground.geo"
+					},
+					"gs::core::BoxCollision": {
+						"gs::core::Collision": {
+							"Mass": 0.0,
+							"Matrix": {
+								"m13": -0.0658
+							},
+							"SelfMask": 0,
+							"CollisionMask": 0
+						},
+						"Dimensions": {
+							"x": 10.0,
+							"y": 0.2003,
+							"z": 10.0
+						}
+					},
+					"gs::core::RigidBody": {
+						"Restitution": 0.10020000000000001,
+						"Gravity": {
+							"x": 0.0,
+							"y": -9.81,
+							"z": 0.0
+						}
+					}
+				}
+			},
+			"Node": {
+				"Uid": 22,
+				"Name": "ground",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 10.0,
+							"y": 0.0,
+							"z": -0.7189
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-ground.geo"
+					},
+					"gs::core::BoxCollision": {
+						"gs::core::Collision": {
+							"Mass": 0.0,
+							"Matrix": {
+								"m13": -0.0658
+							},
+							"SelfMask": 0,
+							"CollisionMask": 0
+						},
+						"Dimensions": {
+							"x": 10.0,
+							"y": 0.2003,
+							"z": 10.0
+						}
+					},
+					"gs::core::RigidBody": {
+						"Restitution": 0.10020000000000001,
+						"Gravity": {
+							"x": 0.0,
+							"y": -9.81,
+							"z": 0.0
+						}
+					}
+				}
+			},
+			"Node": {
+				"Uid": 23,
+				"Name": "Default Camera",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -10.356900000000002,
+							"y": 28.7819,
+							"z": 22.095200000000003
+						},
+						"Rotation": {
+							"x": 0.8617,
+							"y": 2.5814,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0,
+							"y": 1.0,
+							"z": 1.0
+						}
+					},
+					"gs::core::Camera": {
+						"ZNear": 0.10020000000000001,
+						"ZFar": 50000.0
+					}
+				}
+			}
+		},
+		"NodeHierarchy": {},
+		"Skeletons": {},
+		"State": {
+			"CurrentCamera": {
+				"Uid": 23
+			}
+		}
+	}
+}

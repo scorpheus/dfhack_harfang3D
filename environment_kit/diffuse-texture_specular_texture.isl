@@ -12,14 +12,14 @@ variant {
 
 		source %{
 			v_uv = vUV0;
-			v_normal = vNormal;
+			v_normal = vNormalViewMatrix * vNormal;
 		%}
 	}
 
 	pixel {
 		source %{
-			%diffuse% = texture2D(diffuse_map, v_uv);
-			%specular% = texture2D(specular_map, v_uv);
+			%diffuse% = texture2D(diffuse_map, v_uv).xyz;
+			%specular% = texture2D(specular_map, v_uv).xyz;
 			%normal% = normalize(v_normal);
 		%}
 	}

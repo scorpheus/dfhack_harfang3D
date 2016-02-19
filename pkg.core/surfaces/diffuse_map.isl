@@ -17,7 +17,7 @@ variant {
 		source %{
 			vec4 diffuse_color = texture2D(diffuse_map, v_uv);
 
-			%diffuse% = diffuse_color;
+			%diffuse% = diffuse_color.xyz;
 		%}
 	}
 }

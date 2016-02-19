@@ -1,6 +1,6 @@
 {
 	"Material": {
-		"Shader": "water.isl",
+		"Shader": "iso.isl",
 		"MaterialValues": {
 			"Value": {
 				"Name": "diffuse_color",

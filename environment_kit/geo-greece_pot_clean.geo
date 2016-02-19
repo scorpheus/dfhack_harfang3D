@@ -31451,6 +31451,6 @@
         </Set>
     </UV>
     <Materials>
-        <Material Name="environment_kit/mat-greece_pot_clean.xml"/>
+        <Material Name="environment_kit/mat-greece_pot_clean.mat"/>
     </Materials>
 </Geometry>

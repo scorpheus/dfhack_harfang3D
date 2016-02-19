@@ -112,8 +112,8 @@ variant {
 
 
 		source %{
-			%diffuse% = diffuse_color * (snoise(v_vtx*10)*0.25+0.75);
-			%specular% = specular_color;
+			%diffuse% = (diffuse_color * (snoise(v_vtx*10)*0.25+0.75)).xyz;
+			%specular% = specular_color.xyz;
 		%}
 	}
 }

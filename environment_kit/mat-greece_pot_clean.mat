@@ -1,0 +1,22 @@
+{
+	"Material": {
+		"Shader": "environment_kit/diffuse-texture_specular-texture_normal-texture.isl",
+		"MaterialValues": {
+			"Value": {
+				"Name": "diffuse_map",
+				"Type": "tex2D",
+				"Value": "environment_kit/tex-greece_pot_clean_diffuse.png"
+			},
+			"Value": {
+				"Name": "specular_map",
+				"Type": "tex2D",
+				"Value": "environment_kit/tex-greece_pot_specular.png"
+			},
+			"Value": {
+				"Name": "normal_map",
+				"Type": "tex2D",
+				"Value": "environment_kit/tex-greece_pot_normal.png"
+			}
+		}
+	}
+}

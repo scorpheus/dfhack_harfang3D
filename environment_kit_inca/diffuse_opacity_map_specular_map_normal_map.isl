@@ -33,8 +33,8 @@ variant {
 			n = tangent_matrix * n;
 
 			vec4 diffuse_color = texture2D(diffuse_map, v_uv);
-			%diffuse% = diffuse_color;
-			%specular% = texture2D(specular_map, v_uv);
+			%diffuse% = diffuse_color.xyz;
+			%specular% = texture2D(specular_map, v_uv).xyz;
 			%normal% = n;
 			%glossiness% = glossiness;
 			%opacity% = diffuse_color.w;			

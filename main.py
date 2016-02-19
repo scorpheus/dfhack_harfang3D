@@ -26,6 +26,7 @@ class building_type():
 
 scale_unit_y = 1.0
 
+gs.LoadPlugins(gs.get_default_plugins_path())
 
 gs.plus.create_workers()
 
@@ -61,9 +62,14 @@ try:
 
 	scn.Load('@core/scene_templates/scene.scn', gs.SceneLoadContext(render.get_render_system()))
 	light_cam = scene.add_light(scn, gs.Matrix4.TranslationMatrix(gs.Vector3(6, 200, -6)))
-	light_cam.light.SetShadow(gs.Light.Shadow_None)
+	light_cam.GetLight().SetShadow(gs.Light.Shadow_None)
+	# light_cam.GetLight().SetDiffuseIntensity(100)
+	# light_cam.GetLight().SetDiffuseColor(gs.Color.Red)
+	# light_cam.GetLight().SetRange(130)
+	# light_cam.GetLight().SetVolumeRange(1000)
+
 	cam = scene.add_camera(scn, gs.Matrix4.TranslationMatrix(gs.Vector3(112, 62, 112)))
-	cam.camera.SetZoomFactor(gs.FovToZoomFactor(1.57))
+	cam.GetCamera().SetZoomFactor(gs.FovToZoomFactor(1.57))
 
 	fps = camera.fps_controller(128, 74*scale_unit_y, 64)
 	fps.rot = gs.Vector3(0.5, 0, 0)
@@ -276,7 +282,7 @@ try:
 		x *= 16
 		z *= 16
 
-		scn.renderable_system.DrawGeometry(geo_block, gs.Matrix4.TranslationMatrix(gs.Vector3(x+1, y*scale_unit_y, z)) * gs.Matrix4.ScaleMatrix(gs.Vector3(1, scale_unit_y, 1)))
+		scn.GetRenderableSystem().DrawGeometry(geo_block, gs.Matrix4.TranslationMatrix(gs.Vector3(x+1, y*scale_unit_y, z)) * gs.Matrix4.ScaleMatrix(gs.Vector3(1, scale_unit_y, 1)))
 
 		global block_drawn
 		block_drawn += 1
@@ -286,18 +292,18 @@ try:
 		for x in range(16):
 			for z in range(16):
 				if block[x, z] == 1:
-					scn.renderable_system.DrawGeometry(cube_geo, gs.Matrix4.TransformationMatrix(gs.Vector3(pos_block.x*16+x+1, pos_block.y*scale_unit_y, pos_block.z*16+z), gs.Vector3(0, 0, 0)))
+					scn.GetRenderableSystem().DrawGeometry(cube_geo, gs.Matrix4.TransformationMatrix(gs.Vector3(pos_block.x*16+x+1, pos_block.y*scale_unit_y, pos_block.z*16+z), gs.Vector3(0, 0, 0)))
 
 	def draw_props_in_block(name_block):
 		for prop in cache_block_props[name_block]:
-			scn.renderable_system.DrawGeometry(geos[prop[1]], gs.Matrix4.TransformationMatrix(gs.Vector3(prop[0].x+1, prop[0].y*scale_unit_y, prop[0].z), gs.Vector3(0, (name_block%628)*0.01, 0), gs.Vector3(0.25, 0.25, 0.25)))
+			scn.GetRenderableSystem().DrawGeometry(geos[prop[1]], gs.Matrix4.TransformationMatrix(gs.Vector3(prop[0].x+1, prop[0].y*scale_unit_y, prop[0].z), gs.Vector3(0, (name_block%628)*0.01, 0), gs.Vector3(0.25, 0.25, 0.25)))
 			global props_drawn
 			props_drawn += 1
 
 	def draw_building_in_block(name_block):
 		for building in cache_block_building[name_block]:
 			if building_geos[building[1]] is not None:
-				scn.renderable_system.DrawGeometry(building_geos[building[1]]["g"], gs.Matrix4.TransformationMatrix(gs.Vector3(building[0].x+1, building[0].y*scale_unit_y, building[0].z), gs.Vector3(0, 0, 0), gs.Vector3(0.25, 0.25, 0.25)) * building_geos[building[1]]["o"])
+				scn.GetRenderableSystem().DrawGeometry(building_geos[building[1]]["g"], gs.Matrix4.TransformationMatrix(gs.Vector3(building[0].x+1, building[0].y*scale_unit_y, building[0].z), gs.Vector3(0, 0, 0), gs.Vector3(0.25, 0.25, 0.25)) * building_geos[building[1]]["o"])
 				global props_drawn
 				props_drawn += 1
 
@@ -412,13 +418,13 @@ try:
 					if name in update_cache_geo_block:
 						update_cache_geo_block.pop(name)
 
-	def on_frame_complete():
-		state = render.get_render_system().GetViewState()
-		gs.DrawStateCacheStats(render.get_render_system(), render.__cache_font(render.get_font(), 12))
-		render.get_render_system().SetViewState(state)
-
-
-	scn.GetRenderSignals().frame_complete_signal.Connect(on_frame_complete)
+	# def on_frame_complete():
+	# 	state = render.get_render_system().GetViewState()
+	# 	gs.DrawStateCacheStats(render.get_render_system(), render.__cache_font(render.get_font(), 12), 0, 600)
+	# 	render.get_render_system_async().DrawRenderSystemStats(render.__cache_font(render.get_font(), 12), 0, 300)
+	# 	render.get_render_system().SetViewState(state)
+	#
+	# scn.GetRenderSignals().frame_complete_signal.Connect(on_frame_complete)
 
 	# main loop
 	while not input.key_press(gs.InputDevice.KeyEscape):
@@ -426,7 +432,7 @@ try:
 
 		dt_sec = clock.update()
 		fps.update_and_apply_to_node(cam, dt_sec)
-		light_cam.transform.SetPosition(fps.pos)
+		light_cam.GetTransform().SetPosition(fps.pos)
 
 		# pos -> blocks dans lequel on peux se deplacer
 		pos.x = fps.pos.x // 16
@@ -459,10 +465,10 @@ try:
 		update_geo_block()
 
 		# update unit draw
-		update_dwarf_pos()
-		for dwarf in dwarfs_pos.values():
-			d_pos = dwarf[0]
-			scn.renderable_system.DrawGeometry(dwarf_geo, gs.Matrix4.TransformationMatrix(gs.Vector3(map_info.block_size_x*16 - d_pos.x+16, (d_pos.z)*scale_unit_y, d_pos.y), dwarf[1], gs.Vector3(0.01, 0.01, 0.01)))
+		# update_dwarf_pos()
+		# for dwarf in dwarfs_pos.values():
+		# 	d_pos = dwarf[0]
+		# 	scn.GetRenderableSystem().DrawGeometry(dwarf_geo, gs.Matrix4.TransformationMatrix(gs.Vector3(map_info.block_size_x*16 - d_pos.x+16, (d_pos.z)*scale_unit_y, d_pos.y), dwarf[1], gs.Vector3(0.01, 0.01, 0.01)))
 
 		# check if needed to remove block not used
 		check_to_delete_far_block()
@@ -478,3 +484,4 @@ try:
 finally:
 	close_socket()
 
+#

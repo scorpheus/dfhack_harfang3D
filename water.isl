@@ -81,9 +81,9 @@ variant {
 			pos.z += sin(vClock*0.2);
             vec3 color = SEA_BASE.xyz + SEA_WATER_COLOR.xyz * 0.12;
             color += SEA_WATER_COLOR.xyz * (map(pos, ITER_FRAGMENT) - SEA_HEIGHT) * 0.18;
-			%diffuse% = vec4(color, 1);
+			%diffuse% = color;
 
-			%specular% = specular_color;
+			%specular% = specular_color.xyz;
 		%}
 	}
 }

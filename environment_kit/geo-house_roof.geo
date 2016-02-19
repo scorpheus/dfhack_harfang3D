@@ -45687,7 +45687,7 @@
 		</Set>
 	</UV>
 	<Materials>
-		<Material Name="environment_kit/mat-roof.xml"/>
-		<Material Name="environment_kit/mat-wood.xml"/>
+		<Material Name="environment_kit/mat-roof.mat"/>
+		<Material Name="environment_kit/mat-wood.mat"/>
 	</Materials>
 </Geometry>

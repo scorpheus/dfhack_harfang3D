@@ -1,193 +1,447 @@
-<Scene>
-	<Editor>
-		<SceneTools/>
-	</Editor>
-	<Components>
-		<gs::core::Environment>
-			<AmbientColor r="0.400000" g="0.400000" b="0.400000"/>
-			<FogColor r="1.000000" g="1.000000" b="1.000000"/>
-		</gs::core::Environment>
-	</Components>
-	<Nodes>
-		<Node Uid="1" Name="greece_column">
-			<Components>
-				<gs::core::Transform>
-					<Position x="0.002197" y="0.000000" z="0.000000"/>
-					<Rotation x="-1.570796" y="0.000000" z="0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-greece_column.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="2" Name="greece_pot">
-			<Components>
-				<gs::core::Transform>
-					<Position x="-1.030691" y="0.000000" z="0.000000"/>
-					<Rotation x="-1.570796" y="0.000000" z="0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-greece_pot.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="3" Name="greece_pot_broken_03">
-			<Components>
-				<gs::core::Transform>
-					<Position x="2.926133" y="0.480401" z="0.133235"/>
-					<Scale x="0.010000" y="0.010000" z="0.010000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-greece_pot_broken_03.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="4" Name="greece_pot_broken_00">
-			<Components>
-				<gs::core::Transform>
-					<Position x="2.829037" y="0.547518" z="0.127910"/>
-					<Scale x="0.010000" y="0.010000" z="0.010000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-greece_pot_broken_00.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="5" Name="greece_pot_broken_05">
-			<Components>
-				<gs::core::Transform>
-					<Position x="3.067492" y="0.634425" z="0.046178"/>
-					<Scale x="0.010000" y="0.010000" z="0.010000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-greece_pot_broken_05.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="6" Name="greece_pot_broken_02">
-			<Components>
-				<gs::core::Transform>
-					<Position x="2.869192" y="0.634425" z="-0.077846"/>
-					<Scale x="0.010000" y="0.010000" z="0.010000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-greece_pot_broken_02.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="7" Name="greece_pot_broken_04">
-			<Components>
-				<gs::core::Transform>
-					<Position x="3.073277" y="0.131732" z="0.110168"/>
-					<Scale x="0.010000" y="0.010000" z="0.010000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-greece_pot_broken_04.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="8" Name="greece_pot_broken_01">
-			<Components>
-				<gs::core::Transform>
-					<Position x="2.869088" y="0.131732" z="0.161247"/>
-					<Scale x="0.010000" y="0.010000" z="0.010000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-greece_pot_broken_01.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="9" Name="greece_column_broken_2">
-			<Components>
-				<gs::core::Transform>
-					<Position x="-4.394011" y="0.000000" z="0.000000"/>
-					<Rotation x="-1.570796" y="0.000000" z="0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-greece_column_broken_2.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="10" Name="greece_column_broken_1">
-			<Components>
-				<gs::core::Transform>
-					<Position x="-3.249166" y="0.000000" z="0.000000"/>
-					<Rotation x="-1.570796" y="0.000000" z="0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-greece_column_broken_1.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="11" Name="greece_column_broken_0">
-			<Components>
-				<gs::core::Transform>
-					<Position x="-2.283043" y="0.000000" z="0.000000"/>
-					<Rotation x="-1.570796" y="0.000000" z="0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-greece_column_broken_0.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="12" Name="greece_pot_short">
-			<Components>
-				<gs::core::Transform>
-					<Position x="1.209833" y="0.000000" z="0.000000"/>
-					<Rotation x="-1.570796" y="0.000000" z="0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-greece_pot_short.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="13" Name="greece_pot_short_clean">
-			<Components>
-				<gs::core::Transform>
-					<Position x="1.209833" y="0.000000" z="1.429626"/>
-					<Rotation x="-1.570796" y="0.000000" z="0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-greece_pot_short_clean.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="14" Name="greece_pot_clean">
-			<Components>
-				<gs::core::Transform>
-					<Position x="-1.030691" y="0.000000" z="1.429626"/>
-					<Rotation x="-1.570796" y="0.000000" z="0.000000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-greece_pot_clean.geo"/>
-			</Components>
-		</Node>
-		<Node Uid="15" Name="ground">
-			<Components>
-				<gs::core::Transform>
-					<Position x="0.000000" y="0.000000" z="-0.719000"/>
-				</gs::core::Transform>
-				<gs::core::Object Geometry="environment_kit/geo-ground.geo"/>
-				<gs::core::BoxCollision>
-					<gs::core::Collision Mass="0.000000" SelfMask="0" CollisionMask="0">
-						<Matrix m13="-0.066000"/>
-					</gs::core::Collision>
-					<Dimensions x="10.000000" y="0.200000" z="10.000000"/>
-				</gs::core::BoxCollision>
-				<gs::core::RigidBody Restitution="0.100000">
-					<Gravity x="0.000000" y="0.000000" z="0.000000"/>
-				</gs::core::RigidBody>
-			</Components>
-		</Node>
-		<Node Uid="16" Name="New Light">
-			<Components>
-				<gs::core::Transform>
-					<Position x="2.779689" y="1.045213" z="-8.530686"/>
-				</gs::core::Transform>
-				<gs::core::Light Shadow="ShadowMap" ShadowRange="0.000000" SpecularIntensity="2.000000">
-					<DiffuseColor r="0.403174" g="0.835172" b="1.000000"/>
-					<SpecularColor r="0.000000" g="0.647669" b="1.000000"/>
-				</gs::core::Light>
-			</Components>
-		</Node>
-		<Node Uid="17" Name="New Light">
-			<Components>
-				<gs::core::Transform>
-					<Position x="3.643103" y="0.794266" z="3.019060"/>
-				</gs::core::Transform>
-				<gs::core::Light Shadow="ShadowMap" ShadowRange="0.000000" DiffuseIntensity="0.500000" SpecularIntensity="0.500000">
-					<DiffuseColor r="1.000000" g="0.919417" b="0.793652"/>
-					<SpecularColor r="1.000000" g="0.438163" b="0.000000"/>
-				</gs::core::Light>
-			</Components>
-		</Node>
-		<Node Uid="18" Name="Default Camera">
-			<Components>
-				<gs::core::Transform>
-					<Position x="7.646660" y="2.630396" z="3.570704"/>
-					<Rotation x="0.251089" y="-2.181002" z="0.000000"/>
-					<Scale x="0.999998" y="0.999997" z="0.999998"/>
-				</gs::core::Transform>
-				<gs::core::Camera ZNear="0.100000" ZFar="50000.000000"/>
-			</Components>
-		</Node>
-	</Nodes>
-	<NodeHierarchy/>
-	<Skins/>
-	<State>
-		<CurrentCamera Uid="18"/>
-	</State>
-</Scene>
+{
+	"Scene": {
+		"Editor": {
+			"SceneTools": {}
+		},
+		"Components": {
+			"gs::core::Environment": {
+				"AmbientColor": {
+					"r": 0.4001,
+					"g": 0.4001,
+					"b": 0.4001
+				},
+				"FogColor": {
+					"r": 1.0,
+					"g": 1.0,
+					"b": 1.0
+				}
+			}
+		},
+		"Nodes": {
+			"Node": {
+				"Uid": 1,
+				"Name": "greece_column",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 0.0022,
+							"y": 0.0,
+							"z": 0.0
+						},
+						"Rotation": {
+							"x": -1.5707,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-greece_column.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 2,
+				"Name": "greece_pot",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -1.0305,
+							"y": 0.0,
+							"z": 0.0
+						},
+						"Rotation": {
+							"x": -1.5707,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-greece_pot.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 3,
+				"Name": "greece_pot_broken_03",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 2.9262,
+							"y": 0.4806,
+							"z": 0.13340000000000003
+						},
+						"Scale": {
+							"x": 0.01,
+							"y": 0.01,
+							"z": 0.01
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-greece_pot_broken_03.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 4,
+				"Name": "greece_pot_broken_00",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 2.8291,
+							"y": 0.5476,
+							"z": 0.12810000000000003
+						},
+						"Scale": {
+							"x": 0.01,
+							"y": 0.01,
+							"z": 0.01
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-greece_pot_broken_00.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 5,
+				"Name": "greece_pot_broken_05",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 3.0676,
+							"y": 0.6346,
+							"z": 0.046200000000000008
+						},
+						"Scale": {
+							"x": 0.01,
+							"y": 0.01,
+							"z": 0.01
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-greece_pot_broken_05.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 6,
+				"Name": "greece_pot_broken_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 2.8692,
+							"y": 0.6346,
+							"z": -0.0777
+						},
+						"Scale": {
+							"x": 0.01,
+							"y": 0.01,
+							"z": 0.01
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-greece_pot_broken_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 7,
+				"Name": "greece_pot_broken_04",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 3.0733,
+							"y": 0.1318,
+							"z": 0.11030000000000001
+						},
+						"Scale": {
+							"x": 0.01,
+							"y": 0.01,
+							"z": 0.01
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-greece_pot_broken_04.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 8,
+				"Name": "greece_pot_broken_01",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 2.8692,
+							"y": 0.1318,
+							"z": 0.16140000000000002
+						},
+						"Scale": {
+							"x": 0.01,
+							"y": 0.01,
+							"z": 0.01
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-greece_pot_broken_01.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 9,
+				"Name": "greece_column_broken_2",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -4.394,
+							"y": 0.0,
+							"z": 0.0
+						},
+						"Rotation": {
+							"x": -1.5707,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-greece_column_broken_2.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 10,
+				"Name": "greece_column_broken_1",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -3.249,
+							"y": 0.0,
+							"z": 0.0
+						},
+						"Rotation": {
+							"x": -1.5707,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-greece_column_broken_1.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 11,
+				"Name": "greece_column_broken_0",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -2.2829,
+							"y": 0.0,
+							"z": 0.0
+						},
+						"Rotation": {
+							"x": -1.5707,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-greece_column_broken_0.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 12,
+				"Name": "greece_pot_short",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 1.21,
+							"y": 0.0,
+							"z": 0.0
+						},
+						"Rotation": {
+							"x": -1.5707,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-greece_pot_short.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 13,
+				"Name": "greece_pot_short_clean",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 1.21,
+							"y": 0.0,
+							"z": 1.4298
+						},
+						"Rotation": {
+							"x": -1.5707,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-greece_pot_short_clean.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 14,
+				"Name": "greece_pot_clean",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -1.0305,
+							"y": 0.0,
+							"z": 1.4298
+						},
+						"Rotation": {
+							"x": -1.5707,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-greece_pot_clean.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 15,
+				"Name": "ground",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 0.0,
+							"y": 0.0,
+							"z": -0.7189
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-ground.geo"
+					},
+					"gs::core::BoxCollision": {
+						"gs::core::Collision": {
+							"Mass": 0.0,
+							"Matrix": {
+								"m13": -0.0658
+							},
+							"SelfMask": 0,
+							"CollisionMask": 0
+						},
+						"Dimensions": {
+							"x": 10.0,
+							"y": 0.20020000000000003,
+							"z": 10.0
+						}
+					},
+					"gs::core::RigidBody": {
+						"Restitution": 0.10020000000000001,
+						"Gravity": {
+							"x": 0.0,
+							"y": -9.81,
+							"z": 0.0
+						}
+					}
+				}
+			},
+			"Node": {
+				"Uid": 16,
+				"Name": "New Light",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 2.7798000000000004,
+							"y": 1.0454,
+							"z": -8.5305
+						}
+					},
+					"gs::core::Light": {
+						"Shadow": "ShadowMap",
+						"ShadowRange": 0.0,
+						"DiffuseColor": {
+							"r": 0.4033,
+							"g": 0.8353,
+							"b": 1.0
+						},
+						"SpecularColor": {
+							"r": 0.0,
+							"g": 0.6478,
+							"b": 1.0
+						},
+						"SpecularIntensity": 2.0
+					}
+				}
+			},
+			"Node": {
+				"Uid": 17,
+				"Name": "New Light",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 3.6432,
+							"y": 0.7944,
+							"z": 3.0191000000000005
+						}
+					},
+					"gs::core::Light": {
+						"Shadow": "ShadowMap",
+						"ShadowRange": 0.0,
+						"DiffuseColor": {
+							"r": 1.0,
+							"g": 0.9195000000000001,
+							"b": 0.7937000000000001
+						},
+						"SpecularColor": {
+							"r": 1.0,
+							"g": 0.43820000000000006,
+							"b": 0.0
+						},
+						"DiffuseIntensity": 0.5,
+						"SpecularIntensity": 0.5
+					}
+				}
+			},
+			"Node": {
+				"Uid": 18,
+				"Name": "Default Camera",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 11.4419,
+							"y": 11.441,
+							"z": -12.474300000000002
+						},
+						"Rotation": {
+							"x": 0.609,
+							"y": -0.7718,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0001,
+							"y": 1.0001,
+							"z": 1.0001
+						}
+					},
+					"gs::core::Camera": {
+						"ZNear": 0.10020000000000001,
+						"ZFar": 50000.0
+					}
+				}
+			}
+		},
+		"NodeHierarchy": {},
+		"Skeletons": {},
+		"State": {
+			"CurrentCamera": {
+				"Uid": 18
+			}
+		}
+	}
+}

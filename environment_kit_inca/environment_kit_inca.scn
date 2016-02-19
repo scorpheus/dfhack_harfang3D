@@ -32,6 +32,21 @@
 							"Name": "attenuation",
 							"Type": "float",
 							"Value": 0.8002
+						},
+						"Parameter": {
+							"Name": "shadow_range",
+							"Type": "int",
+							"Value": 150
+						},
+						"Parameter": {
+							"Name": "shadow_bias",
+							"Type": "float",
+							"Value": 0.01
+						},
+						"Parameter": {
+							"Name": "shadow_distribution",
+							"Type": "float",
+							"Value": 0.5
 						}
 					}
 				}
@@ -435,9 +450,9 @@
 				"Components": {
 					"gs::core::Transform": {
 						"Position": {
-							"x": 0.6125,
+							"x": 0.6126,
 							"y": 16.6684,
-							"z": 0.6031
+							"z": 0.6032
 						}
 					},
 					"gs::core::Object": {
@@ -1198,19 +1213,19 @@
 				"Components": {
 					"gs::core::Transform": {
 						"Position": {
-							"x": -162.9738,
-							"y": 80.0718,
-							"z": -68.178
+							"x": -115.4255,
+							"y": 34.8538,
+							"z": -27.2386
 						},
 						"Rotation": {
-							"x": 0.4885,
-							"y": 0.4811,
+							"x": 0.3687,
+							"y": 0.8208,
 							"z": 0.0
 						},
 						"Scale": {
-							"x": 1.0001,
-							"y": 1.0001,
-							"z": 1.0001
+							"x": 1.0002,
+							"y": 1.0002,
+							"z": 1.0002
 						}
 					},
 					"gs::core::Camera": {
@@ -1273,7 +1288,7 @@
 				"Parent": 22
 			}
 		},
-		"Skins": {},
+		"Skeletons": {},
 		"State": {
 			"CurrentCamera": {
 				"Uid": 66

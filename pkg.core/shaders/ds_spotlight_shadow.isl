@@ -47,8 +47,7 @@ variant {
 				// final contribution
 				vec4 diff_alpha = texture2D(vGBuffer1, UV);
 				%out.color% = vec4(mix(vLightShadowColor, diff_alpha.rgb * vLightDiffuseColor * idiff * sdiff + spec_glos.rgb * vLightSpecularColor * ispec, pcf), 1.0);
-			}
-			else {
+			} else {
 				%out.color% = vec4(vLightShadowColor, 1.0);
 			}
 		%}

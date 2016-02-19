@@ -29399,6 +29399,6 @@
         </Set>
     </UV>
     <Materials>
-        <Material Name="environment_kit/mat-greece_pot.xml"/>
+        <Material Name="environment_kit/mat-greece_pot.mat"/>
     </Materials>
 </Geometry>
