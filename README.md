@@ -1,4 +1,4 @@
-# DFHack Kraken
+# DFHack Ookpy 
 
 This projects aims to visualize the data extracted from **Dwarf Fortress** in realtime 3D, using the **DFHack** system.
 
