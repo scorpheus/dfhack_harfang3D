@@ -465,10 +465,10 @@ try:
 		update_geo_block()
 
 		# update unit draw
-		# update_dwarf_pos()
-		# for dwarf in dwarfs_pos.values():
-		# 	d_pos = dwarf[0]
-		# 	scn.GetRenderableSystem().DrawGeometry(dwarf_geo, gs.Matrix4.TransformationMatrix(gs.Vector3(map_info.block_size_x*16 - d_pos.x+16, (d_pos.z)*scale_unit_y, d_pos.y), dwarf[1], gs.Vector3(0.01, 0.01, 0.01)))
+		update_dwarf_pos()
+		for dwarf in dwarfs_pos.values():
+			d_pos = dwarf[0]
+			scn.GetRenderableSystem().DrawGeometry(dwarf_geo, gs.Matrix4.TransformationMatrix(gs.Vector3(map_info.block_size_x*16 - d_pos.x+16, (d_pos.z)*scale_unit_y, d_pos.y), dwarf[1], gs.Vector3(0.01, 0.01, 0.01)))
 
 		# check if needed to remove block not used
 		check_to_delete_far_block()

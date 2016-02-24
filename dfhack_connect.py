@@ -181,6 +181,10 @@ def GetListUnits():
 	list_unit_in_message.scan_all = True
 	list_unit_in_message.alive = True
 	list_unit_in_message.race = 465
+	# list_unit_in_message.mask.labors = True
+	# list_unit_in_message.mask.skills = True
+	# list_unit_in_message.mask.profession = True
+	# list_unit_in_message.mask.misc_traits = True
 
 	received = GetInfoFromDFHack(message_request, list_unit_in_message)
 
