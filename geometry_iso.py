@@ -539,7 +539,11 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 	geo = gs.RenderGeometry()
 	gs.IsoSurfaceToRenderGeometry(render.get_render_system(), iso, geo, mat)
 
-	return geo
+	core_geo = gs.CoreGeometry()
+	gs.IsoSurfaceToCoreGeometry(iso, core_geo)
+
+
+	return geo, core_geo
 
 count = 0
 def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=None, name=None):
@@ -632,4 +636,4 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 	geo.ComputeVertexNormal(math.radians(40))
 	geo.ComputeVertexTangent()
 
-	return render.create_geometry(geo)
+	return render.create_geometry(geo), geo
