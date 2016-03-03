@@ -486,53 +486,13 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 
 	w, h, d = array_res.shape[0]-(resolution - 1), array_res.shape[1], array_res.shape[2]-(resolution - 1)
 
-	# check floor
-	# id = np.where(mats[:, 0, :] == 1)
-	# array[id[0], 0, id[1]] = 1
-	#
-	# id = np.where(mats[:, 1, :] == 1)
-	# array[id[0], array.shape[1]-1, id[1]] = 1
-	#
-	# # for the ramp, if ramp down, add 1 to half the height
-	# id = np.where(mats[:, 0, :] == 6)
-	# array[id[0], :array.shape[1]*0.5, id[1]] = 1
-	#
-	# id = np.where(mats[:, 1, :] == 6)
-	# array[id[0], array.shape[1]-1, id[1]] = 1
-	#
-	# if array.sum() == 0 or np.average(array) == 1:
-	# 	return None
-
-	# w, h, d = array.shape[0], array.shape[1], array.shape[2]
-
 	field = gs.BinaryBlob()
 
 	field.Grow(w*d*h)
-	for i in range(w*d*h):
-		field.WriteFloat(0)
-
-	def write_to_field(x, y, z, v):
-		x, y, z = int(x), int(y), int(z)
-		o = (w * d * y + w * z + x) * 4
-		field.WriteFloatAt(v, o)
-
-	for x in range(w):
-		for y in range(h):
-			for z in range(d):
-				write_to_field(x, y, z, float(array_res[x, y, z]))
-				# write_to_field(x, y, z, float(array[x, y, z]))
-
-	# it = np.nditer(array_res, flags=['multi_index'])
-	# # it = np.nditer(array, flags=['multi_index'])
-	# while not it.finished:
-	# 	write_to_field(it.multi_index[0], it.multi_index[1], it.multi_index[2], float(array_res[it.multi_index[0], it.multi_index[1], it.multi_index[2]]))
-	# 	# write_to_field(it.multi_index[0], it.multi_index[1], it.multi_index[2], float(array[it.multi_index[0], it.multi_index[1], it.multi_index[2]]))
-	# 	it.iternext()
+	field.WriteFloats(np.swapaxes(array_res[:-1, :, :-1], 1, 2).flatten('F').tolist())
 
 	iso = gs.IsoSurface()
 	gs.PolygoniseIsoSurface(w, h, d, field, isolevel, iso, inv_scale)
-	# if not gs.PolygoniseIsoSurface(w, h, d, field, isolevel, iso):
-	# 	return None
 
 	# mat = render.load_material("tree.mat")
 	mat = render.load_material("@core/materials/default.mat")
@@ -541,7 +501,6 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 
 	core_geo = gs.CoreGeometry()
 	gs.IsoSurfaceToCoreGeometry(iso, core_geo)
-
 
 	return geo, core_geo
 

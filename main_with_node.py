@@ -103,16 +103,16 @@ try:
 	geos = [{'g':render.load_geometry("environment_kit_inca/stone_high_03.geo"), 'cg':gs.LoadCoreGeometry("environment_kit_inca/stone_high_03.geo")},
 	         {'g':render.load_geometry("environment_kit_inca/stone_high_01.geo"), 'cg':gs.LoadCoreGeometry("environment_kit_inca/stone_high_01.geo")}]
 	building_geos = {building_type.Chair: None, building_type.Bed: None,
-					 building_type.Table: {'g':render.load_geometry("environment_kit/geo-table.geo"), 'o':gs.Matrix4.Identity},
+					 building_type.Table: {'g':render.load_geometry("environment_kit/geo-table.geo"), 'cg':gs.LoadCoreGeometry("environment_kit/geo-table.geo"), 'o':gs.Matrix4.Identity},
 					 building_type.Coffin: None, building_type.FarmPlot: None, building_type.Furnace: None,
 					 building_type.TradeDepot: None, building_type.Shop: None,
-					 building_type.Door: {'g':render.load_geometry("environment_kit/geo-door.geo"), 'o':gs.Matrix4.Identity},
+					 building_type.Door: {'g':render.load_geometry("environment_kit/geo-door.geo"), 'cg':gs.LoadCoreGeometry("environment_kit/geo-door.geo"), 'o':gs.Matrix4.Identity},
 					 building_type.Floodgate: None,
-					 building_type.Box: {'g':render.load_geometry("environment_kit_inca/chest_top.geo"), 'o':gs.Matrix4.Identity},
+					 building_type.Box: {'g':render.load_geometry("environment_kit_inca/chest_top.geo"), 'cg':gs.LoadCoreGeometry("environment_kit_inca/chest_top.geo"), 'o':gs.Matrix4.Identity},
 					 building_type.Weaponrack: None,
 					 building_type.Armorstand: None, building_type.Workshop: None,
-					 building_type.Cabinet: {'g':render.load_geometry("environment_kit/geo-bookshelf.geo"), 'o':gs.Matrix4.Identity},
-					 building_type.Statue: {'g':render.load_geometry("environment_kit/geo-greece_column.geo"), 'o':gs.Matrix4.RotationMatrix(gs.Vector3(-1.57, 0, 0))},
+					 building_type.Cabinet: {'g':render.load_geometry("environment_kit/geo-bookshelf.geo"), 'cg':gs.LoadCoreGeometry("environment_kit/geo-bookshelf.geo"), 'o':gs.Matrix4.Identity},
+					 building_type.Statue: {'g':render.load_geometry("environment_kit/geo-greece_column.geo"), 'cg':gs.LoadCoreGeometry("environment_kit/geo-greece_column.geo"), 'o':gs.Matrix4.RotationMatrix(gs.Vector3(-1.57, 0, 0))},
 					 building_type.WindowGlass: None, building_type.WindowGem: None,
 					 building_type.Well: None, building_type.Bridge: None, building_type.RoadDirt: None,
 					 building_type.RoadPaved: None, building_type.SiegeEngine: None, building_type.Trap: None,
@@ -120,7 +120,7 @@ try:
 					 building_type.Chain: None, building_type.Cage: None, building_type.Stockpile: None,
 					 building_type.Civzone: None,
 					 building_type.Weapon: None, building_type.Wagon: None, building_type.ScrewPump: None,
-					 building_type.Construction: {'g':render.load_geometry("environment_kit/geo-egypt_wall.geo"), 'o':gs.Matrix4.Identity},
+					 building_type.Construction: {'g':render.load_geometry("environment_kit/geo-egypt_wall.geo"), 'cg':gs.LoadCoreGeometry("environment_kit/geo-egypt_wall.geo"), 'o':gs.Matrix4.Identity},
 					 building_type.Hatch: None, building_type.GrateWall: None, building_type.GrateFloor: None,
 					 building_type.BarsVertical: None,
 					 building_type.BarsFloor: None, building_type.GearAssembly: None,
@@ -260,12 +260,12 @@ try:
 			if name_block in update_cache_block:
 				update_cache_block.pop(name_block)
 			block_fetched += 1
-
 		#
 		if len(update_cache_block) > 0:
 			# send the pos to update
 			pos_in_front = fps_pos_in_front_2d(2)
 			name_pos_block = min(update_cache_block.items(), key=lambda t: (t[1].x-pos_in_front.x/16)**2 + ((t[1].y -pos_in_front.y/scale_unit_y)/1.5)**2 + (t[1].z - pos_in_front.z/16)**2)
+			# name_pos_block = next(iter(update_cache_block.items()))
 			name_block, block_pos = name_pos_block[0], name_pos_block[1]
 			_pos = gs.Vector3(block_pos)
 			_pos.x = map_info.block_size_x - _pos.x
@@ -316,6 +316,23 @@ try:
 				scn.GetRenderableSystem().DrawGeometry(building_geos[building[1]]["g"], gs.Matrix4.TransformationMatrix(gs.Vector3(building[0].x+1, building[0].y*scale_unit_y, building[0].z), gs.Vector3(0, 0, 0), gs.Vector3(0.25, 0.25, 0.25)) * building_geos[building[1]]["o"])
 				global props_drawn
 				props_drawn += 1
+
+	def add_node_with_mesh_collision(name, world_node, render_geo, core_geo):
+		node = gs.Node(name)
+		transform = gs.Transform()
+		transform.SetWorld(world_node)
+		node.AddComponent(transform)
+		obj = gs.Object()
+		obj.SetGeometry(render_geo)
+		node.AddComponent(obj)
+		node.AddComponent(gs.MakeRigidBody())
+		collision = gs.MakeMeshCollision()
+		collision.SetMass(0)
+		collision.SetGeometry(core_geo)
+		node.AddComponent(collision)
+
+		scn.AddNode(node)
+		return node
 
 
 	class Layer:
@@ -376,45 +393,19 @@ try:
 						node.AddComponent(collision)
 						node_checked.append(name_block)
 
-					if name_block in cache_block_props:
-						for prop in cache_block_props[name_block]:
-							node = gs.Node("cube")
-							transform = gs.Transform()
-							transform.SetWorld(gs.Matrix4.TransformationMatrix(gs.Vector3(prop[0].x+1, prop[0].y*scale_unit_y, prop[0].z), gs.Vector3(0, (name_block%628)*0.01, 0), gs.Vector3(0.25, 0.25, 0.25)) * gs.Matrix4.ScaleMatrix(gs.Vector3(1, scale_unit_y, 1)))
-							node.AddComponent(transform)
-							obj = gs.Object()
-							obj.SetGeometry(geos[prop[1]]['g'])
-							node.AddComponent(obj)
-							node.AddComponent(gs.MakeRigidBody())
-							collision = gs.MakeMeshCollision()
-							collision.SetMass(0)
-							collision.SetGeometry(geos[prop[1]]['cg'])
-							node.AddComponent(collision)
+						if name_block in cache_block_props:
+							for prop in cache_block_props[name_block]:
+								add_node_with_mesh_collision('props', gs.Matrix4.TransformationMatrix(gs.Vector3(prop[0].x + 1, prop[0].y * scale_unit_y, prop[0].z), gs.Vector3(0, (name_block % 628) * 0.01, 0), gs.Vector3(0.25, 0.25, 0.25)) * gs.Matrix4.ScaleMatrix(gs.Vector3(1, scale_unit_y, 1)),
+								                             geos[prop[1]]['g'], geos[prop[1]]['cg'])
+								self.props_nodes.append(node)
 
-							scn.AddNode(node)
-							self.props_nodes.append(node)
+						if name_block in cache_block_props:
+							for building in cache_block_building[name_block]:
+								if building_geos[building[1]] is not None:
+									add_node_with_mesh_collision('building', gs.Matrix4.TransformationMatrix(gs.Vector3(building[0].x + 1, building[0].y * scale_unit_y, building[0].z), gs.Vector3(0, 0, 0), gs.Vector3(0.25, 0.25, 0.25)) * building_geos[building[1]]["o"],
+									                             building_geos[building[1]]["g"], building_geos[building[1]]["cg"])
 
 				self.node_to_check = {key: value for key, value in self.node_to_check.items() if key not in node_checked}
-
-			# global props_drawn
-			# props_drawn += 1
-
-			# for z in range(layer_size):
-			# 	for x in range(layer_size):
-			# 		name_block = hash_from_layer(self.pos, x, z)
-			# 		if name_block in counter_block_to_remove:
-			# 			counter_block_to_remove[name_block][0] = counter_block_to_remove[name_block][0]+2 if counter_block_to_remove[name_block][0] < 1000 else 1000
-			#
-			# 		if name_block in cache_geo_block and cache_geo_block[name_block] is not None:
-			# 			if self.block_nodes[x + z*layer_size].GetObject().GetGeometry() is None:
-			# 				self.block_nodes[x + z*layer_size].GetObject().SetGeometry(cache_geo_block[name_block][0])
-			# 				collision = gs.MakeMeshCollision()
-			# 				collision.SetMass(0)
-			# 				collision.SetGeometry(cache_geo_block[name_block][1])
-			# 				self.block_nodes[x + z*layer_size].AddComponent(collision)
-			#
-			# 			draw_props_in_block(name_block)
-			# 			draw_building_in_block(name_block)
 
 	layers = {}
 
@@ -523,6 +514,17 @@ try:
 		render.text2d(0, 45, "BLOCK FETCHED: %d - BLOCK DRAWN: %d - PROPS DRAWN: %d - FPS: %.2fHZ" % (block_fetched, block_drawn, props_drawn, 1 / dt_sec), color=gs.Color.Red)
 		render.text2d(0, 25, "FPS.X = %f, FPS.Z = %f" % (fps.pos.x, fps.pos.z), color=gs.Color.Red)
 		render.text2d(0, 5, "POS.X = %f, POS.Y = %f, POS.Z = %f" % (pos.x, pos.y, pos.z), color=gs.Color.Red)
+		#
+		# for node in scn.GetNodes():
+		# 	count = 0
+		# 	for node2 in scn.GetNodes():
+		# 		if node.GetTransform().GetPosition() == node2.GetTransform().GetPosition():
+		# 			count += 1
+		#
+		# 	if count > 3 :
+		# 		print("HHHHHHHHHHHHHHHH")
+		#
+
 
 		if input.key_press(gs.InputDevice.KeySpace):
 			world = cam.GetTransform().GetWorld()
