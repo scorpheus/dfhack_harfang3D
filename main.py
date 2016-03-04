@@ -282,7 +282,7 @@ try:
 		x *= 16
 		z *= 16
 
-		scn.GetRenderableSystem().DrawGeometry(geo_block, gs.Matrix4.TranslationMatrix(gs.Vector3(x+1, y*scale_unit_y, z)) * gs.Matrix4.ScaleMatrix(gs.Vector3(1, scale_unit_y, 1)))
+		scn.GetRenderableSystem().DrawGeometry(geo_block[0], gs.Matrix4.TranslationMatrix(gs.Vector3(x+1, y*scale_unit_y, z)) * gs.Matrix4.ScaleMatrix(gs.Vector3(1, scale_unit_y, 1)))
 
 		global block_drawn
 		block_drawn += 1
@@ -319,9 +319,9 @@ try:
 			global update_cache_block
 
 			block_pos = gs.Vector3()
-			block_pos.x = self.pos.x - (layer_size - 1) / 2
+			block_pos.x = self.pos.x - (layer_size - 1) // 2
 			block_pos.y = self.pos.y
-			block_pos.z = self.pos.z - (layer_size - 1) / 2
+			block_pos.z = self.pos.z - (layer_size - 1) // 2
 
 			for z in range(layer_size):
 				for x in range(layer_size):
@@ -340,9 +340,9 @@ try:
 
 		def draw(self):
 			block_pos = gs.Vector3()
-			block_pos.x = self.pos.x - (layer_size - 1) / 2
+			block_pos.x = self.pos.x - (layer_size - 1) // 2
 			block_pos.y = self.pos.y
-			block_pos.z = self.pos.z - (layer_size - 1) / 2
+			block_pos.z = self.pos.z - (layer_size - 1) // 2
 
 			for z in range(layer_size):
 				for x in range(layer_size):
@@ -466,9 +466,10 @@ try:
 
 		# update unit draw
 		update_dwarf_pos()
+		dwarf_scale = gs.Vector3(0.01, 0.01, 0.01)
 		for dwarf in dwarfs_pos.values():
 			d_pos = dwarf[0]
-			scn.GetRenderableSystem().DrawGeometry(dwarf_geo, gs.Matrix4.TransformationMatrix(gs.Vector3(map_info.block_size_x*16 - d_pos.x+16, (d_pos.z)*scale_unit_y, d_pos.y), dwarf[1], gs.Vector3(0.01, 0.01, 0.01)))
+			scn.GetRenderableSystem().DrawGeometry(dwarf_geo, gs.Matrix4.TransformationMatrix(gs.Vector3(map_info.block_size_x*16 - d_pos.x+16, (d_pos.z)*scale_unit_y, d_pos.y), dwarf[1], dwarf_scale))
 
 		# check if needed to remove block not used
 		check_to_delete_far_block()
