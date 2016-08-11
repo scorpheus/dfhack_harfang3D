@@ -2,12 +2,6 @@ __author__ = 'scorpheus'
 
 from dfhack_connect import *
 import gs
-import gs.plus.render as render
-import gs.plus.input as input
-import gs.plus.scene as scene
-import gs.plus.camera as camera
-import gs.plus.clock as clock
-import gs.plus.geometry as geometry
 import geometry_iso
 from update_dwarf import *
 
@@ -15,6 +9,8 @@ from collections import OrderedDict
 import threading
 import numpy as np
 
+
+plus = gs.GetPlus()
 
 class building_type():
 	NONE = -1
@@ -28,15 +24,15 @@ scale_unit_y = 1.0
 
 gs.LoadPlugins(gs.get_default_plugins_path())
 
-gs.plus.create_workers()
+plus.CreateWorkers()
 
 def from_world_to_dfworld(new_pos):
 	return gs.Vector3(new_pos.x, new_pos.z, new_pos.y)
 
 
 def fps_pos_in_front_2d(dist):
-	world = gs.Matrix3.FromEuler(0, fps.rot.y, 0)
-	return fps.pos + world.GetZ() * dist
+	world = gs.Matrix3.FromEuler(0, fps.GetRot().y, 0)
+	return fps.GetPos() + world.GetZ() * dist
 
 try:
 	connect_socket()
@@ -48,35 +44,35 @@ try:
 	tile_type_list = GetTiletypeList()
 	# material_list = GetMaterialList()
 
-	render.init(1920, 1080, "pkg.core")
+	plus.RenderInit(1920, 1080)
 	gs.MountFileDriver(gs.StdFileDriver("."))
 
-	scn = scene.new_scene()
+	scn = plus.NewScene()
 	# add lua system
-	engine_env = gs.ScriptEngineEnv(render.get_render_system_async(), render.get_renderer_async(), None)
+	engine_env = gs.ScriptEngineEnv(plus.GetRenderSystemAsync(), plus.GetRendererAsync(), None)
 
 	lua_system = gs.LuaSystem(engine_env)
 	lua_system.SetExecutionContext(gs.ScriptContextAll )
 	lua_system.Open()
 	scn.AddSystem(lua_system)
 
-	scn.Load('@core/scene_templates/scene.scn', gs.SceneLoadContext(render.get_render_system()))
-	light_cam = scene.add_light(scn, gs.Matrix4.TranslationMatrix(gs.Vector3(6, 200, -6)))
+	scn.Load('@core/scene_templates/plus.scn', gs.SceneLoadContext(plus.GetRenderSystem()))
+	light_cam = plus.AddLight(scn, gs.Matrix4.TranslationMatrix(gs.Vector3(6, 200, -6)))
 	light_cam.GetLight().SetShadow(gs.Light.Shadow_None)
 	# light_cam.GetLight().SetDiffuseIntensity(100)
 	# light_cam.GetLight().SetDiffuseColor(gs.Color.Red)
 	# light_cam.GetLight().SetRange(130)
 	# light_cam.GetLight().SetVolumeRange(1000)
 
-	cam = scene.add_camera(scn, gs.Matrix4.TranslationMatrix(gs.Vector3(112, 62, 112)))
+	cam = plus.AddCamera(scn, gs.Matrix4.TranslationMatrix(gs.Vector3(112, 62, 112)))
 	cam.GetCamera().SetZoomFactor(gs.FovToZoomFactor(1.57))
 
-	fps = camera.fps_controller(128, 74*scale_unit_y, 64)
-	fps.rot = gs.Vector3(0.5, 0, 0)
+	fps = gs.FPSController(128, 74*scale_unit_y, 64)
+	fps.SetRot(gs.Vector3(0.5, 0, 0))
 
-	# dwarf_geo = render.create_geometry(geometry.create_cube(0.1, 0.6, 0.1, "iso.mat"))
-	dwarf_geo = render.load_geometry("minecraft_assets/default_dwarf/default_dwarf.geo")
-	cube_geo = render.create_geometry(geometry.create_cube(1, 1*scale_unit_y, 1, "iso.mat"))
+	# dwarf_geo = plus.CreateGeometry(plus.CreateCube(0.1, 0.6, 0.1, "iso.mat"))
+	dwarf_geo = plus.LoadGeometry("minecraft_assets/default_dwarf/default_dwarf.geo")
+	cube_geo = plus.CreateGeometry(plus.CreateCube(1, 1*scale_unit_y, 1, "iso.mat"))
 
 	pos = gs.Vector3(112//16, 62, 112//16)
 
@@ -89,18 +85,18 @@ try:
 		return hash_from_pos(layer_pos.x + x - (layer_size - 1) / 2, layer_pos.y, layer_pos.z + z - (layer_size - 1) / 2)
 
 
-	geos = [render.load_geometry("environment_kit_inca/stone_high_03.geo"), render.load_geometry("environment_kit_inca/stone_high_01.geo")]
+	geos = [plus.LoadGeometry("environment_kit_inca/stone_high_03.geo"), plus.LoadGeometry("environment_kit_inca/stone_high_01.geo")]
 	building_geos = {building_type.Chair: None, building_type.Bed: None,
-					 building_type.Table: {'g':render.load_geometry("environment_kit/geo-table.geo"), 'o':gs.Matrix4.Identity},
+					 building_type.Table: {'g':plus.LoadGeometry("environment_kit/geo-table.geo"), 'o':gs.Matrix4.Identity},
 					 building_type.Coffin: None, building_type.FarmPlot: None, building_type.Furnace: None,
 					 building_type.TradeDepot: None, building_type.Shop: None,
-					 building_type.Door: {'g':render.load_geometry("environment_kit/geo-door.geo"), 'o':gs.Matrix4.Identity},
+					 building_type.Door: {'g':plus.LoadGeometry("environment_kit/geo-door.geo"), 'o':gs.Matrix4.Identity},
 					 building_type.Floodgate: None,
-					 building_type.Box: {'g':render.load_geometry("environment_kit_inca/chest_top.geo"), 'o':gs.Matrix4.Identity},
+					 building_type.Box: {'g':plus.LoadGeometry("environment_kit_inca/chest_top.geo"), 'o':gs.Matrix4.Identity},
 					 building_type.Weaponrack: None,
 					 building_type.Armorstand: None, building_type.Workshop: None,
-					 building_type.Cabinet: {'g':render.load_geometry("environment_kit/geo-bookshelf.geo"), 'o':gs.Matrix4.Identity},
-					 building_type.Statue: {'g':render.load_geometry("environment_kit/geo-greece_column.geo"), 'o':gs.Matrix4.RotationMatrix(gs.Vector3(-1.57, 0, 0))},
+					 building_type.Cabinet: {'g':plus.LoadGeometry("environment_kit/geo-bookshelf.geo"), 'o':gs.Matrix4.Identity},
+					 building_type.Statue: {'g':plus.LoadGeometry("environment_kit/geo-greece_column.geo"), 'o':gs.Matrix4.RotationMatrix(gs.Vector3(-1.57, 0, 0))},
 					 building_type.WindowGlass: None, building_type.WindowGem: None,
 					 building_type.Well: None, building_type.Bridge: None, building_type.RoadDirt: None,
 					 building_type.RoadPaved: None, building_type.SiegeEngine: None, building_type.Trap: None,
@@ -108,7 +104,7 @@ try:
 					 building_type.Chain: None, building_type.Cage: None, building_type.Stockpile: None,
 					 building_type.Civzone: None,
 					 building_type.Weapon: None, building_type.Wagon: None, building_type.ScrewPump: None,
-					 building_type.Construction: {'g':render.load_geometry("environment_kit/geo-egypt_wall.geo"), 'o':gs.Matrix4.Identity},
+					 building_type.Construction: {'g':plus.LoadGeometry("environment_kit/geo-egypt_wall.geo"), 'o':gs.Matrix4.Identity},
 					 building_type.Hatch: None, building_type.GrateWall: None, building_type.GrateFloor: None,
 					 building_type.BarsVertical: None,
 					 building_type.BarsFloor: None, building_type.GearAssembly: None,
@@ -135,7 +131,7 @@ try:
 	mats_path = ["empty.mat", "floor.mat", "magma.mat", "rock.mat", "water.mat", "tree.mat", "floor.mat", "floor.mat"]
 	# precompile material
 	# for mat in mats_path:
-	# 	render.create_geometry(geometry.create_cube(0.1, 0.6, 0.1, mat))
+	# 	plus.CreateGeometry(plus.create_cube(0.1, 0.6, 0.1, mat))
 
 	def parse_block(block, block_flow_size, block_liquid_type, block_building, block_pos):
 
@@ -419,25 +415,25 @@ try:
 						update_cache_geo_block.pop(name)
 
 	# def on_frame_complete():
-	# 	state = render.get_render_system().GetViewState()
-	# 	gs.DrawStateCacheStats(render.get_render_system(), render.__cache_font(render.get_font(), 12), 0, 600)
-	# 	render.get_render_system_async().DrawRenderSystemStats(render.__cache_font(render.get_font(), 12), 0, 300)
-	# 	render.get_render_system().SetViewState(state)
+	# 	state = plus.GetRenderSystem().GetViewState()
+	# 	gs.DrawStateCacheStats(plus.GetRenderSystem(), plus.__cache_font(plus.GetFont(), 12), 0, 600)
+	# 	plus.GetRenderSystemAsync().DrawRenderSystemStats(plus.__cache_font(plus.GetFont(), 12), 0, 300)
+	# 	plus.GetRenderSystem().SetViewState(state)
 	#
 	# scn.GetRenderSignals().frame_complete_signal.Connect(on_frame_complete)
 
 	# main loop
-	while not input.key_press(gs.InputDevice.KeyEscape):
-		render.clear()
+	while not plus.KeyPress(gs.InputDevice.KeyEscape):
+		plus.Clear()
 
-		dt_sec = clock.update()
-		fps.update_and_apply_to_node(cam, dt_sec)
-		light_cam.GetTransform().SetPosition(fps.pos)
+		dt_sec = plus.UpdateClock()
+		fps.UpdateAndApplyToNode(cam, dt_sec)
+		light_cam.GetTransform().SetPosition(fps.GetPos())
 
 		# pos -> blocks dans lequel on peux se deplacer
-		pos.x = fps.pos.x // 16
-		pos.y = fps.pos.y // scale_unit_y
-		pos.z = fps.pos.z // 16
+		pos.x = fps.GetPos().x // 16
+		pos.y = fps.GetPos().y // scale_unit_y
+		pos.z = fps.GetPos().z // 16
 
 		#
 		if pos.y > old_pos.y:
@@ -474,13 +470,13 @@ try:
 		# check if needed to remove block not used
 		check_to_delete_far_block()
 
-		render.text2d(0, 65, "CACHE GEO: %d - CACHE BLOCK: %d" % (len(cache_geo_block), len(cache_block)), color=gs.Color.Red)
-		render.text2d(0, 45, "BLOCK FETCHED: %d - BLOCK DRAWN: %d - PROPS DRAWN: %d - FPS: %.2fHZ" % (block_fetched, block_drawn, props_drawn, 1 / dt_sec), color=gs.Color.Red)
-		render.text2d(0, 25, "FPS.X = %f, FPS.Z = %f" % (fps.pos.x, fps.pos.z), color=gs.Color.Red)
-		render.text2d(0, 5, "POS.X = %f, POS.Y = %f, POS.Z = %f" % (pos.x, pos.y, pos.z), color=gs.Color.Red)
+		plus.Text2D(0, 65, "CACHE GEO: %d - CACHE BLOCK: %d" % (len(cache_geo_block), len(cache_block)), 16, gs.Color.Red)
+		plus.Text2D(0, 45, "BLOCK FETCHED: %d - BLOCK DRAWN: %d - PROPS DRAWN: %d - FPS: %.2fHZ" % (block_fetched, block_drawn, props_drawn, 1 / dt_sec.to_sec()), 16, gs.Color.Red)
+		plus.Text2D(0, 25, "FPS.X = %f, FPS.Z = %f" % (fps.GetPos().x, fps.GetPos().z), 16, gs.Color.Red)
+		plus.Text2D(0, 5, "POS.X = %f, POS.Y = %f, POS.Z = %f" % (pos.x, pos.y, pos.z), 16, gs.Color.Red)
 
-		scene.update_scene(scn, dt_sec)
-		render.flip()
+		plus.UpdateScene(scn, dt_sec)
+		plus.Flip()
 
 finally:
 	close_socket()

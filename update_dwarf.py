@@ -2,12 +2,6 @@ __author__ = 'scorpheus'
 
 from dfhack_connect import *
 import gs
-import gs.plus.render as render
-import gs.plus.input as input
-import gs.plus.scene as scene
-import gs.plus.camera as camera
-import gs.plus.clock as clock
-import gs.plus.geometry as geometry
 import geometry_iso
 
 from collections import OrderedDict

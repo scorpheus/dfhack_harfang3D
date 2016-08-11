@@ -1,8 +1,9 @@
 import gs
-import gs.plus.render as render
 import math
 import random
 import numpy as np
+
+plus = gs.GetPlus()
 
 # [256]
 edgeTable = [0x0, 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
@@ -494,10 +495,10 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 	iso = gs.IsoSurface()
 	gs.PolygoniseIsoSurface(w, h, d, field, isolevel, iso, inv_scale)
 
-	# mat = render.load_material("tree.mat")
-	mat = render.load_material("@core/materials/default.mat")
+	# mat = plus.LoadMaterial("tree.mat")
+	mat = plus.LoadMaterial("@core/materials/default.mat")
 	geo = gs.RenderGeometry()
-	gs.IsoSurfaceToRenderGeometry(render.get_render_system(), iso, geo, mat)
+	gs.IsoSurfaceToRenderGeometry(plus.GetRenderSystem(), iso, geo, mat)
 
 	core_geo = gs.CoreGeometry()
 	gs.IsoSurfaceToCoreGeometry(iso, core_geo)
@@ -505,6 +506,8 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 	return geo, core_geo
 
 count = 0
+
+
 def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=None, name=None):
 	global count
 	"""Create an iso surface geometry"""
@@ -514,7 +517,7 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 	count +=1
 	name = str(name)
 
-	geo = render.get_render_system().HasGeometry(name)
+	geo = plus.GetRenderSystem().HasGeometry(name)
 	if geo is not None:
 		return geo
 
@@ -595,4 +598,4 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 	geo.ComputeVertexNormal(math.radians(40))
 	geo.ComputeVertexTangent()
 
-	return render.create_geometry(geo), geo
+	return plus.CreateGeometry(geo), geo
