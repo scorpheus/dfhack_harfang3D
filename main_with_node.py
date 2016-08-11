@@ -306,7 +306,7 @@ try:
 
 	def draw_props_in_block(name_block):
 		for prop in cache_block_props[name_block]:
-			scn.GetRenderableSystem().DrawGeometry(geos[prop[1]], gs.Matrix4.TransformationMatrix(gs.Vector3(prop[0].x+1, prop[0].y*scale_unit_y, prop[0].z), gs.Vector3(0, (name_block%628)*0.01, 0), gs.Vector3(0.25, 0.25, 0.25)))
+			scn.GetRenderableSystem().DrawGeometry(geos[prop[1]]["g"], gs.Matrix4.TransformationMatrix(gs.Vector3(prop[0].x+1, prop[0].y*scale_unit_y, prop[0].z), gs.Vector3(0, (name_block%628)*0.01, 0), gs.Vector3(0.25, 0.25, 0.25)))
 			global props_drawn
 			props_drawn += 1
 
@@ -333,6 +333,8 @@ try:
 
 		scn.AddNode(node)
 		return node
+
+	cache_block_node = {}
 
 
 	class Layer:
@@ -364,19 +366,24 @@ try:
 						update_cache_block[name_block] = gs.Vector3(block_pos)
 						counter_block_to_remove[name_block] = [500, gs.Vector3(block_pos)]
 
-					# create one block node
-					node = gs.Node("cube")
-					transform = gs.Transform()
-					transform.SetWorld(gs.Matrix4.TranslationMatrix(gs.Vector3(block_pos.x*16+1, block_pos.y*scale_unit_y, block_pos.z*16)) * gs.Matrix4.ScaleMatrix(gs.Vector3(1, scale_unit_y, 1)))
-					node.AddComponent(transform)
-					node.AddComponent(gs.Object())
-					node.AddComponent(gs.MakeRigidBody())
-					scn.AddNode(node)
+					if name_block in cache_block_node:
+						node = cache_block_node[name_block]
+					else:
+						# create one block node
+						node = gs.Node("cube")
+						node.SetIsStatic(True)
+						transform = gs.Transform()
+						transform.SetWorld(gs.Matrix4.TranslationMatrix(gs.Vector3(block_pos.x*16+1, block_pos.y*scale_unit_y, block_pos.z*16)) * gs.Matrix4.ScaleMatrix(gs.Vector3(1, scale_unit_y, 1)))
+						node.AddComponent(transform)
+						node.AddComponent(gs.Object())
+						node.AddComponent(gs.MakeRigidBody())
+						scn.AddNode(node)
+						cache_block_node[name_block] = node
+
 					self.block_nodes.append(node)
-
 					self.node_to_check[name_block] = node
-
 					block_pos.x += 1
+
 				block_pos.x -= layer_size
 				block_pos.z += 1
 
@@ -384,7 +391,7 @@ try:
 			if len(self.node_to_check) > 0:
 				node_checked = []
 				for name_block, node in self.node_to_check.items():
-					# this block is updated, tell the 
+					# this block is updated, tell the
 					if name_block in cache_geo_block and cache_geo_block[name_block] is not None:
 						node.GetObject().SetGeometry(cache_geo_block[name_block][0])
 						collision = gs.MakeMeshCollision()
@@ -393,17 +400,20 @@ try:
 						node.AddComponent(collision)
 						node_checked.append(name_block)
 
-						if name_block in cache_block_props:
-							for prop in cache_block_props[name_block]:
-								add_node_with_mesh_collision('props', gs.Matrix4.TransformationMatrix(gs.Vector3(prop[0].x + 1, prop[0].y * scale_unit_y, prop[0].z), gs.Vector3(0, (name_block % 628) * 0.01, 0), gs.Vector3(0.25, 0.25, 0.25)) * gs.Matrix4.ScaleMatrix(gs.Vector3(1, scale_unit_y, 1)),
-								                             geos[prop[1]]['g'], geos[prop[1]]['cg'])
-								self.props_nodes.append(node)
+						# draw_props_in_block(name_block)
+						# draw_building_in_block(name_block)
 
-						if name_block in cache_block_props:
-							for building in cache_block_building[name_block]:
-								if building_geos[building[1]] is not None:
-									add_node_with_mesh_collision('building', gs.Matrix4.TransformationMatrix(gs.Vector3(building[0].x + 1, building[0].y * scale_unit_y, building[0].z), gs.Vector3(0, 0, 0), gs.Vector3(0.25, 0.25, 0.25)) * building_geos[building[1]]["o"],
-									                             building_geos[building[1]]["g"], building_geos[building[1]]["cg"])
+						# if name_block in cache_block_props:
+						# 	for prop in cache_block_props[name_block]:
+						# 		add_node_with_mesh_collision('props', gs.Matrix4.TransformationMatrix(gs.Vector3(prop[0].x + 1, prop[0].y * scale_unit_y, prop[0].z), gs.Vector3(0, (name_block % 628) * 0.01, 0), gs.Vector3(0.25, 0.25, 0.25)) * gs.Matrix4.ScaleMatrix(gs.Vector3(1, scale_unit_y, 1)),
+						# 		                             geos[prop[1]]['g'], geos[prop[1]]['cg'])
+						# 		self.props_nodes.append(node)
+						#
+						# if name_block in cache_block_props:
+						# 	for building in cache_block_building[name_block]:
+						# 		if building_geos[building[1]] is not None:
+						# 			add_node_with_mesh_collision('building', gs.Matrix4.TransformationMatrix(gs.Vector3(building[0].x + 1, building[0].y * scale_unit_y, building[0].z), gs.Vector3(0, 0, 0), gs.Vector3(0.25, 0.25, 0.25)) * building_geos[building[1]]["o"],
+						# 			                             building_geos[building[1]]["g"], building_geos[building[1]]["cg"])
 
 				self.node_to_check = {key: value for key, value in self.node_to_check.items() if key not in node_checked}
 
@@ -490,9 +500,10 @@ try:
 
 		for i in range(40):
 			name_layer = hash_from_pos(pos.x, pos.y + i - 20, pos.z)
+
 			if name_layer not in layers:
 				layers[name_layer] = Layer()
-				layers[name_layer].update(pos + gs.Vector3(0, i - 20, 0))
+				layers[name_layer].update(gs.Vector3(pos.x, pos.y + i - 20, pos.z))
 				layers[name_layer].fill()
 			layers[name_layer].draw()
 
