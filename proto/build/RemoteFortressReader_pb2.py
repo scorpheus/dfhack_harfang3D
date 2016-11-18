@@ -37,7 +37,7 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='RemoteFortressReader.proto',
   package='RemoteFortressReader',
-  serialized_pb=b('\n\x1aRemoteFortressReader.proto\x12\x14RemoteFortressReader\"\xa6\x02\n\x08Tiletype\x12\n\n\x02id\x18\x01 \x02(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07\x63\x61ption\x18\x03 \x01(\t\x12\x32\n\x05shape\x18\x04 \x01(\x0e\x32#.RemoteFortressReader.TiletypeShape\x12\x36\n\x07special\x18\x05 \x01(\x0e\x32%.RemoteFortressReader.TiletypeSpecial\x12\x38\n\x08material\x18\x06 \x01(\x0e\x32&.RemoteFortressReader.TiletypeMaterial\x12\x36\n\x07variant\x18\x07 \x01(\x0e\x32%.RemoteFortressReader.TiletypeVariant\x12\x11\n\tdirection\x18\x08 \x01(\t\"E\n\x0cTiletypeList\x12\x35\n\rtiletype_list\x18\x01 \x03(\x0b\x32\x1e.RemoteFortressReader.Tiletype\"\xbf\x03\n\x08MapBlock\x12\r\n\x05map_x\x18\x01 \x02(\x05\x12\r\n\x05map_y\x18\x02 \x02(\x05\x12\r\n\x05map_z\x18\x03 \x02(\x05\x12\r\n\x05tiles\x18\x04 \x03(\x05\x12\x30\n\tmaterials\x18\x05 \x03(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\x36\n\x0flayer_materials\x18\x06 \x03(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\x35\n\x0evein_materials\x18\x07 \x03(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\x35\n\x0e\x62\x61se_materials\x18\x08 \x03(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\r\n\x05magma\x18\t \x03(\x05\x12\r\n\x05water\x18\n \x03(\x05\x12\x0e\n\x06hidden\x18\x0b \x03(\x08\x12\r\n\x05light\x18\x0c \x03(\x08\x12\x14\n\x0csubterranean\x18\r \x03(\x08\x12\x0f\n\x07outside\x18\x0e \x03(\x08\x12\x0f\n\x07\x61quifer\x18\x0f \x03(\x08\x12\x16\n\x0ewater_stagnant\x18\x10 \x03(\x08\x12\x12\n\nwater_salt\x18\x11 \x03(\x08\".\n\x07MatPair\x12\x10\n\x08mat_type\x18\x01 \x02(\x05\x12\x11\n\tmat_index\x18\x02 \x02(\x05\";\n\x0f\x43olorDefinition\x12\x0b\n\x03red\x18\x01 \x02(\x05\x12\r\n\x05green\x18\x02 \x02(\x05\x12\x0c\n\x04\x62lue\x18\x03 \x02(\x05\"\x9b\x01\n\x12MaterialDefinition\x12/\n\x08mat_pair\x18\x01 \x02(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\n\n\x02id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12:\n\x0bstate_color\x18\x04 \x01(\x0b\x32%.RemoteFortressReader.ColorDefinition\"O\n\x0cMaterialList\x12?\n\rmaterial_list\x18\x01 \x03(\x0b\x32(.RemoteFortressReader.MaterialDefinition\"Z\n\x0eUnitDefinition\x12\n\n\x02id\x18\x01 \x02(\x05\x12\x0f\n\x07isValid\x18\x02 \x01(\x08\x12\r\n\x05pos_x\x18\x03 \x01(\x05\x12\r\n\x05pos_y\x18\x04 \x01(\x05\x12\r\n\x05pos_z\x18\x05 \x01(\x05\"G\n\x08UnitList\x12;\n\rcreature_list\x18\x01 \x03(\x0b\x32$.RemoteFortressReader.UnitDefinition\"\x7f\n\x0c\x42lockRequest\x12\x15\n\rblocks_needed\x18\x01 \x01(\x05\x12\r\n\x05min_x\x18\x02 \x01(\x05\x12\r\n\x05max_x\x18\x03 \x01(\x05\x12\r\n\x05min_y\x18\x04 \x01(\x05\x12\r\n\x05max_y\x18\x05 \x01(\x05\x12\r\n\x05min_z\x18\x06 \x01(\x05\x12\r\n\x05max_z\x18\x07 \x01(\x05\"]\n\tBlockList\x12\x32\n\nmap_blocks\x18\x01 \x03(\x0b\x32\x1e.RemoteFortressReader.MapBlock\x12\r\n\x05map_x\x18\x02 \x01(\x05\x12\r\n\x05map_y\x18\x03 \x01(\x05\"F\n\x08PlantDef\x12\r\n\x05pos_x\x18\x01 \x02(\x05\x12\r\n\x05pos_y\x18\x02 \x02(\x05\x12\r\n\x05pos_z\x18\x03 \x02(\x05\x12\r\n\x05index\x18\x04 \x02(\x05\"?\n\tPlantList\x12\x32\n\nplant_list\x18\x01 \x03(\x0b\x32\x1e.RemoteFortressReader.PlantDef\"\xb2\x01\n\x08ViewInfo\x12\x12\n\nview_pos_x\x18\x01 \x01(\x05\x12\x12\n\nview_pos_y\x18\x02 \x01(\x05\x12\x12\n\nview_pos_z\x18\x03 \x01(\x05\x12\x13\n\x0bview_size_x\x18\x04 \x01(\x05\x12\x13\n\x0bview_size_y\x18\x05 \x01(\x05\x12\x14\n\x0c\x63ursor_pos_x\x18\x06 \x01(\x05\x12\x14\n\x0c\x63ursor_pos_y\x18\x07 \x01(\x05\x12\x14\n\x0c\x63ursor_pos_z\x18\x08 \x01(\x05\"\xcd\x01\n\x07MapInfo\x12\x14\n\x0c\x62lock_size_x\x18\x01 \x01(\x05\x12\x14\n\x0c\x62lock_size_y\x18\x02 \x01(\x05\x12\x14\n\x0c\x62lock_size_z\x18\x03 \x01(\x05\x12\x13\n\x0b\x62lock_pos_x\x18\x04 \x01(\x05\x12\x13\n\x0b\x62lock_pos_y\x18\x05 \x01(\x05\x12\x13\n\x0b\x62lock_pos_z\x18\x06 \x01(\x05\x12\x12\n\nworld_name\x18\x07 \x01(\t\x12\x1a\n\x12world_name_english\x18\x08 \x01(\t\x12\x11\n\tsave_name\x18\t \x01(\t*\xba\x02\n\rTiletypeShape\x12\x15\n\x08NO_SHAPE\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01\x12\t\n\x05\x45MPTY\x10\x00\x12\t\n\x05\x46LOOR\x10\x01\x12\x0b\n\x07\x42OULDER\x10\x02\x12\x0b\n\x07PEBBLES\x10\x03\x12\x08\n\x04WALL\x10\x04\x12\x11\n\rFORTIFICATION\x10\x05\x12\x0c\n\x08STAIR_UP\x10\x06\x12\x0e\n\nSTAIR_DOWN\x10\x07\x12\x10\n\x0cSTAIR_UPDOWN\x10\x08\x12\x08\n\x04RAMP\x10\t\x12\x0c\n\x08RAMP_TOP\x10\n\x12\r\n\tBROOK_BED\x10\x0b\x12\r\n\tBROOK_TOP\x10\x0c\x12\x0e\n\nTREE_SHAPE\x10\r\x12\x0b\n\x07SAPLING\x10\x0e\x12\t\n\x05SHRUB\x10\x0f\x12\x0f\n\x0b\x45NDLESS_PIT\x10\x10\x12\n\n\x06\x42RANCH\x10\x11\x12\x10\n\x0cTRUNK_BRANCH\x10\x12\x12\x08\n\x04TWIG\x10\x13*\xc4\x01\n\x0fTiletypeSpecial\x12\x17\n\nNO_SPECIAL\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01\x12\n\n\x06NORMAL\x10\x00\x12\x10\n\x0cRIVER_SOURCE\x10\x01\x12\r\n\tWATERFALL\x10\x02\x12\n\n\x06SMOOTH\x10\x03\x12\x0c\n\x08\x46URROWED\x10\x04\x12\x07\n\x03WET\x10\x05\x12\x08\n\x04\x44\x45\x41\x44\x10\x06\x12\n\n\x06WORN_1\x10\x07\x12\n\n\x06WORN_2\x10\x08\x12\n\n\x06WORN_3\x10\t\x12\t\n\x05TRACK\x10\n\x12\x0f\n\x0bSMOOTH_DEAD\x10\x0b*\x8a\x03\n\x10TiletypeMaterial\x12\x18\n\x0bNO_MATERIAL\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01\x12\x07\n\x03\x41IR\x10\x00\x12\x08\n\x04SOIL\x10\x01\x12\t\n\x05STONE\x10\x02\x12\x0b\n\x07\x46\x45\x41TURE\x10\x03\x12\x0e\n\nLAVA_STONE\x10\x04\x12\x0b\n\x07MINERAL\x10\x05\x12\x11\n\rFROZEN_LIQUID\x10\x06\x12\x10\n\x0c\x43ONSTRUCTION\x10\x07\x12\x0f\n\x0bGRASS_LIGHT\x10\x08\x12\x0e\n\nGRASS_DARK\x10\t\x12\r\n\tGRASS_DRY\x10\n\x12\x0e\n\nGRASS_DEAD\x10\x0b\x12\t\n\x05PLANT\x10\x0c\x12\x07\n\x03HFS\x10\r\x12\x0c\n\x08\x43\x41MPFIRE\x10\x0e\x12\x08\n\x04\x46IRE\x10\x0f\x12\t\n\x05\x41SHES\x10\x10\x12\t\n\x05MAGMA\x10\x11\x12\r\n\tDRIFTWOOD\x10\x12\x12\x08\n\x04POOL\x10\x13\x12\t\n\x05\x42ROOK\x10\x14\x12\t\n\x05RIVER\x10\x15\x12\x08\n\x04ROOT\x10\x16\x12\x11\n\rTREE_MATERIAL\x10\x17\x12\x0c\n\x08MUSHROOM\x10\x18\x12\x13\n\x0fUNDERWORLD_GATE\x10\x19*V\n\x0fTiletypeVariant\x12\x17\n\nNO_VARIANT\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01\x12\t\n\x05VAR_1\x10\x00\x12\t\n\x05VAR_2\x10\x01\x12\t\n\x05VAR_3\x10\x02\x12\t\n\x05VAR_4\x10\x03\x42\x02H\x03'))
+  serialized_pb=b('\n\x1aRemoteFortressReader.proto\x12\x14RemoteFortressReader\"\xa6\x02\n\x08Tiletype\x12\n\n\x02id\x18\x01 \x02(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07\x63\x61ption\x18\x03 \x01(\t\x12\x32\n\x05shape\x18\x04 \x01(\x0e\x32#.RemoteFortressReader.TiletypeShape\x12\x36\n\x07special\x18\x05 \x01(\x0e\x32%.RemoteFortressReader.TiletypeSpecial\x12\x38\n\x08material\x18\x06 \x01(\x0e\x32&.RemoteFortressReader.TiletypeMaterial\x12\x36\n\x07variant\x18\x07 \x01(\x0e\x32%.RemoteFortressReader.TiletypeVariant\x12\x11\n\tdirection\x18\x08 \x01(\t\"E\n\x0cTiletypeList\x12\x35\n\rtiletype_list\x18\x01 \x03(\x0b\x32\x1e.RemoteFortressReader.Tiletype\"_\n\x0f\x42uildingExtents\x12\r\n\x05pos_x\x18\x01 \x02(\x05\x12\r\n\x05pos_y\x18\x02 \x02(\x05\x12\r\n\x05width\x18\x03 \x02(\x05\x12\x0e\n\x06height\x18\x04 \x02(\x05\x12\x0f\n\x07\x65xtents\x18\x05 \x03(\x05\"\x99\x03\n\x10\x42uildingInstance\x12\r\n\x05index\x18\x01 \x02(\x05\x12\x11\n\tpos_x_min\x18\x02 \x01(\x05\x12\x11\n\tpos_y_min\x18\x03 \x01(\x05\x12\x11\n\tpos_z_min\x18\x04 \x01(\x05\x12\x11\n\tpos_x_max\x18\x05 \x01(\x05\x12\x11\n\tpos_y_max\x18\x06 \x01(\x05\x12\x11\n\tpos_z_max\x18\x07 \x01(\x05\x12\x39\n\rbuilding_type\x18\x08 \x01(\x0b\x32\".RemoteFortressReader.BuildingType\x12/\n\x08material\x18\t \x01(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\x16\n\x0e\x62uilding_flags\x18\n \x01(\r\x12\x0f\n\x07is_room\x18\x0b \x01(\x08\x12\x33\n\x04room\x18\x0c \x01(\x0b\x32%.RemoteFortressReader.BuildingExtents\x12:\n\tdirection\x18\r \x01(\x0e\x32\'.RemoteFortressReader.BuildingDirection\"P\n\tRiverEdge\x12\x0f\n\x07min_pos\x18\x01 \x01(\x05\x12\x0f\n\x07max_pos\x18\x02 \x01(\x05\x12\x0e\n\x06\x61\x63tive\x18\x03 \x01(\x05\x12\x11\n\televation\x18\x04 \x01(\x05\"\xc9\x01\n\tRiverTile\x12.\n\x05north\x18\x01 \x01(\x0b\x32\x1f.RemoteFortressReader.RiverEdge\x12.\n\x05south\x18\x02 \x01(\x0b\x32\x1f.RemoteFortressReader.RiverEdge\x12-\n\x04\x65\x61st\x18\x03 \x01(\x0b\x32\x1f.RemoteFortressReader.RiverEdge\x12-\n\x04west\x18\x04 \x01(\x0b\x32\x1f.RemoteFortressReader.RiverEdge\"\xc3\x05\n\x08MapBlock\x12\r\n\x05map_x\x18\x01 \x02(\x05\x12\r\n\x05map_y\x18\x02 \x02(\x05\x12\r\n\x05map_z\x18\x03 \x02(\x05\x12\r\n\x05tiles\x18\x04 \x03(\x05\x12\x30\n\tmaterials\x18\x05 \x03(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\x36\n\x0flayer_materials\x18\x06 \x03(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\x35\n\x0evein_materials\x18\x07 \x03(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\x35\n\x0e\x62\x61se_materials\x18\x08 \x03(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\r\n\x05magma\x18\t \x03(\x05\x12\r\n\x05water\x18\n \x03(\x05\x12\x0e\n\x06hidden\x18\x0b \x03(\x08\x12\r\n\x05light\x18\x0c \x03(\x08\x12\x14\n\x0csubterranean\x18\r \x03(\x08\x12\x0f\n\x07outside\x18\x0e \x03(\x08\x12\x0f\n\x07\x61quifer\x18\x0f \x03(\x08\x12\x16\n\x0ewater_stagnant\x18\x10 \x03(\x08\x12\x12\n\nwater_salt\x18\x11 \x03(\x08\x12\x39\n\x12\x63onstruction_items\x18\x12 \x03(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\x39\n\tbuildings\x18\x13 \x03(\x0b\x32&.RemoteFortressReader.BuildingInstance\x12\x14\n\x0ctree_percent\x18\x14 \x03(\x05\x12\x0e\n\x06tree_x\x18\x15 \x03(\x05\x12\x0e\n\x06tree_y\x18\x16 \x03(\x05\x12\x0e\n\x06tree_z\x18\x17 \x03(\x05\x12\x46\n\x14tile_dig_designation\x18\x18 \x03(\x0e\x32(.RemoteFortressReader.TileDigDesignation\".\n\x07MatPair\x12\x10\n\x08mat_type\x18\x01 \x02(\x05\x12\x11\n\tmat_index\x18\x02 \x02(\x05\";\n\x0f\x43olorDefinition\x12\x0b\n\x03red\x18\x01 \x02(\x05\x12\r\n\x05green\x18\x02 \x02(\x05\x12\x0c\n\x04\x62lue\x18\x03 \x02(\x05\"\x9b\x01\n\x12MaterialDefinition\x12/\n\x08mat_pair\x18\x01 \x02(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\n\n\x02id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12:\n\x0bstate_color\x18\x04 \x01(\x0b\x32%.RemoteFortressReader.ColorDefinition\"X\n\x0c\x42uildingType\x12\x15\n\rbuilding_type\x18\x01 \x02(\x05\x12\x18\n\x10\x62uilding_subtype\x18\x02 \x02(\x05\x12\x17\n\x0f\x62uilding_custom\x18\x03 \x02(\x05\"i\n\x12\x42uildingDefinition\x12\x39\n\rbuilding_type\x18\x01 \x02(\x0b\x32\".RemoteFortressReader.BuildingType\x12\n\n\x02id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\"O\n\x0c\x42uildingList\x12?\n\rbuilding_list\x18\x01 \x03(\x0b\x32(.RemoteFortressReader.BuildingDefinition\"O\n\x0cMaterialList\x12?\n\rmaterial_list\x18\x01 \x03(\x0b\x32(.RemoteFortressReader.MaterialDefinition\"\x81\x01\n\x0c\x42odySizeInfo\x12\x10\n\x08size_cur\x18\x01 \x01(\x05\x12\x11\n\tsize_base\x18\x02 \x01(\x05\x12\x10\n\x08\x61rea_cur\x18\x03 \x01(\x05\x12\x11\n\tarea_base\x18\x04 \x01(\x05\x12\x12\n\nlength_cur\x18\x05 \x01(\x05\x12\x13\n\x0blength_base\x18\x06 \x01(\x05\"e\n\x0eUnitAppearance\x12\x16\n\x0e\x62ody_modifiers\x18\x01 \x03(\x05\x12\x14\n\x0c\x62p_modifiers\x18\x02 \x03(\x05\x12\x15\n\rsize_modifier\x18\x03 \x01(\x05\x12\x0e\n\x06\x63olors\x18\x04 \x03(\x05\"\xb3\x03\n\x0eUnitDefinition\x12\n\n\x02id\x18\x01 \x02(\x05\x12\x0f\n\x07isValid\x18\x02 \x01(\x08\x12\r\n\x05pos_x\x18\x03 \x01(\x05\x12\r\n\x05pos_y\x18\x04 \x01(\x05\x12\r\n\x05pos_z\x18\x05 \x01(\x05\x12+\n\x04race\x18\x06 \x01(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12?\n\x10profession_color\x18\x07 \x01(\x0b\x32%.RemoteFortressReader.ColorDefinition\x12\x0e\n\x06\x66lags1\x18\x08 \x01(\r\x12\x0e\n\x06\x66lags2\x18\t \x01(\r\x12\x0e\n\x06\x66lags3\x18\n \x01(\r\x12\x12\n\nis_soldier\x18\x0b \x01(\x08\x12\x35\n\tsize_info\x18\x0c \x01(\x0b\x32\".RemoteFortressReader.BodySizeInfo\x12\x0c\n\x04name\x18\r \x01(\t\x12\x11\n\tblood_max\x18\x0e \x01(\x05\x12\x13\n\x0b\x62lood_count\x18\x0f \x01(\x05\x12\x38\n\nappearance\x18\x10 \x01(\x0b\x32$.RemoteFortressReader.UnitAppearance\"G\n\x08UnitList\x12;\n\rcreature_list\x18\x01 \x03(\x0b\x32$.RemoteFortressReader.UnitDefinition\"\x7f\n\x0c\x42lockRequest\x12\x15\n\rblocks_needed\x18\x01 \x01(\x05\x12\r\n\x05min_x\x18\x02 \x01(\x05\x12\r\n\x05max_x\x18\x03 \x01(\x05\x12\r\n\x05min_y\x18\x04 \x01(\x05\x12\r\n\x05max_y\x18\x05 \x01(\x05\x12\r\n\x05min_z\x18\x06 \x01(\x05\x12\r\n\x05max_z\x18\x07 \x01(\x05\"]\n\tBlockList\x12\x32\n\nmap_blocks\x18\x01 \x03(\x0b\x32\x1e.RemoteFortressReader.MapBlock\x12\r\n\x05map_x\x18\x02 \x01(\x05\x12\r\n\x05map_y\x18\x03 \x01(\x05\"F\n\x08PlantDef\x12\r\n\x05pos_x\x18\x01 \x02(\x05\x12\r\n\x05pos_y\x18\x02 \x02(\x05\x12\r\n\x05pos_z\x18\x03 \x02(\x05\x12\r\n\x05index\x18\x04 \x02(\x05\"?\n\tPlantList\x12\x32\n\nplant_list\x18\x01 \x03(\x0b\x32\x1e.RemoteFortressReader.PlantDef\"\xea\x01\n\x08ViewInfo\x12\x12\n\nview_pos_x\x18\x01 \x01(\x05\x12\x12\n\nview_pos_y\x18\x02 \x01(\x05\x12\x12\n\nview_pos_z\x18\x03 \x01(\x05\x12\x13\n\x0bview_size_x\x18\x04 \x01(\x05\x12\x13\n\x0bview_size_y\x18\x05 \x01(\x05\x12\x14\n\x0c\x63ursor_pos_x\x18\x06 \x01(\x05\x12\x14\n\x0c\x63ursor_pos_y\x18\x07 \x01(\x05\x12\x14\n\x0c\x63ursor_pos_z\x18\x08 \x01(\x05\x12\x1a\n\x0e\x66ollow_unit_id\x18\t \x01(\x05:\x02-1\x12\x1a\n\x0e\x66ollow_item_id\x18\n \x01(\x05:\x02-1\"\xcd\x01\n\x07MapInfo\x12\x14\n\x0c\x62lock_size_x\x18\x01 \x01(\x05\x12\x14\n\x0c\x62lock_size_y\x18\x02 \x01(\x05\x12\x14\n\x0c\x62lock_size_z\x18\x03 \x01(\x05\x12\x13\n\x0b\x62lock_pos_x\x18\x04 \x01(\x05\x12\x13\n\x0b\x62lock_pos_y\x18\x05 \x01(\x05\x12\x13\n\x0b\x62lock_pos_z\x18\x06 \x01(\x05\x12\x12\n\nworld_name\x18\x07 \x01(\t\x12\x1a\n\x12world_name_english\x18\x08 \x01(\t\x12\x11\n\tsave_name\x18\t \x01(\t\"\xdb\x01\n\x05\x43loud\x12.\n\x05\x66ront\x18\x01 \x01(\x0e\x32\x1f.RemoteFortressReader.FrontType\x12\x32\n\x07\x63umulus\x18\x02 \x01(\x0e\x32!.RemoteFortressReader.CumulusType\x12\x0e\n\x06\x63irrus\x18\x03 \x01(\x08\x12\x32\n\x07stratus\x18\x04 \x01(\x0e\x32!.RemoteFortressReader.StratusType\x12*\n\x03\x66og\x18\x05 \x01(\x0e\x32\x1d.RemoteFortressReader.FogType\"\xb2\x04\n\x08WorldMap\x12\x13\n\x0bworld_width\x18\x01 \x02(\x05\x12\x14\n\x0cworld_height\x18\x02 \x02(\x05\x12\x0c\n\x04name\x18\x03 \x01(\t\x12\x14\n\x0cname_english\x18\x04 \x01(\t\x12\x11\n\televation\x18\x05 \x03(\x05\x12\x10\n\x08rainfall\x18\x06 \x03(\x05\x12\x12\n\nvegetation\x18\x07 \x03(\x05\x12\x13\n\x0btemperature\x18\x08 \x03(\x05\x12\x10\n\x08\x65vilness\x18\t \x03(\x05\x12\x10\n\x08\x64rainage\x18\n \x03(\x05\x12\x11\n\tvolcanism\x18\x0b \x03(\x05\x12\x10\n\x08savagery\x18\x0c \x03(\x05\x12+\n\x06\x63louds\x18\r \x03(\x0b\x32\x1b.RemoteFortressReader.Cloud\x12\x10\n\x08salinity\x18\x0e \x03(\x05\x12\r\n\x05map_x\x18\x0f \x01(\x05\x12\r\n\x05map_y\x18\x10 \x01(\x05\x12\x10\n\x08\x63\x65nter_x\x18\x11 \x01(\x05\x12\x10\n\x08\x63\x65nter_y\x18\x12 \x01(\x05\x12\x10\n\x08\x63\x65nter_z\x18\x13 \x01(\x05\x12\x10\n\x08\x63ur_year\x18\x14 \x01(\x05\x12\x15\n\rcur_year_tick\x18\x15 \x01(\x05\x12\x35\n\x0bworld_poles\x18\x16 \x01(\x0e\x32 .RemoteFortressReader.WorldPoles\x12\x34\n\x0briver_tiles\x18\x17 \x03(\x0b\x32\x1f.RemoteFortressReader.RiverTile\x12\x17\n\x0fwater_elevation\x18\x18 \x03(\x05\"\x84\x02\n\nRegionTile\x12\x11\n\televation\x18\x01 \x01(\x05\x12\x10\n\x08rainfall\x18\x02 \x01(\x05\x12\x12\n\nvegetation\x18\x03 \x01(\x05\x12\x13\n\x0btemperature\x18\x04 \x01(\x05\x12\x10\n\x08\x65vilness\x18\x05 \x01(\x05\x12\x10\n\x08\x64rainage\x18\x06 \x01(\x05\x12\x11\n\tvolcanism\x18\x07 \x01(\x05\x12\x10\n\x08savagery\x18\x08 \x01(\x05\x12\x10\n\x08salinity\x18\t \x01(\x05\x12\x34\n\x0briver_tiles\x18\n \x01(\x0b\x32\x1f.RemoteFortressReader.RiverTile\x12\x17\n\x0fwater_elevation\x18\x0b \x01(\x05\"~\n\tRegionMap\x12\r\n\x05map_x\x18\x01 \x01(\x05\x12\r\n\x05map_y\x18\x02 \x01(\x05\x12\x0c\n\x04name\x18\x03 \x01(\t\x12\x14\n\x0cname_english\x18\x04 \x01(\t\x12/\n\x05tiles\x18\x05 \x03(\x0b\x32 .RemoteFortressReader.RegionTile\"v\n\nRegionMaps\x12\x32\n\nworld_maps\x18\x01 \x03(\x0b\x32\x1e.RemoteFortressReader.WorldMap\x12\x34\n\x0bregion_maps\x18\x02 \x03(\x0b\x32\x1f.RemoteFortressReader.RegionMap\"\x8a\x01\n\x11PatternDescriptor\x12\n\n\x02id\x18\x01 \x01(\t\x12\x35\n\x06\x63olors\x18\x02 \x03(\x0b\x32%.RemoteFortressReader.ColorDefinition\x12\x32\n\x07pattern\x18\x03 \x01(\x0e\x32!.RemoteFortressReader.PatternType\"\xb0\x01\n\x10\x43olorModifierRaw\x12\x39\n\x08patterns\x18\x01 \x03(\x0b\x32\'.RemoteFortressReader.PatternDescriptor\x12\x14\n\x0c\x62ody_part_id\x18\x02 \x03(\x05\x12\x17\n\x0ftissue_layer_id\x18\x03 \x03(\x05\x12\x12\n\nstart_date\x18\x04 \x01(\x05\x12\x10\n\x08\x65nd_date\x18\x05 \x01(\x05\x12\x0c\n\x04part\x18\x06 \x01(\t\"d\n\x10\x42odyPartLayerRaw\x12\x12\n\nlayer_name\x18\x01 \x01(\t\x12\x11\n\ttissue_id\x18\x02 \x01(\x05\x12\x13\n\x0blayer_depth\x18\x03 \x01(\x05\x12\x14\n\x0c\x62p_modifiers\x18\x04 \x03(\x05\"\x96\x01\n\x0b\x42odyPartRaw\x12\r\n\x05token\x18\x01 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x02 \x01(\t\x12\x0e\n\x06parent\x18\x03 \x01(\x05\x12\r\n\x05\x66lags\x18\x04 \x03(\x08\x12\x36\n\x06layers\x18\x05 \x03(\x0b\x32&.RemoteFortressReader.BodyPartLayerRaw\x12\x0f\n\x07relsize\x18\x06 \x01(\x05\"F\n\x14\x42pAppearanceModifier\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x0f\n\x07mod_min\x18\x02 \x01(\x05\x12\x0f\n\x07mod_max\x18\x03 \x01(\x05\"u\n\tTissueRaw\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12/\n\x08material\x18\x03 \x01(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\x1d\n\x15subordinate_to_tissue\x18\x04 \x01(\t\"\xf7\x03\n\x08\x43\x61steRaw\x12\r\n\x05index\x18\x01 \x01(\x05\x12\x10\n\x08\x63\x61ste_id\x18\x02 \x01(\t\x12\x12\n\ncaste_name\x18\x03 \x03(\t\x12\x11\n\tbaby_name\x18\x04 \x03(\t\x12\x12\n\nchild_name\x18\x05 \x03(\t\x12\x0e\n\x06gender\x18\x06 \x01(\x05\x12\x35\n\nbody_parts\x18\x07 \x03(\x0b\x32!.RemoteFortressReader.BodyPartRaw\x12\x15\n\rtotal_relsize\x18\x08 \x01(\x05\x12=\n\tmodifiers\x18\t \x03(\x0b\x32*.RemoteFortressReader.BpAppearanceModifier\x12\x14\n\x0cmodifier_idx\x18\n \x03(\x05\x12\x10\n\x08part_idx\x18\x0b \x03(\x05\x12\x11\n\tlayer_idx\x18\x0c \x03(\x05\x12M\n\x19\x62ody_appearance_modifiers\x18\r \x03(\x0b\x32*.RemoteFortressReader.BpAppearanceModifier\x12?\n\x0f\x63olor_modifiers\x18\x0e \x03(\x0b\x32&.RemoteFortressReader.ColorModifierRaw\x12\x13\n\x0b\x64\x65scription\x18\x0f \x01(\t\x12\x12\n\nadult_size\x18\x10 \x01(\x05\"\xd6\x02\n\x0b\x43reatureRaw\x12\r\n\x05index\x18\x01 \x01(\x05\x12\x13\n\x0b\x63reature_id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x03(\t\x12\x19\n\x11general_baby_name\x18\x04 \x03(\t\x12\x1a\n\x12general_child_name\x18\x05 \x03(\t\x12\x15\n\rcreature_tile\x18\x06 \x01(\x05\x12\x1d\n\x15\x63reature_soldier_tile\x18\x07 \x01(\x05\x12\x34\n\x05\x63olor\x18\x08 \x01(\x0b\x32%.RemoteFortressReader.ColorDefinition\x12\x11\n\tadultsize\x18\t \x01(\x05\x12-\n\x05\x63\x61ste\x18\n \x03(\x0b\x32\x1e.RemoteFortressReader.CasteRaw\x12\x30\n\x07tissues\x18\x0b \x03(\x0b\x32\x1f.RemoteFortressReader.TissueRaw\"K\n\x0f\x43reatureRawList\x12\x38\n\rcreature_raws\x18\x01 \x03(\x0b\x32!.RemoteFortressReader.CreatureRaw\"\xbb\x01\n\x04\x41rmy\x12\n\n\x02id\x18\x01 \x01(\x05\x12\r\n\x05pos_x\x18\x02 \x01(\x05\x12\r\n\x05pos_y\x18\x03 \x01(\x05\x12\r\n\x05pos_z\x18\x04 \x01(\x05\x12\x34\n\x06leader\x18\x05 \x01(\x0b\x32$.RemoteFortressReader.UnitDefinition\x12\x35\n\x07members\x18\x06 \x03(\x0b\x32$.RemoteFortressReader.UnitDefinition\x12\r\n\x05\x66lags\x18\x07 \x01(\r\"6\n\x08\x41rmyList\x12*\n\x06\x61rmies\x18\x01 \x03(\x0b\x32\x1a.RemoteFortressReader.Army\"f\n\x0bGrowthPrint\x12\x10\n\x08priority\x18\x01 \x01(\x05\x12\r\n\x05\x63olor\x18\x02 \x01(\x05\x12\x14\n\x0ctiming_start\x18\x03 \x01(\x05\x12\x12\n\ntiming_end\x18\x04 \x01(\x05\x12\x0c\n\x04tile\x18\x05 \x01(\x05\"\xef\x02\n\nTreeGrowth\x12\r\n\x05index\x18\x01 \x01(\x05\x12\n\n\x02id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12*\n\x03mat\x18\x04 \x01(\x0b\x32\x1d.RemoteFortressReader.MatPair\x12\x31\n\x06prints\x18\x05 \x03(\x0b\x32!.RemoteFortressReader.GrowthPrint\x12\x14\n\x0ctiming_start\x18\x06 \x01(\x05\x12\x12\n\ntiming_end\x18\x07 \x01(\x05\x12\r\n\x05twigs\x18\x08 \x01(\x08\x12\x16\n\x0elight_branches\x18\t \x01(\x08\x12\x16\n\x0eheavy_branches\x18\n \x01(\x08\x12\r\n\x05trunk\x18\x0b \x01(\x08\x12\r\n\x05roots\x18\x0c \x01(\x08\x12\x0b\n\x03\x63\x61p\x18\r \x01(\x08\x12\x0f\n\x07sapling\x18\x0e \x01(\x08\x12\x1a\n\x12trunk_height_start\x18\x0f \x01(\x05\x12\x18\n\x10trunk_height_end\x18\x10 \x01(\x05\"t\n\x08PlantRaw\x12\r\n\x05index\x18\x01 \x01(\x05\x12\n\n\x02id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12\x31\n\x07growths\x18\x04 \x03(\x0b\x32 .RemoteFortressReader.TreeGrowth\x12\x0c\n\x04tile\x18\x05 \x01(\x05\"B\n\x0cPlantRawList\x12\x32\n\nplant_raws\x18\x01 \x03(\x0b\x32\x1e.RemoteFortressReader.PlantRaw\"G\n\nScreenTile\x12\x11\n\tcharacter\x18\x01 \x01(\r\x12\x12\n\nforeground\x18\x02 \x01(\r\x12\x12\n\nbackground\x18\x03 \x01(\r\"_\n\rScreenCapture\x12\r\n\x05width\x18\x01 \x01(\r\x12\x0e\n\x06height\x18\x02 \x01(\r\x12/\n\x05tiles\x18\x03 \x03(\x0b\x32 .RemoteFortressReader.ScreenTile\"x\n\rKeyboardEvent\x12\x0c\n\x04type\x18\x01 \x01(\r\x12\r\n\x05which\x18\x02 \x01(\r\x12\r\n\x05state\x18\x03 \x01(\r\x12\x10\n\x08scancode\x18\x04 \x01(\r\x12\x0b\n\x03sym\x18\x05 \x01(\r\x12\x0b\n\x03mod\x18\x06 \x01(\r\x12\x0f\n\x07unicode\x18\x07 \x01(\r*\xba\x02\n\rTiletypeShape\x12\x15\n\x08NO_SHAPE\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01\x12\t\n\x05\x45MPTY\x10\x00\x12\t\n\x05\x46LOOR\x10\x01\x12\x0b\n\x07\x42OULDER\x10\x02\x12\x0b\n\x07PEBBLES\x10\x03\x12\x08\n\x04WALL\x10\x04\x12\x11\n\rFORTIFICATION\x10\x05\x12\x0c\n\x08STAIR_UP\x10\x06\x12\x0e\n\nSTAIR_DOWN\x10\x07\x12\x10\n\x0cSTAIR_UPDOWN\x10\x08\x12\x08\n\x04RAMP\x10\t\x12\x0c\n\x08RAMP_TOP\x10\n\x12\r\n\tBROOK_BED\x10\x0b\x12\r\n\tBROOK_TOP\x10\x0c\x12\x0e\n\nTREE_SHAPE\x10\r\x12\x0b\n\x07SAPLING\x10\x0e\x12\t\n\x05SHRUB\x10\x0f\x12\x0f\n\x0b\x45NDLESS_PIT\x10\x10\x12\n\n\x06\x42RANCH\x10\x11\x12\x10\n\x0cTRUNK_BRANCH\x10\x12\x12\x08\n\x04TWIG\x10\x13*\xc4\x01\n\x0fTiletypeSpecial\x12\x17\n\nNO_SPECIAL\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01\x12\n\n\x06NORMAL\x10\x00\x12\x10\n\x0cRIVER_SOURCE\x10\x01\x12\r\n\tWATERFALL\x10\x02\x12\n\n\x06SMOOTH\x10\x03\x12\x0c\n\x08\x46URROWED\x10\x04\x12\x07\n\x03WET\x10\x05\x12\x08\n\x04\x44\x45\x41\x44\x10\x06\x12\n\n\x06WORN_1\x10\x07\x12\n\n\x06WORN_2\x10\x08\x12\n\n\x06WORN_3\x10\t\x12\t\n\x05TRACK\x10\n\x12\x0f\n\x0bSMOOTH_DEAD\x10\x0b*\x8a\x03\n\x10TiletypeMaterial\x12\x18\n\x0bNO_MATERIAL\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01\x12\x07\n\x03\x41IR\x10\x00\x12\x08\n\x04SOIL\x10\x01\x12\t\n\x05STONE\x10\x02\x12\x0b\n\x07\x46\x45\x41TURE\x10\x03\x12\x0e\n\nLAVA_STONE\x10\x04\x12\x0b\n\x07MINERAL\x10\x05\x12\x11\n\rFROZEN_LIQUID\x10\x06\x12\x10\n\x0c\x43ONSTRUCTION\x10\x07\x12\x0f\n\x0bGRASS_LIGHT\x10\x08\x12\x0e\n\nGRASS_DARK\x10\t\x12\r\n\tGRASS_DRY\x10\n\x12\x0e\n\nGRASS_DEAD\x10\x0b\x12\t\n\x05PLANT\x10\x0c\x12\x07\n\x03HFS\x10\r\x12\x0c\n\x08\x43\x41MPFIRE\x10\x0e\x12\x08\n\x04\x46IRE\x10\x0f\x12\t\n\x05\x41SHES\x10\x10\x12\t\n\x05MAGMA\x10\x11\x12\r\n\tDRIFTWOOD\x10\x12\x12\x08\n\x04POOL\x10\x13\x12\t\n\x05\x42ROOK\x10\x14\x12\t\n\x05RIVER\x10\x15\x12\x08\n\x04ROOT\x10\x16\x12\x11\n\rTREE_MATERIAL\x10\x17\x12\x0c\n\x08MUSHROOM\x10\x18\x12\x13\n\x0fUNDERWORLD_GATE\x10\x19*V\n\x0fTiletypeVariant\x12\x17\n\nNO_VARIANT\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01\x12\t\n\x05VAR_1\x10\x00\x12\t\n\x05VAR_2\x10\x01\x12\t\n\x05VAR_3\x10\x02\x12\t\n\x05VAR_4\x10\x03*J\n\nWorldPoles\x12\x0c\n\x08NO_POLES\x10\x00\x12\x0e\n\nNORTH_POLE\x10\x01\x12\x0e\n\nSOUTH_POLE\x10\x02\x12\x0e\n\nBOTH_POLES\x10\x03*=\n\x11\x42uildingDirection\x12\t\n\x05NORTH\x10\x00\x12\x08\n\x04\x45\x41ST\x10\x01\x12\t\n\x05SOUTH\x10\x02\x12\x08\n\x04WEST\x10\x03*\x8d\x01\n\x12TileDigDesignation\x12\n\n\x06NO_DIG\x10\x00\x12\x0f\n\x0b\x44\x45\x46\x41ULT_DIG\x10\x01\x12\x15\n\x11UP_DOWN_STAIR_DIG\x10\x02\x12\x0f\n\x0b\x43HANNEL_DIG\x10\x03\x12\x0c\n\x08RAMP_DIG\x10\x04\x12\x12\n\x0e\x44OWN_STAIR_DIG\x10\x05\x12\x10\n\x0cUP_STAIR_DIG\x10\x06*O\n\tFrontType\x12\x0e\n\nFRONT_NONE\x10\x00\x12\x0e\n\nFRONT_WARM\x10\x01\x12\x0e\n\nFRONT_COLD\x10\x02\x12\x12\n\x0e\x46RONT_OCCLUDED\x10\x03*Z\n\x0b\x43umulusType\x12\x10\n\x0c\x43UMULUS_NONE\x10\x00\x12\x12\n\x0e\x43UMULUS_MEDIUM\x10\x01\x12\x11\n\rCUMULUS_MULTI\x10\x02\x12\x12\n\x0e\x43UMULUS_NIMBUS\x10\x03*Y\n\x0bStratusType\x12\x10\n\x0cSTRATUS_NONE\x10\x00\x12\x10\n\x0cSTRATUS_ALTO\x10\x01\x12\x12\n\x0eSTRATUS_PROPER\x10\x02\x12\x12\n\x0eSTRATUS_NIMBUS\x10\x03*D\n\x07\x46ogType\x12\x0c\n\x08\x46OG_NONE\x10\x00\x12\x0c\n\x08\x46OG_MIST\x10\x01\x12\x0e\n\nFOG_NORMAL\x10\x02\x12\r\n\tF0G_THICK\x10\x03*]\n\x0bPatternType\x12\x0c\n\x08MONOTONE\x10\x00\x12\x0b\n\x07STRIPES\x10\x01\x12\x0c\n\x08IRIS_EYE\x10\x02\x12\t\n\x05SPOTS\x10\x03\x12\r\n\tPUPIL_EYE\x10\x04\x12\x0b\n\x07MOTTLED\x10\x05\x42\x02H\x03'))
 
 _TILETYPESHAPE = _descriptor.EnumDescriptor(
   name='TiletypeShape',
@@ -132,8 +132,8 @@ _TILETYPESHAPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=2134,
-  serialized_end=2448,
+  serialized_start=8294,
+  serialized_end=8608,
 )
 
 TiletypeShape = enum_type_wrapper.EnumTypeWrapper(_TILETYPESHAPE)
@@ -198,8 +198,8 @@ _TILETYPESPECIAL = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=2451,
-  serialized_end=2647,
+  serialized_start=8611,
+  serialized_end=8807,
 )
 
 TiletypeSpecial = enum_type_wrapper.EnumTypeWrapper(_TILETYPESPECIAL)
@@ -320,8 +320,8 @@ _TILETYPEMATERIAL = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=2650,
-  serialized_end=3044,
+  serialized_start=8810,
+  serialized_end=9204,
 )
 
 TiletypeMaterial = enum_type_wrapper.EnumTypeWrapper(_TILETYPEMATERIAL)
@@ -354,11 +354,271 @@ _TILETYPEVARIANT = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=3046,
-  serialized_end=3132,
+  serialized_start=9206,
+  serialized_end=9292,
 )
 
 TiletypeVariant = enum_type_wrapper.EnumTypeWrapper(_TILETYPEVARIANT)
+_WORLDPOLES = _descriptor.EnumDescriptor(
+  name='WorldPoles',
+  full_name='RemoteFortressReader.WorldPoles',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='NO_POLES', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='NORTH_POLE', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='SOUTH_POLE', index=2, number=2,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='BOTH_POLES', index=3, number=3,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=9294,
+  serialized_end=9368,
+)
+
+WorldPoles = enum_type_wrapper.EnumTypeWrapper(_WORLDPOLES)
+_BUILDINGDIRECTION = _descriptor.EnumDescriptor(
+  name='BuildingDirection',
+  full_name='RemoteFortressReader.BuildingDirection',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='NORTH', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='EAST', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='SOUTH', index=2, number=2,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='WEST', index=3, number=3,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=9370,
+  serialized_end=9431,
+)
+
+BuildingDirection = enum_type_wrapper.EnumTypeWrapper(_BUILDINGDIRECTION)
+_TILEDIGDESIGNATION = _descriptor.EnumDescriptor(
+  name='TileDigDesignation',
+  full_name='RemoteFortressReader.TileDigDesignation',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='NO_DIG', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='DEFAULT_DIG', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='UP_DOWN_STAIR_DIG', index=2, number=2,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='CHANNEL_DIG', index=3, number=3,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='RAMP_DIG', index=4, number=4,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='DOWN_STAIR_DIG', index=5, number=5,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='UP_STAIR_DIG', index=6, number=6,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=9434,
+  serialized_end=9575,
+)
+
+TileDigDesignation = enum_type_wrapper.EnumTypeWrapper(_TILEDIGDESIGNATION)
+_FRONTTYPE = _descriptor.EnumDescriptor(
+  name='FrontType',
+  full_name='RemoteFortressReader.FrontType',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='FRONT_NONE', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='FRONT_WARM', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='FRONT_COLD', index=2, number=2,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='FRONT_OCCLUDED', index=3, number=3,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=9577,
+  serialized_end=9656,
+)
+
+FrontType = enum_type_wrapper.EnumTypeWrapper(_FRONTTYPE)
+_CUMULUSTYPE = _descriptor.EnumDescriptor(
+  name='CumulusType',
+  full_name='RemoteFortressReader.CumulusType',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='CUMULUS_NONE', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='CUMULUS_MEDIUM', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='CUMULUS_MULTI', index=2, number=2,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='CUMULUS_NIMBUS', index=3, number=3,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=9658,
+  serialized_end=9748,
+)
+
+CumulusType = enum_type_wrapper.EnumTypeWrapper(_CUMULUSTYPE)
+_STRATUSTYPE = _descriptor.EnumDescriptor(
+  name='StratusType',
+  full_name='RemoteFortressReader.StratusType',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='STRATUS_NONE', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='STRATUS_ALTO', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='STRATUS_PROPER', index=2, number=2,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='STRATUS_NIMBUS', index=3, number=3,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=9750,
+  serialized_end=9839,
+)
+
+StratusType = enum_type_wrapper.EnumTypeWrapper(_STRATUSTYPE)
+_FOGTYPE = _descriptor.EnumDescriptor(
+  name='FogType',
+  full_name='RemoteFortressReader.FogType',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='FOG_NONE', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='FOG_MIST', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='FOG_NORMAL', index=2, number=2,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='F0G_THICK', index=3, number=3,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=9841,
+  serialized_end=9909,
+)
+
+FogType = enum_type_wrapper.EnumTypeWrapper(_FOGTYPE)
+_PATTERNTYPE = _descriptor.EnumDescriptor(
+  name='PatternType',
+  full_name='RemoteFortressReader.PatternType',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='MONOTONE', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='STRIPES', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='IRIS_EYE', index=2, number=2,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='SPOTS', index=3, number=3,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='PUPIL_EYE', index=4, number=4,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='MOTTLED', index=5, number=5,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=9911,
+  serialized_end=10004,
+)
+
+PatternType = enum_type_wrapper.EnumTypeWrapper(_PATTERNTYPE)
 NO_SHAPE = -1
 EMPTY = 0
 FLOOR = 1
@@ -425,6 +685,43 @@ VAR_1 = 0
 VAR_2 = 1
 VAR_3 = 2
 VAR_4 = 3
+NO_POLES = 0
+NORTH_POLE = 1
+SOUTH_POLE = 2
+BOTH_POLES = 3
+NORTH = 0
+EAST = 1
+SOUTH = 2
+WEST = 3
+NO_DIG = 0
+DEFAULT_DIG = 1
+UP_DOWN_STAIR_DIG = 2
+CHANNEL_DIG = 3
+RAMP_DIG = 4
+DOWN_STAIR_DIG = 5
+UP_STAIR_DIG = 6
+FRONT_NONE = 0
+FRONT_WARM = 1
+FRONT_COLD = 2
+FRONT_OCCLUDED = 3
+CUMULUS_NONE = 0
+CUMULUS_MEDIUM = 1
+CUMULUS_MULTI = 2
+CUMULUS_NIMBUS = 3
+STRATUS_NONE = 0
+STRATUS_ALTO = 1
+STRATUS_PROPER = 2
+STRATUS_NIMBUS = 3
+FOG_NONE = 0
+FOG_MIST = 1
+FOG_NORMAL = 2
+F0G_THICK = 3
+MONOTONE = 0
+STRIPES = 1
+IRIS_EYE = 2
+SPOTS = 3
+PUPIL_EYE = 4
+MOTTLED = 5
 
 
 
@@ -530,6 +827,272 @@ _TILETYPELIST = _descriptor.Descriptor(
   extension_ranges=[],
   serialized_start=349,
   serialized_end=418,
+)
+
+
+_BUILDINGEXTENTS = _descriptor.Descriptor(
+  name='BuildingExtents',
+  full_name='RemoteFortressReader.BuildingExtents',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='pos_x', full_name='RemoteFortressReader.BuildingExtents.pos_x', index=0,
+      number=1, type=5, cpp_type=1, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pos_y', full_name='RemoteFortressReader.BuildingExtents.pos_y', index=1,
+      number=2, type=5, cpp_type=1, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='width', full_name='RemoteFortressReader.BuildingExtents.width', index=2,
+      number=3, type=5, cpp_type=1, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='height', full_name='RemoteFortressReader.BuildingExtents.height', index=3,
+      number=4, type=5, cpp_type=1, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='extents', full_name='RemoteFortressReader.BuildingExtents.extents', index=4,
+      number=5, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=420,
+  serialized_end=515,
+)
+
+
+_BUILDINGINSTANCE = _descriptor.Descriptor(
+  name='BuildingInstance',
+  full_name='RemoteFortressReader.BuildingInstance',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='index', full_name='RemoteFortressReader.BuildingInstance.index', index=0,
+      number=1, type=5, cpp_type=1, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pos_x_min', full_name='RemoteFortressReader.BuildingInstance.pos_x_min', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pos_y_min', full_name='RemoteFortressReader.BuildingInstance.pos_y_min', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pos_z_min', full_name='RemoteFortressReader.BuildingInstance.pos_z_min', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pos_x_max', full_name='RemoteFortressReader.BuildingInstance.pos_x_max', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pos_y_max', full_name='RemoteFortressReader.BuildingInstance.pos_y_max', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pos_z_max', full_name='RemoteFortressReader.BuildingInstance.pos_z_max', index=6,
+      number=7, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='building_type', full_name='RemoteFortressReader.BuildingInstance.building_type', index=7,
+      number=8, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='material', full_name='RemoteFortressReader.BuildingInstance.material', index=8,
+      number=9, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='building_flags', full_name='RemoteFortressReader.BuildingInstance.building_flags', index=9,
+      number=10, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='is_room', full_name='RemoteFortressReader.BuildingInstance.is_room', index=10,
+      number=11, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='room', full_name='RemoteFortressReader.BuildingInstance.room', index=11,
+      number=12, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='direction', full_name='RemoteFortressReader.BuildingInstance.direction', index=12,
+      number=13, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=518,
+  serialized_end=927,
+)
+
+
+_RIVEREDGE = _descriptor.Descriptor(
+  name='RiverEdge',
+  full_name='RemoteFortressReader.RiverEdge',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='min_pos', full_name='RemoteFortressReader.RiverEdge.min_pos', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='max_pos', full_name='RemoteFortressReader.RiverEdge.max_pos', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='active', full_name='RemoteFortressReader.RiverEdge.active', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='elevation', full_name='RemoteFortressReader.RiverEdge.elevation', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=929,
+  serialized_end=1009,
+)
+
+
+_RIVERTILE = _descriptor.Descriptor(
+  name='RiverTile',
+  full_name='RemoteFortressReader.RiverTile',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='north', full_name='RemoteFortressReader.RiverTile.north', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='south', full_name='RemoteFortressReader.RiverTile.south', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='east', full_name='RemoteFortressReader.RiverTile.east', index=2,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='west', full_name='RemoteFortressReader.RiverTile.west', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=1012,
+  serialized_end=1213,
 )
 
 
@@ -659,6 +1222,55 @@ _MAPBLOCK = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='construction_items', full_name='RemoteFortressReader.MapBlock.construction_items', index=17,
+      number=18, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='buildings', full_name='RemoteFortressReader.MapBlock.buildings', index=18,
+      number=19, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='tree_percent', full_name='RemoteFortressReader.MapBlock.tree_percent', index=19,
+      number=20, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='tree_x', full_name='RemoteFortressReader.MapBlock.tree_x', index=20,
+      number=21, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='tree_y', full_name='RemoteFortressReader.MapBlock.tree_y', index=21,
+      number=22, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='tree_z', full_name='RemoteFortressReader.MapBlock.tree_z', index=22,
+      number=23, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='tile_dig_designation', full_name='RemoteFortressReader.MapBlock.tile_dig_designation', index=23,
+      number=24, type=14, cpp_type=8, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -668,8 +1280,8 @@ _MAPBLOCK = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=421,
-  serialized_end=868,
+  serialized_start=1216,
+  serialized_end=1923,
 )
 
 
@@ -703,8 +1315,8 @@ _MATPAIR = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=870,
-  serialized_end=916,
+  serialized_start=1925,
+  serialized_end=1971,
 )
 
 
@@ -745,8 +1357,8 @@ _COLORDEFINITION = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=918,
-  serialized_end=977,
+  serialized_start=1973,
+  serialized_end=2032,
 )
 
 
@@ -794,8 +1406,120 @@ _MATERIALDEFINITION = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=980,
-  serialized_end=1135,
+  serialized_start=2035,
+  serialized_end=2190,
+)
+
+
+_BUILDINGTYPE = _descriptor.Descriptor(
+  name='BuildingType',
+  full_name='RemoteFortressReader.BuildingType',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='building_type', full_name='RemoteFortressReader.BuildingType.building_type', index=0,
+      number=1, type=5, cpp_type=1, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='building_subtype', full_name='RemoteFortressReader.BuildingType.building_subtype', index=1,
+      number=2, type=5, cpp_type=1, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='building_custom', full_name='RemoteFortressReader.BuildingType.building_custom', index=2,
+      number=3, type=5, cpp_type=1, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=2192,
+  serialized_end=2280,
+)
+
+
+_BUILDINGDEFINITION = _descriptor.Descriptor(
+  name='BuildingDefinition',
+  full_name='RemoteFortressReader.BuildingDefinition',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='building_type', full_name='RemoteFortressReader.BuildingDefinition.building_type', index=0,
+      number=1, type=11, cpp_type=10, label=2,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='id', full_name='RemoteFortressReader.BuildingDefinition.id', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='name', full_name='RemoteFortressReader.BuildingDefinition.name', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=2282,
+  serialized_end=2387,
+)
+
+
+_BUILDINGLIST = _descriptor.Descriptor(
+  name='BuildingList',
+  full_name='RemoteFortressReader.BuildingList',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='building_list', full_name='RemoteFortressReader.BuildingList.building_list', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=2389,
+  serialized_end=2468,
 )
 
 
@@ -822,8 +1546,120 @@ _MATERIALLIST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1137,
-  serialized_end=1216,
+  serialized_start=2470,
+  serialized_end=2549,
+)
+
+
+_BODYSIZEINFO = _descriptor.Descriptor(
+  name='BodySizeInfo',
+  full_name='RemoteFortressReader.BodySizeInfo',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='size_cur', full_name='RemoteFortressReader.BodySizeInfo.size_cur', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='size_base', full_name='RemoteFortressReader.BodySizeInfo.size_base', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='area_cur', full_name='RemoteFortressReader.BodySizeInfo.area_cur', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='area_base', full_name='RemoteFortressReader.BodySizeInfo.area_base', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='length_cur', full_name='RemoteFortressReader.BodySizeInfo.length_cur', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='length_base', full_name='RemoteFortressReader.BodySizeInfo.length_base', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=2552,
+  serialized_end=2681,
+)
+
+
+_UNITAPPEARANCE = _descriptor.Descriptor(
+  name='UnitAppearance',
+  full_name='RemoteFortressReader.UnitAppearance',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='body_modifiers', full_name='RemoteFortressReader.UnitAppearance.body_modifiers', index=0,
+      number=1, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='bp_modifiers', full_name='RemoteFortressReader.UnitAppearance.bp_modifiers', index=1,
+      number=2, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='size_modifier', full_name='RemoteFortressReader.UnitAppearance.size_modifier', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='colors', full_name='RemoteFortressReader.UnitAppearance.colors', index=3,
+      number=4, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=2683,
+  serialized_end=2784,
 )
 
 
@@ -869,6 +1705,83 @@ _UNITDEFINITION = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='race', full_name='RemoteFortressReader.UnitDefinition.race', index=5,
+      number=6, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='profession_color', full_name='RemoteFortressReader.UnitDefinition.profession_color', index=6,
+      number=7, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='flags1', full_name='RemoteFortressReader.UnitDefinition.flags1', index=7,
+      number=8, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='flags2', full_name='RemoteFortressReader.UnitDefinition.flags2', index=8,
+      number=9, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='flags3', full_name='RemoteFortressReader.UnitDefinition.flags3', index=9,
+      number=10, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='is_soldier', full_name='RemoteFortressReader.UnitDefinition.is_soldier', index=10,
+      number=11, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='size_info', full_name='RemoteFortressReader.UnitDefinition.size_info', index=11,
+      number=12, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='name', full_name='RemoteFortressReader.UnitDefinition.name', index=12,
+      number=13, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='blood_max', full_name='RemoteFortressReader.UnitDefinition.blood_max', index=13,
+      number=14, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='blood_count', full_name='RemoteFortressReader.UnitDefinition.blood_count', index=14,
+      number=15, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='appearance', full_name='RemoteFortressReader.UnitDefinition.appearance', index=15,
+      number=16, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -878,8 +1791,8 @@ _UNITDEFINITION = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1218,
-  serialized_end=1308,
+  serialized_start=2787,
+  serialized_end=3222,
 )
 
 
@@ -906,8 +1819,8 @@ _UNITLIST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1310,
-  serialized_end=1381,
+  serialized_start=3224,
+  serialized_end=3295,
 )
 
 
@@ -976,8 +1889,8 @@ _BLOCKREQUEST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1383,
-  serialized_end=1510,
+  serialized_start=3297,
+  serialized_end=3424,
 )
 
 
@@ -1018,8 +1931,8 @@ _BLOCKLIST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1512,
-  serialized_end=1605,
+  serialized_start=3426,
+  serialized_end=3519,
 )
 
 
@@ -1067,8 +1980,8 @@ _PLANTDEF = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1607,
-  serialized_end=1677,
+  serialized_start=3521,
+  serialized_end=3591,
 )
 
 
@@ -1095,8 +2008,8 @@ _PLANTLIST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1679,
-  serialized_end=1742,
+  serialized_start=3593,
+  serialized_end=3656,
 )
 
 
@@ -1163,6 +2076,20 @@ _VIEWINFO = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='follow_unit_id', full_name='RemoteFortressReader.ViewInfo.follow_unit_id', index=8,
+      number=9, type=5, cpp_type=1, label=1,
+      has_default_value=True, default_value=-1,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='follow_item_id', full_name='RemoteFortressReader.ViewInfo.follow_item_id', index=9,
+      number=10, type=5, cpp_type=1, label=1,
+      has_default_value=True, default_value=-1,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -1172,8 +2099,8 @@ _VIEWINFO = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1745,
-  serialized_end=1923,
+  serialized_start=3659,
+  serialized_end=3893,
 )
 
 
@@ -1256,8 +2183,1534 @@ _MAPINFO = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1926,
-  serialized_end=2131,
+  serialized_start=3896,
+  serialized_end=4101,
+)
+
+
+_CLOUD = _descriptor.Descriptor(
+  name='Cloud',
+  full_name='RemoteFortressReader.Cloud',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='front', full_name='RemoteFortressReader.Cloud.front', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='cumulus', full_name='RemoteFortressReader.Cloud.cumulus', index=1,
+      number=2, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='cirrus', full_name='RemoteFortressReader.Cloud.cirrus', index=2,
+      number=3, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='stratus', full_name='RemoteFortressReader.Cloud.stratus', index=3,
+      number=4, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='fog', full_name='RemoteFortressReader.Cloud.fog', index=4,
+      number=5, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=4104,
+  serialized_end=4323,
+)
+
+
+_WORLDMAP = _descriptor.Descriptor(
+  name='WorldMap',
+  full_name='RemoteFortressReader.WorldMap',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='world_width', full_name='RemoteFortressReader.WorldMap.world_width', index=0,
+      number=1, type=5, cpp_type=1, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='world_height', full_name='RemoteFortressReader.WorldMap.world_height', index=1,
+      number=2, type=5, cpp_type=1, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='name', full_name='RemoteFortressReader.WorldMap.name', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='name_english', full_name='RemoteFortressReader.WorldMap.name_english', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='elevation', full_name='RemoteFortressReader.WorldMap.elevation', index=4,
+      number=5, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='rainfall', full_name='RemoteFortressReader.WorldMap.rainfall', index=5,
+      number=6, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='vegetation', full_name='RemoteFortressReader.WorldMap.vegetation', index=6,
+      number=7, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='temperature', full_name='RemoteFortressReader.WorldMap.temperature', index=7,
+      number=8, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='evilness', full_name='RemoteFortressReader.WorldMap.evilness', index=8,
+      number=9, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='drainage', full_name='RemoteFortressReader.WorldMap.drainage', index=9,
+      number=10, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='volcanism', full_name='RemoteFortressReader.WorldMap.volcanism', index=10,
+      number=11, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='savagery', full_name='RemoteFortressReader.WorldMap.savagery', index=11,
+      number=12, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='clouds', full_name='RemoteFortressReader.WorldMap.clouds', index=12,
+      number=13, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='salinity', full_name='RemoteFortressReader.WorldMap.salinity', index=13,
+      number=14, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='map_x', full_name='RemoteFortressReader.WorldMap.map_x', index=14,
+      number=15, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='map_y', full_name='RemoteFortressReader.WorldMap.map_y', index=15,
+      number=16, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='center_x', full_name='RemoteFortressReader.WorldMap.center_x', index=16,
+      number=17, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='center_y', full_name='RemoteFortressReader.WorldMap.center_y', index=17,
+      number=18, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='center_z', full_name='RemoteFortressReader.WorldMap.center_z', index=18,
+      number=19, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='cur_year', full_name='RemoteFortressReader.WorldMap.cur_year', index=19,
+      number=20, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='cur_year_tick', full_name='RemoteFortressReader.WorldMap.cur_year_tick', index=20,
+      number=21, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='world_poles', full_name='RemoteFortressReader.WorldMap.world_poles', index=21,
+      number=22, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='river_tiles', full_name='RemoteFortressReader.WorldMap.river_tiles', index=22,
+      number=23, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='water_elevation', full_name='RemoteFortressReader.WorldMap.water_elevation', index=23,
+      number=24, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=4326,
+  serialized_end=4888,
+)
+
+
+_REGIONTILE = _descriptor.Descriptor(
+  name='RegionTile',
+  full_name='RemoteFortressReader.RegionTile',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='elevation', full_name='RemoteFortressReader.RegionTile.elevation', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='rainfall', full_name='RemoteFortressReader.RegionTile.rainfall', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='vegetation', full_name='RemoteFortressReader.RegionTile.vegetation', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='temperature', full_name='RemoteFortressReader.RegionTile.temperature', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='evilness', full_name='RemoteFortressReader.RegionTile.evilness', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='drainage', full_name='RemoteFortressReader.RegionTile.drainage', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='volcanism', full_name='RemoteFortressReader.RegionTile.volcanism', index=6,
+      number=7, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='savagery', full_name='RemoteFortressReader.RegionTile.savagery', index=7,
+      number=8, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='salinity', full_name='RemoteFortressReader.RegionTile.salinity', index=8,
+      number=9, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='river_tiles', full_name='RemoteFortressReader.RegionTile.river_tiles', index=9,
+      number=10, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='water_elevation', full_name='RemoteFortressReader.RegionTile.water_elevation', index=10,
+      number=11, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=4891,
+  serialized_end=5151,
+)
+
+
+_REGIONMAP = _descriptor.Descriptor(
+  name='RegionMap',
+  full_name='RemoteFortressReader.RegionMap',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='map_x', full_name='RemoteFortressReader.RegionMap.map_x', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='map_y', full_name='RemoteFortressReader.RegionMap.map_y', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='name', full_name='RemoteFortressReader.RegionMap.name', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='name_english', full_name='RemoteFortressReader.RegionMap.name_english', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='tiles', full_name='RemoteFortressReader.RegionMap.tiles', index=4,
+      number=5, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=5153,
+  serialized_end=5279,
+)
+
+
+_REGIONMAPS = _descriptor.Descriptor(
+  name='RegionMaps',
+  full_name='RemoteFortressReader.RegionMaps',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='world_maps', full_name='RemoteFortressReader.RegionMaps.world_maps', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='region_maps', full_name='RemoteFortressReader.RegionMaps.region_maps', index=1,
+      number=2, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=5281,
+  serialized_end=5399,
+)
+
+
+_PATTERNDESCRIPTOR = _descriptor.Descriptor(
+  name='PatternDescriptor',
+  full_name='RemoteFortressReader.PatternDescriptor',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='id', full_name='RemoteFortressReader.PatternDescriptor.id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='colors', full_name='RemoteFortressReader.PatternDescriptor.colors', index=1,
+      number=2, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pattern', full_name='RemoteFortressReader.PatternDescriptor.pattern', index=2,
+      number=3, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=5402,
+  serialized_end=5540,
+)
+
+
+_COLORMODIFIERRAW = _descriptor.Descriptor(
+  name='ColorModifierRaw',
+  full_name='RemoteFortressReader.ColorModifierRaw',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='patterns', full_name='RemoteFortressReader.ColorModifierRaw.patterns', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='body_part_id', full_name='RemoteFortressReader.ColorModifierRaw.body_part_id', index=1,
+      number=2, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='tissue_layer_id', full_name='RemoteFortressReader.ColorModifierRaw.tissue_layer_id', index=2,
+      number=3, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='start_date', full_name='RemoteFortressReader.ColorModifierRaw.start_date', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='end_date', full_name='RemoteFortressReader.ColorModifierRaw.end_date', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='part', full_name='RemoteFortressReader.ColorModifierRaw.part', index=5,
+      number=6, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=5543,
+  serialized_end=5719,
+)
+
+
+_BODYPARTLAYERRAW = _descriptor.Descriptor(
+  name='BodyPartLayerRaw',
+  full_name='RemoteFortressReader.BodyPartLayerRaw',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='layer_name', full_name='RemoteFortressReader.BodyPartLayerRaw.layer_name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='tissue_id', full_name='RemoteFortressReader.BodyPartLayerRaw.tissue_id', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='layer_depth', full_name='RemoteFortressReader.BodyPartLayerRaw.layer_depth', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='bp_modifiers', full_name='RemoteFortressReader.BodyPartLayerRaw.bp_modifiers', index=3,
+      number=4, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=5721,
+  serialized_end=5821,
+)
+
+
+_BODYPARTRAW = _descriptor.Descriptor(
+  name='BodyPartRaw',
+  full_name='RemoteFortressReader.BodyPartRaw',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='token', full_name='RemoteFortressReader.BodyPartRaw.token', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='category', full_name='RemoteFortressReader.BodyPartRaw.category', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='parent', full_name='RemoteFortressReader.BodyPartRaw.parent', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='flags', full_name='RemoteFortressReader.BodyPartRaw.flags', index=3,
+      number=4, type=8, cpp_type=7, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='layers', full_name='RemoteFortressReader.BodyPartRaw.layers', index=4,
+      number=5, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='relsize', full_name='RemoteFortressReader.BodyPartRaw.relsize', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=5824,
+  serialized_end=5974,
+)
+
+
+_BPAPPEARANCEMODIFIER = _descriptor.Descriptor(
+  name='BpAppearanceModifier',
+  full_name='RemoteFortressReader.BpAppearanceModifier',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='type', full_name='RemoteFortressReader.BpAppearanceModifier.type', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='mod_min', full_name='RemoteFortressReader.BpAppearanceModifier.mod_min', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='mod_max', full_name='RemoteFortressReader.BpAppearanceModifier.mod_max', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=5976,
+  serialized_end=6046,
+)
+
+
+_TISSUERAW = _descriptor.Descriptor(
+  name='TissueRaw',
+  full_name='RemoteFortressReader.TissueRaw',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='id', full_name='RemoteFortressReader.TissueRaw.id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='name', full_name='RemoteFortressReader.TissueRaw.name', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='material', full_name='RemoteFortressReader.TissueRaw.material', index=2,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='subordinate_to_tissue', full_name='RemoteFortressReader.TissueRaw.subordinate_to_tissue', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=6048,
+  serialized_end=6165,
+)
+
+
+_CASTERAW = _descriptor.Descriptor(
+  name='CasteRaw',
+  full_name='RemoteFortressReader.CasteRaw',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='index', full_name='RemoteFortressReader.CasteRaw.index', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='caste_id', full_name='RemoteFortressReader.CasteRaw.caste_id', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='caste_name', full_name='RemoteFortressReader.CasteRaw.caste_name', index=2,
+      number=3, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='baby_name', full_name='RemoteFortressReader.CasteRaw.baby_name', index=3,
+      number=4, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='child_name', full_name='RemoteFortressReader.CasteRaw.child_name', index=4,
+      number=5, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='gender', full_name='RemoteFortressReader.CasteRaw.gender', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='body_parts', full_name='RemoteFortressReader.CasteRaw.body_parts', index=6,
+      number=7, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='total_relsize', full_name='RemoteFortressReader.CasteRaw.total_relsize', index=7,
+      number=8, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='modifiers', full_name='RemoteFortressReader.CasteRaw.modifiers', index=8,
+      number=9, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='modifier_idx', full_name='RemoteFortressReader.CasteRaw.modifier_idx', index=9,
+      number=10, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='part_idx', full_name='RemoteFortressReader.CasteRaw.part_idx', index=10,
+      number=11, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='layer_idx', full_name='RemoteFortressReader.CasteRaw.layer_idx', index=11,
+      number=12, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='body_appearance_modifiers', full_name='RemoteFortressReader.CasteRaw.body_appearance_modifiers', index=12,
+      number=13, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='color_modifiers', full_name='RemoteFortressReader.CasteRaw.color_modifiers', index=13,
+      number=14, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='description', full_name='RemoteFortressReader.CasteRaw.description', index=14,
+      number=15, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='adult_size', full_name='RemoteFortressReader.CasteRaw.adult_size', index=15,
+      number=16, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=6168,
+  serialized_end=6671,
+)
+
+
+_CREATURERAW = _descriptor.Descriptor(
+  name='CreatureRaw',
+  full_name='RemoteFortressReader.CreatureRaw',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='index', full_name='RemoteFortressReader.CreatureRaw.index', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='creature_id', full_name='RemoteFortressReader.CreatureRaw.creature_id', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='name', full_name='RemoteFortressReader.CreatureRaw.name', index=2,
+      number=3, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='general_baby_name', full_name='RemoteFortressReader.CreatureRaw.general_baby_name', index=3,
+      number=4, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='general_child_name', full_name='RemoteFortressReader.CreatureRaw.general_child_name', index=4,
+      number=5, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='creature_tile', full_name='RemoteFortressReader.CreatureRaw.creature_tile', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='creature_soldier_tile', full_name='RemoteFortressReader.CreatureRaw.creature_soldier_tile', index=6,
+      number=7, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='color', full_name='RemoteFortressReader.CreatureRaw.color', index=7,
+      number=8, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='adultsize', full_name='RemoteFortressReader.CreatureRaw.adultsize', index=8,
+      number=9, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='caste', full_name='RemoteFortressReader.CreatureRaw.caste', index=9,
+      number=10, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='tissues', full_name='RemoteFortressReader.CreatureRaw.tissues', index=10,
+      number=11, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=6674,
+  serialized_end=7016,
+)
+
+
+_CREATURERAWLIST = _descriptor.Descriptor(
+  name='CreatureRawList',
+  full_name='RemoteFortressReader.CreatureRawList',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='creature_raws', full_name='RemoteFortressReader.CreatureRawList.creature_raws', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=7018,
+  serialized_end=7093,
+)
+
+
+_ARMY = _descriptor.Descriptor(
+  name='Army',
+  full_name='RemoteFortressReader.Army',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='id', full_name='RemoteFortressReader.Army.id', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pos_x', full_name='RemoteFortressReader.Army.pos_x', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pos_y', full_name='RemoteFortressReader.Army.pos_y', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pos_z', full_name='RemoteFortressReader.Army.pos_z', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='leader', full_name='RemoteFortressReader.Army.leader', index=4,
+      number=5, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='members', full_name='RemoteFortressReader.Army.members', index=5,
+      number=6, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='flags', full_name='RemoteFortressReader.Army.flags', index=6,
+      number=7, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=7096,
+  serialized_end=7283,
+)
+
+
+_ARMYLIST = _descriptor.Descriptor(
+  name='ArmyList',
+  full_name='RemoteFortressReader.ArmyList',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='armies', full_name='RemoteFortressReader.ArmyList.armies', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=7285,
+  serialized_end=7339,
+)
+
+
+_GROWTHPRINT = _descriptor.Descriptor(
+  name='GrowthPrint',
+  full_name='RemoteFortressReader.GrowthPrint',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='priority', full_name='RemoteFortressReader.GrowthPrint.priority', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='color', full_name='RemoteFortressReader.GrowthPrint.color', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='timing_start', full_name='RemoteFortressReader.GrowthPrint.timing_start', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='timing_end', full_name='RemoteFortressReader.GrowthPrint.timing_end', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='tile', full_name='RemoteFortressReader.GrowthPrint.tile', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=7341,
+  serialized_end=7443,
+)
+
+
+_TREEGROWTH = _descriptor.Descriptor(
+  name='TreeGrowth',
+  full_name='RemoteFortressReader.TreeGrowth',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='index', full_name='RemoteFortressReader.TreeGrowth.index', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='id', full_name='RemoteFortressReader.TreeGrowth.id', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='name', full_name='RemoteFortressReader.TreeGrowth.name', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='mat', full_name='RemoteFortressReader.TreeGrowth.mat', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='prints', full_name='RemoteFortressReader.TreeGrowth.prints', index=4,
+      number=5, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='timing_start', full_name='RemoteFortressReader.TreeGrowth.timing_start', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='timing_end', full_name='RemoteFortressReader.TreeGrowth.timing_end', index=6,
+      number=7, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='twigs', full_name='RemoteFortressReader.TreeGrowth.twigs', index=7,
+      number=8, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='light_branches', full_name='RemoteFortressReader.TreeGrowth.light_branches', index=8,
+      number=9, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='heavy_branches', full_name='RemoteFortressReader.TreeGrowth.heavy_branches', index=9,
+      number=10, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='trunk', full_name='RemoteFortressReader.TreeGrowth.trunk', index=10,
+      number=11, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='roots', full_name='RemoteFortressReader.TreeGrowth.roots', index=11,
+      number=12, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='cap', full_name='RemoteFortressReader.TreeGrowth.cap', index=12,
+      number=13, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sapling', full_name='RemoteFortressReader.TreeGrowth.sapling', index=13,
+      number=14, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='trunk_height_start', full_name='RemoteFortressReader.TreeGrowth.trunk_height_start', index=14,
+      number=15, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='trunk_height_end', full_name='RemoteFortressReader.TreeGrowth.trunk_height_end', index=15,
+      number=16, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=7446,
+  serialized_end=7813,
+)
+
+
+_PLANTRAW = _descriptor.Descriptor(
+  name='PlantRaw',
+  full_name='RemoteFortressReader.PlantRaw',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='index', full_name='RemoteFortressReader.PlantRaw.index', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='id', full_name='RemoteFortressReader.PlantRaw.id', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='name', full_name='RemoteFortressReader.PlantRaw.name', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=unicode(b(""), "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='growths', full_name='RemoteFortressReader.PlantRaw.growths', index=3,
+      number=4, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='tile', full_name='RemoteFortressReader.PlantRaw.tile', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=7815,
+  serialized_end=7931,
+)
+
+
+_PLANTRAWLIST = _descriptor.Descriptor(
+  name='PlantRawList',
+  full_name='RemoteFortressReader.PlantRawList',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='plant_raws', full_name='RemoteFortressReader.PlantRawList.plant_raws', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=7933,
+  serialized_end=7999,
+)
+
+
+_SCREENTILE = _descriptor.Descriptor(
+  name='ScreenTile',
+  full_name='RemoteFortressReader.ScreenTile',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='character', full_name='RemoteFortressReader.ScreenTile.character', index=0,
+      number=1, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='foreground', full_name='RemoteFortressReader.ScreenTile.foreground', index=1,
+      number=2, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='background', full_name='RemoteFortressReader.ScreenTile.background', index=2,
+      number=3, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=8001,
+  serialized_end=8072,
+)
+
+
+_SCREENCAPTURE = _descriptor.Descriptor(
+  name='ScreenCapture',
+  full_name='RemoteFortressReader.ScreenCapture',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='width', full_name='RemoteFortressReader.ScreenCapture.width', index=0,
+      number=1, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='height', full_name='RemoteFortressReader.ScreenCapture.height', index=1,
+      number=2, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='tiles', full_name='RemoteFortressReader.ScreenCapture.tiles', index=2,
+      number=3, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=8074,
+  serialized_end=8169,
+)
+
+
+_KEYBOARDEVENT = _descriptor.Descriptor(
+  name='KeyboardEvent',
+  full_name='RemoteFortressReader.KeyboardEvent',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='type', full_name='RemoteFortressReader.KeyboardEvent.type', index=0,
+      number=1, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='which', full_name='RemoteFortressReader.KeyboardEvent.which', index=1,
+      number=2, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='state', full_name='RemoteFortressReader.KeyboardEvent.state', index=2,
+      number=3, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='scancode', full_name='RemoteFortressReader.KeyboardEvent.scancode', index=3,
+      number=4, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sym', full_name='RemoteFortressReader.KeyboardEvent.sym', index=4,
+      number=5, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='mod', full_name='RemoteFortressReader.KeyboardEvent.mod', index=5,
+      number=6, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='unicode', full_name='RemoteFortressReader.KeyboardEvent.unicode', index=6,
+      number=7, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=8171,
+  serialized_end=8291,
 )
 
 _TILETYPE.fields_by_name['shape'].enum_type = _TILETYPESHAPE
@@ -1265,23 +3718,81 @@ _TILETYPE.fields_by_name['special'].enum_type = _TILETYPESPECIAL
 _TILETYPE.fields_by_name['material'].enum_type = _TILETYPEMATERIAL
 _TILETYPE.fields_by_name['variant'].enum_type = _TILETYPEVARIANT
 _TILETYPELIST.fields_by_name['tiletype_list'].message_type = _TILETYPE
+_BUILDINGINSTANCE.fields_by_name['building_type'].message_type = _BUILDINGTYPE
+_BUILDINGINSTANCE.fields_by_name['material'].message_type = _MATPAIR
+_BUILDINGINSTANCE.fields_by_name['room'].message_type = _BUILDINGEXTENTS
+_BUILDINGINSTANCE.fields_by_name['direction'].enum_type = _BUILDINGDIRECTION
+_RIVERTILE.fields_by_name['north'].message_type = _RIVEREDGE
+_RIVERTILE.fields_by_name['south'].message_type = _RIVEREDGE
+_RIVERTILE.fields_by_name['east'].message_type = _RIVEREDGE
+_RIVERTILE.fields_by_name['west'].message_type = _RIVEREDGE
 _MAPBLOCK.fields_by_name['materials'].message_type = _MATPAIR
 _MAPBLOCK.fields_by_name['layer_materials'].message_type = _MATPAIR
 _MAPBLOCK.fields_by_name['vein_materials'].message_type = _MATPAIR
 _MAPBLOCK.fields_by_name['base_materials'].message_type = _MATPAIR
+_MAPBLOCK.fields_by_name['construction_items'].message_type = _MATPAIR
+_MAPBLOCK.fields_by_name['buildings'].message_type = _BUILDINGINSTANCE
+_MAPBLOCK.fields_by_name['tile_dig_designation'].enum_type = _TILEDIGDESIGNATION
 _MATERIALDEFINITION.fields_by_name['mat_pair'].message_type = _MATPAIR
 _MATERIALDEFINITION.fields_by_name['state_color'].message_type = _COLORDEFINITION
+_BUILDINGDEFINITION.fields_by_name['building_type'].message_type = _BUILDINGTYPE
+_BUILDINGLIST.fields_by_name['building_list'].message_type = _BUILDINGDEFINITION
 _MATERIALLIST.fields_by_name['material_list'].message_type = _MATERIALDEFINITION
+_UNITDEFINITION.fields_by_name['race'].message_type = _MATPAIR
+_UNITDEFINITION.fields_by_name['profession_color'].message_type = _COLORDEFINITION
+_UNITDEFINITION.fields_by_name['size_info'].message_type = _BODYSIZEINFO
+_UNITDEFINITION.fields_by_name['appearance'].message_type = _UNITAPPEARANCE
 _UNITLIST.fields_by_name['creature_list'].message_type = _UNITDEFINITION
 _BLOCKLIST.fields_by_name['map_blocks'].message_type = _MAPBLOCK
 _PLANTLIST.fields_by_name['plant_list'].message_type = _PLANTDEF
+_CLOUD.fields_by_name['front'].enum_type = _FRONTTYPE
+_CLOUD.fields_by_name['cumulus'].enum_type = _CUMULUSTYPE
+_CLOUD.fields_by_name['stratus'].enum_type = _STRATUSTYPE
+_CLOUD.fields_by_name['fog'].enum_type = _FOGTYPE
+_WORLDMAP.fields_by_name['clouds'].message_type = _CLOUD
+_WORLDMAP.fields_by_name['world_poles'].enum_type = _WORLDPOLES
+_WORLDMAP.fields_by_name['river_tiles'].message_type = _RIVERTILE
+_REGIONTILE.fields_by_name['river_tiles'].message_type = _RIVERTILE
+_REGIONMAP.fields_by_name['tiles'].message_type = _REGIONTILE
+_REGIONMAPS.fields_by_name['world_maps'].message_type = _WORLDMAP
+_REGIONMAPS.fields_by_name['region_maps'].message_type = _REGIONMAP
+_PATTERNDESCRIPTOR.fields_by_name['colors'].message_type = _COLORDEFINITION
+_PATTERNDESCRIPTOR.fields_by_name['pattern'].enum_type = _PATTERNTYPE
+_COLORMODIFIERRAW.fields_by_name['patterns'].message_type = _PATTERNDESCRIPTOR
+_BODYPARTRAW.fields_by_name['layers'].message_type = _BODYPARTLAYERRAW
+_TISSUERAW.fields_by_name['material'].message_type = _MATPAIR
+_CASTERAW.fields_by_name['body_parts'].message_type = _BODYPARTRAW
+_CASTERAW.fields_by_name['modifiers'].message_type = _BPAPPEARANCEMODIFIER
+_CASTERAW.fields_by_name['body_appearance_modifiers'].message_type = _BPAPPEARANCEMODIFIER
+_CASTERAW.fields_by_name['color_modifiers'].message_type = _COLORMODIFIERRAW
+_CREATURERAW.fields_by_name['color'].message_type = _COLORDEFINITION
+_CREATURERAW.fields_by_name['caste'].message_type = _CASTERAW
+_CREATURERAW.fields_by_name['tissues'].message_type = _TISSUERAW
+_CREATURERAWLIST.fields_by_name['creature_raws'].message_type = _CREATURERAW
+_ARMY.fields_by_name['leader'].message_type = _UNITDEFINITION
+_ARMY.fields_by_name['members'].message_type = _UNITDEFINITION
+_ARMYLIST.fields_by_name['armies'].message_type = _ARMY
+_TREEGROWTH.fields_by_name['mat'].message_type = _MATPAIR
+_TREEGROWTH.fields_by_name['prints'].message_type = _GROWTHPRINT
+_PLANTRAW.fields_by_name['growths'].message_type = _TREEGROWTH
+_PLANTRAWLIST.fields_by_name['plant_raws'].message_type = _PLANTRAW
+_SCREENCAPTURE.fields_by_name['tiles'].message_type = _SCREENTILE
 DESCRIPTOR.message_types_by_name['Tiletype'] = _TILETYPE
 DESCRIPTOR.message_types_by_name['TiletypeList'] = _TILETYPELIST
+DESCRIPTOR.message_types_by_name['BuildingExtents'] = _BUILDINGEXTENTS
+DESCRIPTOR.message_types_by_name['BuildingInstance'] = _BUILDINGINSTANCE
+DESCRIPTOR.message_types_by_name['RiverEdge'] = _RIVEREDGE
+DESCRIPTOR.message_types_by_name['RiverTile'] = _RIVERTILE
 DESCRIPTOR.message_types_by_name['MapBlock'] = _MAPBLOCK
 DESCRIPTOR.message_types_by_name['MatPair'] = _MATPAIR
 DESCRIPTOR.message_types_by_name['ColorDefinition'] = _COLORDEFINITION
 DESCRIPTOR.message_types_by_name['MaterialDefinition'] = _MATERIALDEFINITION
+DESCRIPTOR.message_types_by_name['BuildingType'] = _BUILDINGTYPE
+DESCRIPTOR.message_types_by_name['BuildingDefinition'] = _BUILDINGDEFINITION
+DESCRIPTOR.message_types_by_name['BuildingList'] = _BUILDINGLIST
 DESCRIPTOR.message_types_by_name['MaterialList'] = _MATERIALLIST
+DESCRIPTOR.message_types_by_name['BodySizeInfo'] = _BODYSIZEINFO
+DESCRIPTOR.message_types_by_name['UnitAppearance'] = _UNITAPPEARANCE
 DESCRIPTOR.message_types_by_name['UnitDefinition'] = _UNITDEFINITION
 DESCRIPTOR.message_types_by_name['UnitList'] = _UNITLIST
 DESCRIPTOR.message_types_by_name['BlockRequest'] = _BLOCKREQUEST
@@ -1290,6 +3801,29 @@ DESCRIPTOR.message_types_by_name['PlantDef'] = _PLANTDEF
 DESCRIPTOR.message_types_by_name['PlantList'] = _PLANTLIST
 DESCRIPTOR.message_types_by_name['ViewInfo'] = _VIEWINFO
 DESCRIPTOR.message_types_by_name['MapInfo'] = _MAPINFO
+DESCRIPTOR.message_types_by_name['Cloud'] = _CLOUD
+DESCRIPTOR.message_types_by_name['WorldMap'] = _WORLDMAP
+DESCRIPTOR.message_types_by_name['RegionTile'] = _REGIONTILE
+DESCRIPTOR.message_types_by_name['RegionMap'] = _REGIONMAP
+DESCRIPTOR.message_types_by_name['RegionMaps'] = _REGIONMAPS
+DESCRIPTOR.message_types_by_name['PatternDescriptor'] = _PATTERNDESCRIPTOR
+DESCRIPTOR.message_types_by_name['ColorModifierRaw'] = _COLORMODIFIERRAW
+DESCRIPTOR.message_types_by_name['BodyPartLayerRaw'] = _BODYPARTLAYERRAW
+DESCRIPTOR.message_types_by_name['BodyPartRaw'] = _BODYPARTRAW
+DESCRIPTOR.message_types_by_name['BpAppearanceModifier'] = _BPAPPEARANCEMODIFIER
+DESCRIPTOR.message_types_by_name['TissueRaw'] = _TISSUERAW
+DESCRIPTOR.message_types_by_name['CasteRaw'] = _CASTERAW
+DESCRIPTOR.message_types_by_name['CreatureRaw'] = _CREATURERAW
+DESCRIPTOR.message_types_by_name['CreatureRawList'] = _CREATURERAWLIST
+DESCRIPTOR.message_types_by_name['Army'] = _ARMY
+DESCRIPTOR.message_types_by_name['ArmyList'] = _ARMYLIST
+DESCRIPTOR.message_types_by_name['GrowthPrint'] = _GROWTHPRINT
+DESCRIPTOR.message_types_by_name['TreeGrowth'] = _TREEGROWTH
+DESCRIPTOR.message_types_by_name['PlantRaw'] = _PLANTRAW
+DESCRIPTOR.message_types_by_name['PlantRawList'] = _PLANTRAWLIST
+DESCRIPTOR.message_types_by_name['ScreenTile'] = _SCREENTILE
+DESCRIPTOR.message_types_by_name['ScreenCapture'] = _SCREENCAPTURE
+DESCRIPTOR.message_types_by_name['KeyboardEvent'] = _KEYBOARDEVENT
 
 Tiletype = _reflection.GeneratedProtocolMessageType('Tiletype', (_message.Message,),
     {
@@ -1301,6 +3835,30 @@ TiletypeList = _reflection.GeneratedProtocolMessageType('TiletypeList', (_messag
     {
       'DESCRIPTOR': _TILETYPELIST,
       # @@protoc_insertion_point(class_scope:RemoteFortressReader.TiletypeList)
+    })
+
+BuildingExtents = _reflection.GeneratedProtocolMessageType('BuildingExtents', (_message.Message,),
+    {
+      'DESCRIPTOR': _BUILDINGEXTENTS,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.BuildingExtents)
+    })
+
+BuildingInstance = _reflection.GeneratedProtocolMessageType('BuildingInstance', (_message.Message,),
+    {
+      'DESCRIPTOR': _BUILDINGINSTANCE,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.BuildingInstance)
+    })
+
+RiverEdge = _reflection.GeneratedProtocolMessageType('RiverEdge', (_message.Message,),
+    {
+      'DESCRIPTOR': _RIVEREDGE,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.RiverEdge)
+    })
+
+RiverTile = _reflection.GeneratedProtocolMessageType('RiverTile', (_message.Message,),
+    {
+      'DESCRIPTOR': _RIVERTILE,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.RiverTile)
     })
 
 MapBlock = _reflection.GeneratedProtocolMessageType('MapBlock', (_message.Message,),
@@ -1327,10 +3885,40 @@ MaterialDefinition = _reflection.GeneratedProtocolMessageType('MaterialDefinitio
       # @@protoc_insertion_point(class_scope:RemoteFortressReader.MaterialDefinition)
     })
 
+BuildingType = _reflection.GeneratedProtocolMessageType('BuildingType', (_message.Message,),
+    {
+      'DESCRIPTOR': _BUILDINGTYPE,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.BuildingType)
+    })
+
+BuildingDefinition = _reflection.GeneratedProtocolMessageType('BuildingDefinition', (_message.Message,),
+    {
+      'DESCRIPTOR': _BUILDINGDEFINITION,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.BuildingDefinition)
+    })
+
+BuildingList = _reflection.GeneratedProtocolMessageType('BuildingList', (_message.Message,),
+    {
+      'DESCRIPTOR': _BUILDINGLIST,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.BuildingList)
+    })
+
 MaterialList = _reflection.GeneratedProtocolMessageType('MaterialList', (_message.Message,),
     {
       'DESCRIPTOR': _MATERIALLIST,
       # @@protoc_insertion_point(class_scope:RemoteFortressReader.MaterialList)
+    })
+
+BodySizeInfo = _reflection.GeneratedProtocolMessageType('BodySizeInfo', (_message.Message,),
+    {
+      'DESCRIPTOR': _BODYSIZEINFO,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.BodySizeInfo)
+    })
+
+UnitAppearance = _reflection.GeneratedProtocolMessageType('UnitAppearance', (_message.Message,),
+    {
+      'DESCRIPTOR': _UNITAPPEARANCE,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.UnitAppearance)
     })
 
 UnitDefinition = _reflection.GeneratedProtocolMessageType('UnitDefinition', (_message.Message,),
@@ -1379,6 +3967,144 @@ MapInfo = _reflection.GeneratedProtocolMessageType('MapInfo', (_message.Message,
     {
       'DESCRIPTOR': _MAPINFO,
       # @@protoc_insertion_point(class_scope:RemoteFortressReader.MapInfo)
+    })
+
+Cloud = _reflection.GeneratedProtocolMessageType('Cloud', (_message.Message,),
+    {
+      'DESCRIPTOR': _CLOUD,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.Cloud)
+    })
+
+WorldMap = _reflection.GeneratedProtocolMessageType('WorldMap', (_message.Message,),
+    {
+      'DESCRIPTOR': _WORLDMAP,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.WorldMap)
+    })
+
+RegionTile = _reflection.GeneratedProtocolMessageType('RegionTile', (_message.Message,),
+    {
+      'DESCRIPTOR': _REGIONTILE,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.RegionTile)
+    })
+
+RegionMap = _reflection.GeneratedProtocolMessageType('RegionMap', (_message.Message,),
+    {
+      'DESCRIPTOR': _REGIONMAP,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.RegionMap)
+    })
+
+RegionMaps = _reflection.GeneratedProtocolMessageType('RegionMaps', (_message.Message,),
+    {
+      'DESCRIPTOR': _REGIONMAPS,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.RegionMaps)
+    })
+
+PatternDescriptor = _reflection.GeneratedProtocolMessageType('PatternDescriptor', (_message.Message,),
+    {
+      'DESCRIPTOR': _PATTERNDESCRIPTOR,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.PatternDescriptor)
+    })
+
+ColorModifierRaw = _reflection.GeneratedProtocolMessageType('ColorModifierRaw', (_message.Message,),
+    {
+      'DESCRIPTOR': _COLORMODIFIERRAW,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.ColorModifierRaw)
+    })
+
+BodyPartLayerRaw = _reflection.GeneratedProtocolMessageType('BodyPartLayerRaw', (_message.Message,),
+    {
+      'DESCRIPTOR': _BODYPARTLAYERRAW,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.BodyPartLayerRaw)
+    })
+
+BodyPartRaw = _reflection.GeneratedProtocolMessageType('BodyPartRaw', (_message.Message,),
+    {
+      'DESCRIPTOR': _BODYPARTRAW,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.BodyPartRaw)
+    })
+
+BpAppearanceModifier = _reflection.GeneratedProtocolMessageType('BpAppearanceModifier', (_message.Message,),
+    {
+      'DESCRIPTOR': _BPAPPEARANCEMODIFIER,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.BpAppearanceModifier)
+    })
+
+TissueRaw = _reflection.GeneratedProtocolMessageType('TissueRaw', (_message.Message,),
+    {
+      'DESCRIPTOR': _TISSUERAW,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.TissueRaw)
+    })
+
+CasteRaw = _reflection.GeneratedProtocolMessageType('CasteRaw', (_message.Message,),
+    {
+      'DESCRIPTOR': _CASTERAW,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.CasteRaw)
+    })
+
+CreatureRaw = _reflection.GeneratedProtocolMessageType('CreatureRaw', (_message.Message,),
+    {
+      'DESCRIPTOR': _CREATURERAW,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.CreatureRaw)
+    })
+
+CreatureRawList = _reflection.GeneratedProtocolMessageType('CreatureRawList', (_message.Message,),
+    {
+      'DESCRIPTOR': _CREATURERAWLIST,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.CreatureRawList)
+    })
+
+Army = _reflection.GeneratedProtocolMessageType('Army', (_message.Message,),
+    {
+      'DESCRIPTOR': _ARMY,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.Army)
+    })
+
+ArmyList = _reflection.GeneratedProtocolMessageType('ArmyList', (_message.Message,),
+    {
+      'DESCRIPTOR': _ARMYLIST,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.ArmyList)
+    })
+
+GrowthPrint = _reflection.GeneratedProtocolMessageType('GrowthPrint', (_message.Message,),
+    {
+      'DESCRIPTOR': _GROWTHPRINT,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.GrowthPrint)
+    })
+
+TreeGrowth = _reflection.GeneratedProtocolMessageType('TreeGrowth', (_message.Message,),
+    {
+      'DESCRIPTOR': _TREEGROWTH,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.TreeGrowth)
+    })
+
+PlantRaw = _reflection.GeneratedProtocolMessageType('PlantRaw', (_message.Message,),
+    {
+      'DESCRIPTOR': _PLANTRAW,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.PlantRaw)
+    })
+
+PlantRawList = _reflection.GeneratedProtocolMessageType('PlantRawList', (_message.Message,),
+    {
+      'DESCRIPTOR': _PLANTRAWLIST,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.PlantRawList)
+    })
+
+ScreenTile = _reflection.GeneratedProtocolMessageType('ScreenTile', (_message.Message,),
+    {
+      'DESCRIPTOR': _SCREENTILE,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.ScreenTile)
+    })
+
+ScreenCapture = _reflection.GeneratedProtocolMessageType('ScreenCapture', (_message.Message,),
+    {
+      'DESCRIPTOR': _SCREENCAPTURE,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.ScreenCapture)
+    })
+
+KeyboardEvent = _reflection.GeneratedProtocolMessageType('KeyboardEvent', (_message.Message,),
+    {
+      'DESCRIPTOR': _KEYBOARDEVENT,
+      # @@protoc_insertion_point(class_scope:RemoteFortressReader.KeyboardEvent)
     })
 
 
