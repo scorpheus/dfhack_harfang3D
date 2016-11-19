@@ -11,15 +11,17 @@ import numpy as np
 
 dwarfs_pos = {}
 
+
 class UpdateUnitListFromDF(threading.Thread):
 	def __init__(self):
 		threading.Thread.__init__(self)
 		self.unit_list = None
 
 	def run(self):
-		self.unit_list = GetListUnits()
+		self.unit_list = get_list_units()
 
 unit_list_thread = UpdateUnitListFromDF()
+
 
 def update_dwarf_pos():
 	global unit_list_thread, dwarfs_pos

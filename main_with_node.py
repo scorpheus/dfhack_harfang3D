@@ -36,13 +36,13 @@ def fps_pos_in_front_2d(dist):
 
 try:
 	connect_socket()
-	Handshake()
-	# dfversion = GetDFVersion()
-	map_info = GetMapInfo()
+	handshake()
+	# dfversion = get_df_version()
+	map_info = get_map_info()
 
 	# get once to use after (material list is huge)
-	tile_type_list = GetTiletypeList()
-	# material_list = GetMaterialList()
+	tile_type_list = get_tiletype_list()
+	# material_list = get_material_list()
 
 	plus.RenderInit(1920, 1080)
 	gs.MountFileDriver(gs.StdFileDriver("."))

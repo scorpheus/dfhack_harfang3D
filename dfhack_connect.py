@@ -7,6 +7,7 @@ import proto.build.BasicApi_pb2 as BasicApi
 import proto.build.Block_pb2 as Block
 import proto.build.Tile_pb2 as Tile
 import proto.build.CoreProtocol_pb2 as CoreProtocol
+import time
 
 HOST, PORT = "localhost", 5000
 
@@ -25,8 +26,8 @@ def close_socket():
 	sock.close()
 
 
-def Handshake():
-	# Handshake
+def handshake():
+	# handshake
 	values = ('DFHack?\n'.encode("ascii"), 1)
 	packer = struct.Struct('8s I')
 	packed_data = packer.pack(*values)
@@ -50,14 +51,14 @@ def send_message(id, message):
 	sock.sendall(packed_data+message)
 
 
-def GetAnswerHeader():
+def get_answer_header():
 	received = sock.recv(8)
 	state = struct.unpack('hi', received)
 	return state[1] # size of the waiting message
 
 
-def GetAnswer():
-	size = GetAnswerHeader()
+def get_answer():
+	size = get_answer_header()
 	received = sock.recv(size)
 
 	while len(received) < size:
@@ -66,7 +67,7 @@ def GetAnswer():
 	return received
 
 
-def GetIDBindFunction(message_request):
+def get_id_bind_function(message_request):
 	# protobuf to string
 	serialize_block = message_request.SerializeToString()
 
@@ -75,7 +76,7 @@ def GetIDBindFunction(message_request):
 	send_message(0, serialize_block)
 
 	# Receive data from the server
-	received = GetAnswer()
+	received = get_answer()
 
 	# receive the answer protobuf containing the id
 	out_id = CoreProtocol.CoreBindReply()
@@ -85,13 +86,14 @@ def GetIDBindFunction(message_request):
 
 cache_id_function = {}
 
-def GetInfoFromDFHack(message_request, message_input):
 
-	# id_function = GetIDBindFunction(message_request)
+def get_info_from_dfhack(message_request, message_input):
+
+	# id_function = get_id_bind_function(message_request)
 	if message_request.method in cache_id_function:
 		id_function = cache_id_function[message_request.method]
 	else:
-		id_function = GetIDBindFunction(message_request)
+		id_function = get_id_bind_function(message_request)
 		cache_id_function[message_request.method] = id_function
 
 	# with the id, call the function and get the result
@@ -100,10 +102,10 @@ def GetInfoFromDFHack(message_request, message_input):
 	send_message(id_function, serialize_block)
 
 	# Receive data from the server
-	return GetAnswer()
+	return get_answer()
 
 
-def GetDFVersion():     # example of how it works, just get the df version
+def get_df_version():     # example of how it works, just get the df version
 
 	# create function request
 	message_request = CoreProtocol.CoreBindRequest()
@@ -111,15 +113,16 @@ def GetDFVersion():     # example of how it works, just get the df version
 	message_request.input_msg = "dfproto.EmptyMessage"
 	message_request.output_msg = "dfproto.StringMessage"
 
-	# the function GetDFVersion just need an empty protobuf in input message, but need a protobuf
-	data_received = GetInfoFromDFHack(message_request, CoreProtocol.EmptyMessage())
+	# the function get_df_version just need an empty protobuf in input message, but need a protobuf
+	data_received = get_info_from_dfhack(message_request, CoreProtocol.EmptyMessage())
 
 	out = CoreProtocol.StringMessage()
 	out.ParseFromString(data_received)
 
 	return out.value
 
-def GetMapInfo():
+
+def get_map_info():
 
 	# create function request
 	message_request = CoreProtocol.CoreBindRequest()
@@ -128,8 +131,8 @@ def GetMapInfo():
 	message_request.output_msg = "RemoteFortressReader.MapInfo"
 	message_request.plugin = "RemoteFortressReader"
 
-	# the function GetMapInfo just need an empty protobuf in input message, but need a protobuf
-	data_received = GetInfoFromDFHack(message_request, CoreProtocol.EmptyMessage())
+	# the function get_map_info just need an empty protobuf in input message, but need a protobuf
+	data_received = get_info_from_dfhack(message_request, CoreProtocol.EmptyMessage())
 
 	out = remote_fortress.MapInfo()
 	out.ParseFromString(data_received)
@@ -137,7 +140,7 @@ def GetMapInfo():
 	return out
 
 
-def ResetMapHashes():
+def reset_map_hashes():
 
 	# create function request
 	message_request = CoreProtocol.CoreBindRequest()
@@ -146,11 +149,11 @@ def ResetMapHashes():
 	message_request.output_msg = "dfproto.EmptyMessage"
 	message_request.plugin = "RemoteFortressReader"
 
-	# the function GetDFVersion just need an empty protobuf in input message, but need a protobuf
-	GetInfoFromDFHack(message_request, CoreProtocol.EmptyMessage())
+	# the function get_df_version just need an empty protobuf in input message, but need a protobuf
+	get_info_from_dfhack(message_request, CoreProtocol.EmptyMessage())
 
 
-def GetAllUnitList():
+def get_all_unit_list():
 
 	# create function request
 	message_request = CoreProtocol.CoreBindRequest()
@@ -159,8 +162,8 @@ def GetAllUnitList():
 	message_request.output_msg = "RemoteFortressReader.UnitList"
 	message_request.plugin = "RemoteFortressReader"
 
-	# the function GetMapInfo just need an empty protobuf in input message, but need a protobuf
-	data_received = GetInfoFromDFHack(message_request, CoreProtocol.EmptyMessage())
+	# the function get_map_info just need an empty protobuf in input message, but need a protobuf
+	data_received = get_info_from_dfhack(message_request, CoreProtocol.EmptyMessage())
 
 	out = remote_fortress.UnitList()
 	out.ParseFromString(data_received)
@@ -168,7 +171,7 @@ def GetAllUnitList():
 	return out
 
 
-def GetListUnits():
+def get_list_units():
 
 	# create function request
 	message_request = CoreProtocol.CoreBindRequest()
@@ -186,63 +189,15 @@ def GetListUnits():
 	# list_unit_in_message.mask.profession = True
 	# list_unit_in_message.mask.misc_traits = True
 
-	received = GetInfoFromDFHack(message_request, list_unit_in_message)
+	received = get_info_from_dfhack(message_request, list_unit_in_message)
 
 	out = BasicApi.ListUnitsOut()
 	out.ParseFromString(received)
 
 	return out
 
-import numpy as np
-import mmap
-from struct import *
 
-shm_block = mmap.mmap(0, 1+3*4 + 16*16*2 + 16*16 + 16*16 + 16*16, "Local\\df_block") # You should "open" the memory map file instead of attempting to create it..
-shm_pos = mmap.mmap(0, 1+3*4, "Local\\df_pos")
-
-# initialize the shared memory
-shm_block[0] = 0
-shm_pos[0] = 0
-
-def GetBlockMemory():
-	get_buffer = shm_block[0] != 0
-
-	block = None
-	block_pos = None
-	block_flow_size = None
-	block_liquid_type = None
-	block_building = None
-	# if block available
-	if get_buffer:
-		start_id, end_id = 1+3*4, 1+3*4+16*16*2
-		block = np.frombuffer(shm_block[start_id:end_id], dtype=np.uint16)
-		start_id = end_id
-		end_id += 16*16
-		block_flow_size = np.frombuffer(shm_block[start_id:end_id], dtype=np.uint8)
-		start_id = end_id
-		end_id += 16*16
-		block_liquid_type = np.frombuffer(shm_block[start_id:end_id], dtype=np.uint8)
-		start_id = end_id
-		end_id += 16*16
-		block_building = np.frombuffer(shm_block[start_id:end_id], dtype=np.int8)
-		block_pos = np.frombuffer(shm_block[1:(1+3*4)], dtype=np.int32)
-		shm_block[0] = 0
-		shm_block.flush()
-
-	return block_pos, block, block_flow_size, block_liquid_type, block_building
-
-def SendPos(pos):
-	send_pos = shm_pos[0] == 0
-
-	# if no pos and no block
-	# send another pos
-	if pos is not None and send_pos:
-		packed_data = pack('=Biii', 3, int(pos.x), int(pos.y), int(pos.z))
-		shm_pos.write(packed_data)
-		shm_pos.flush()
-		shm_pos.seek(0)
-
-def GetBlock(pos):
+def get_block(pos):
 
 	# create function request
 	message_request = CoreProtocol.CoreBindRequest()
@@ -257,7 +212,7 @@ def GetBlock(pos):
 	input_block_message.min_y = int(pos.y / 16)
 	input_block_message.min_z = int(pos.z)
 
-	received = GetInfoFromDFHack(message_request, input_block_message)
+	received = get_info_from_dfhack(message_request, input_block_message)
 
 	out = Block.MiniBlock()
 	out.ParseFromString(received)
@@ -265,12 +220,16 @@ def GetBlock(pos):
 	return out
 
 
-def GetBlockComplex(pos):
-	dfblock = GetBlockList(pos, pos+1)
+def get_block_complex(pos):
+	dfblock = get_block_list(pos, pos+1)
 	return None if len(dfblock.map_blocks) <= 0 else dfblock.map_blocks[0]
 
 
-def GetBlockList(p_min, p_max):
+time_get = 0
+time_parse = 0
+
+def get_block_list(p_min, p_max):
+	global time_get, time_parse
 
 	# create function request
 	message_request = CoreProtocol.CoreBindRequest()
@@ -281,35 +240,39 @@ def GetBlockList(p_min, p_max):
 
 	# input message: which part of datablock we want
 	input_block_message = remote_fortress.BlockRequest()
-	# input_block_message.min_x = int(p_min.x / 16)
-	# input_block_message.max_x = int(p_max.x / 16)+1
-	# input_block_message.min_y = int(p_min.y / 16)
-	# input_block_message.max_y = int(p_max.y / 16)+1
-	# input_block_message.min_z = int(p_min.z)
-	# input_block_message.max_z = int(p_max.z)
-	# input_block_message.blocks_needed = (input_block_message.max_x - input_block_message.min_x) * (input_block_message.max_y - input_block_message.min_y) * (input_block_message.max_z - input_block_message.min_z)
-
-	input_block_message.blocks_needed = 1
 	input_block_message.min_x = int(p_min.x / 16)
-	input_block_message.max_x = input_block_message.min_x + 1
+	input_block_message.max_x = int(p_max.x / 16)
 	input_block_message.min_y = int(p_min.y / 16)
-	input_block_message.max_y = input_block_message.min_y + 1
+	input_block_message.max_y = int(p_max.y / 16)
 	input_block_message.min_z = int(p_min.z)
-	input_block_message.max_z = input_block_message.min_z + 1
+	input_block_message.max_z = int(p_max.z)
+	input_block_message.blocks_needed = (input_block_message.max_x - input_block_message.min_x) * (input_block_message.max_y - input_block_message.min_y) * (input_block_message.max_z - input_block_message.min_z)
+
+	# for one block in p_min
+	# input_block_message.blocks_needed = 1
+	# input_block_message.min_x = int(p_min.x / 16)
+	# input_block_message.max_x = input_block_message.min_x + 1
+	# input_block_message.min_y = int(p_min.y / 16)
+	# input_block_message.max_y = input_block_message.min_y + 1
+	# input_block_message.min_z = int(p_min.z)
+	# input_block_message.max_z = input_block_message.min_z + 1
 
 	# print("x %d, %d"%(input_block_message.min_x, p_min.x))
 	# print("y %d, %d"%(input_block_message.min_y, p_min.y))
 	# print("z %d, %d"%(input_block_message.min_z, p_min.z))
 
-	received = GetInfoFromDFHack(message_request, input_block_message)
+	# time_before = time.clock()
+	received = get_info_from_dfhack(message_request, input_block_message)
+	# time_get += time.clock() - time_before
 
+	# time_before = time.clock()
 	out = remote_fortress.BlockList()
 	out.ParseFromString(received)
-
+	# time_parse += time.clock() - time_before
 	return out
 
 
-def GetTiletypeList():
+def get_tiletype_list():
 
 	# create function request
 	message_request = CoreProtocol.CoreBindRequest()
@@ -318,7 +281,7 @@ def GetTiletypeList():
 	message_request.output_msg = "RemoteFortressReader.TiletypeList"
 	message_request.plugin = "RemoteFortressReader"
 
-	received = GetInfoFromDFHack(message_request, CoreProtocol.EmptyMessage())
+	received = get_info_from_dfhack(message_request, CoreProtocol.EmptyMessage())
 
 	out = remote_fortress.TiletypeList()
 	out.ParseFromString(received)
@@ -326,7 +289,7 @@ def GetTiletypeList():
 	return out
 
 
-def GetMaterialList():
+def get_material_list():
 
 	# create function request
 	message_request = CoreProtocol.CoreBindRequest()
@@ -335,7 +298,7 @@ def GetMaterialList():
 	message_request.output_msg = "RemoteFortressReader.MaterialList"
 	message_request.plugin = "RemoteFortressReader"
 
-	received = GetInfoFromDFHack(message_request, CoreProtocol.EmptyMessage())
+	received = get_info_from_dfhack(message_request, CoreProtocol.EmptyMessage())
 
 	out = remote_fortress.MaterialList()
 	out.ParseFromString(received)
