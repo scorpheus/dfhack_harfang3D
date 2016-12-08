@@ -4,7 +4,7 @@ from dfhack_connect import *
 import gs
 import threading
 from collections import OrderedDict
-import numpy as np
+import random
 
 
 plus = gs.GetPlus()
@@ -14,12 +14,13 @@ map_info = None
 tile_type_list = None
 material_list = None
 building_geos = None
+tile_geos = None
 dwarf_geo = None
-cube_geo = None
 cube_geo_big_block = None
 mats_path = ["empty.mat", "floor.mat", "magma.mat", "rock.mat", "water.mat", "tree.mat", "floor.mat", "floor.mat"]
 
 scale_unit_y = 1.0
+visible_area_length = 15
 
 
 def from_world_to_dfworld(new_pos):
@@ -30,19 +31,11 @@ def from_dfworld_to_world(new_pos):
 	return gs.Vector3(new_pos.x, new_pos.z, new_pos.y)
 
 
-size_big_block = gs.Vector3(16 * 1, 1, 16 * 1)
+size_big_block = gs.Vector3(16 * 1, 3, 16 * 1)
 array_world_big_block = {}
 
 
 cache_block = {}
-
-# cache_block_props = {}
-# cache_block_building = {}
-# cache_block_mat = {}
-# cache_geo_block = {}
-# update_cache_block = {}
-# update_cache_geo_block = {}
-# counter_block_to_remove = {}
 
 
 class building_type():
@@ -59,12 +52,13 @@ def hash_from_pos(x, y, z):
 
 
 def setup():
-	global map_info, tile_type_list, material_list, geos, building_geos, dwarf_geo, cube_geo, cube_geo_big_block
+	global map_info, tile_type_list, material_list, tile_geos, geos, building_geos, dwarf_geo, cube_geo_big_block
 
 	connect_socket()
 	handshake()
 	# dfversion = get_df_version()
 	map_info = get_map_info()
+	reset_map_hashes()
 
 	# get once to use after (material list is huge)
 	tile_type_list = get_tiletype_list()
@@ -72,7 +66,6 @@ def setup():
 
 	# dwarf_geo = plus.CreateGeometry(plus.CreateCube(0.1, 0.6, 0.1, "iso.mat"))
 	dwarf_geo = plus.LoadGeometry("minecraft_assets/default_dwarf/default_dwarf.geo")
-	cube_geo = plus.CreateGeometry(plus.CreateCube(0.5, 0.5*scale_unit_y, 0.5, "iso.mat"))
 	cube_geo_big_block = plus.CreateGeometry(plus.CreateCube(size_big_block.x, size_big_block.y*0.5*scale_unit_y, size_big_block.z, "iso.mat"))
 
 
@@ -104,19 +97,14 @@ def setup():
 					 building_type.Slab: None, building_type.Nest: None, building_type.NestBox: None,
 					 building_type.Hive: None, building_type.Rollers: None}
 
-
-
-	old_pos = gs.Vector3()
-
 	# precompile material
-	# for mat in mats_path:
-	# 	plus.CreateGeometry(plus.create_cube(0.1, 0.6, 0.1, mat))
+	tile_geos = []
+	for mat in mats_path:
+		tile_geos.append(plus.CreateGeometry(plus.CreateCube(0.8, 0.8*scale_unit_y, 0.8, mat)))
 
 
 def parse_block(fresh_block, big_block):
 	world_block_pos = from_dfworld_to_world(gs.Vector3(fresh_block.map_x, fresh_block.map_y, fresh_block.map_z))
-	# world_block_pos.x *= 16
-	# world_block_pos.z *= 16
 
 	x, z = 0, 0
 	for tile, magma, water, material in zip(fresh_block.tiles, fresh_block.magma, fresh_block.water, fresh_block.materials):
@@ -156,7 +144,8 @@ def parse_block(fresh_block, big_block):
 			tile_pos = gs.Vector3(world_block_pos.x + x, world_block_pos.y, world_block_pos.z + z)
 			id_tile = hash_from_pos(tile_pos.x, tile_pos.y, tile_pos.z)
 			if block_mat != 0:
-				big_block["blocks"][id_tile] = {"m": gs.Matrix4.TranslationMatrix(tile_pos), "mat": block_mat}
+				# big_block["blocks"][id_tile] = {"m": gs.Matrix4.TranslationMatrix(tile_pos), "mat": block_mat} # perfect grid
+				big_block["blocks"][id_tile] = {"m": gs.Matrix4.TransformationMatrix(tile_pos, gs.Vector3(random.random()*0.2-0.1, random.random()*0.2-0.1, random.random()*0.2-0.1)), "mat": block_mat} # with rumble
 			else:
 				if id_tile in big_block["blocks"]:
 					del big_block["blocks"][id_tile]
@@ -170,54 +159,17 @@ def parse_block(fresh_block, big_block):
 			x = 0
 			z += 1
 
-block_drawn = 0
-props_drawn = 0
-
-
-def draw_geo_block(renderable_system, geo_block, x, y, z):
-	x *= 16
-	z *= 16
-
-	renderable_system.DrawGeometry(geo_block[0], gs.Matrix4.TranslationMatrix(gs.Vector3(x+1, y*scale_unit_y, z)) * gs.Matrix4.ScaleMatrix(gs.Vector3(1, scale_unit_y, 1)))
-
-	global block_drawn
-	block_drawn += 1
-
-
-def draw_cube_block(renderable_system, name_block, pos_block):
-	block = cache_block[name_block]
-	for x in range(16):
-		for z in range(16):
-			if block[x, z] == 1:
-				renderable_system.DrawGeometry(cube_geo, gs.Matrix4.TransformationMatrix(gs.Vector3(pos_block.x*16+x+1, pos_block.y*scale_unit_y, pos_block.z*16+z), gs.Vector3(0, 0, 0)))
-
-
-# def draw_props_in_block(renderable_system, name_block):
-# 	for prop in cache_block_props[name_block]:
-# 		renderable_system.DrawGeometry(geos[prop[1]], gs.Matrix4.TransformationMatrix(gs.Vector3(prop[0].x+1, prop[0].y*scale_unit_y, prop[0].z), gs.Vector3(0, (name_block%628)*0.01, 0), gs.Vector3(0.25, 0.25, 0.25)))
-# 		global props_drawn
-# 		props_drawn += 1
-#
-#
-# def draw_building_in_block(renderable_system, name_block):
-# 	for building in cache_block_building[name_block]:
-# 		if building_geos[building[1]] is not None:
-# 			renderable_system.DrawGeometry(building_geos[building[1]]["g"], gs.Matrix4.TransformationMatrix(gs.Vector3(building[0].x+1, building[0].y*scale_unit_y, building[0].z), gs.Vector3(0, 0, 0), gs.Vector3(0.25, 0.25, 0.25)) * building_geos[building[1]]["o"])
-# 			global props_drawn
-# 			props_drawn += 1
-
 
 def get_viewing_min_max(cam):
-	zfar = 25
-	vecs = [cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * zfar + cam.GetTransform().GetWorld().GetY() * zfar,
-	        cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * zfar - cam.GetTransform().GetWorld().GetY() * zfar,
-	        cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * zfar + cam.GetTransform().GetWorld().GetY() * zfar,
-	        cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * zfar - cam.GetTransform().GetWorld().GetY() * zfar,
+	vecs = [cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * visible_area_length + cam.GetTransform().GetWorld().GetY() * visible_area_length - cam.GetTransform().GetWorld().GetZ() * 1,
+	        cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * visible_area_length - cam.GetTransform().GetWorld().GetY() * visible_area_length - cam.GetTransform().GetWorld().GetZ() * 1,
+	        cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * visible_area_length + cam.GetTransform().GetWorld().GetY() * visible_area_length - cam.GetTransform().GetWorld().GetZ() * 1,
+	        cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * visible_area_length - cam.GetTransform().GetWorld().GetY() * visible_area_length - cam.GetTransform().GetWorld().GetZ() * 1,
 
-	        cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * zfar + cam.GetTransform().GetWorld().GetY() * zfar + cam.GetTransform().GetWorld().GetZ() * zfar,
-	        cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * zfar - cam.GetTransform().GetWorld().GetY() * zfar + cam.GetTransform().GetWorld().GetZ() * zfar,
-	        cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * zfar + cam.GetTransform().GetWorld().GetY() * zfar + cam.GetTransform().GetWorld().GetZ() * zfar,
-	        cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * zfar - cam.GetTransform().GetWorld().GetY() * zfar + cam.GetTransform().GetWorld().GetZ() * zfar
+	        cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * visible_area_length + cam.GetTransform().GetWorld().GetY() * visible_area_length + cam.GetTransform().GetWorld().GetZ() * visible_area_length,
+	        cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * visible_area_length - cam.GetTransform().GetWorld().GetY() * visible_area_length + cam.GetTransform().GetWorld().GetZ() * visible_area_length,
+	        cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * visible_area_length + cam.GetTransform().GetWorld().GetY() * visible_area_length + cam.GetTransform().GetWorld().GetZ() * visible_area_length,
+	        cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * visible_area_length - cam.GetTransform().GetWorld().GetY() * visible_area_length + cam.GetTransform().GetWorld().GetZ() * visible_area_length
 	        ]
 
 	def get_min_max(a, b):
@@ -269,12 +221,12 @@ def update_block(cam):
 					if id not in array_world_big_block:
 						array_world_big_block[id] = {"min": gs.Vector3(x, y, z) * size_big_block, "blocks": {}, "to_update": 1, "time": 1000}
 
-		pos_in_front = cam.GetTransform().GetPosition() # + cam.GetTransform().GetWorld().GetZ() * 2
-		ordered_array_world_big_block = OrderedDict(sorted(array_world_big_block.items(), key=lambda t: ((t[1]["min"].x + size_big_block.x/2) - pos_in_front.x) ** 2 + (((t[1]["min"].y + size_big_block.y/2) - pos_in_front.y) / scale_unit_y) ** 2 + ((t[1]["min"].z + size_big_block.z/2) - pos_in_front.z) ** 2))
+		pos_in_front = cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetZ() * 8
+		ordered_array_world_big_block = OrderedDict(sorted(array_world_big_block.items(), key=lambda t: ((t[1]["min"].x - pos_in_front.x) // size_big_block.x) ** 2 + ((((t[1]["min"].y - pos_in_front.y) // size_big_block.y)/2) / scale_unit_y) ** 2 + ((t[1]["min"].z - pos_in_front.z) // size_big_block.x) ** 2))
 
 		# find a block to update
 		for id, big_block in ordered_array_world_big_block.items():
-			if big_block["to_update"] == 1 and p_min.x < big_block["min"].x < p_max.x and p_min.y < big_block["min"].y < p_max.y and p_min.z < big_block["min"].z < p_max.z:
+			if big_block["to_update"] == 1:# and p_min.x < big_block["min"].x < p_max.x and p_min.y < big_block["min"].y < p_max.y and p_min.z < big_block["min"].z < p_max.z:
 				big_block["to_update"] = 2
 
 				big_block_thread = UpdateBigBlock()
@@ -295,34 +247,7 @@ def draw_block(renderable_system, cam):
 					big_block = array_world_big_block[id]
 					if not big_block["to_update"]:
 						for id, block in big_block["blocks"].items():
-							renderable_system.DrawGeometry(cube_geo, block["m"])
+							renderable_system.DrawGeometry(tile_geos[block["mat"]], block["m"])
+							count_draw += 1
 						# renderable_system.DrawGeometry(cube_geo_big_block, gs.Matrix4.TranslationMatrix(big_block["min"] + size_big_block * 0.5))
-						count_draw += 1
 	return count_draw
-
-
-# def update_geo_block():
-# 	global update_cache_geo_block
-# 	global cache_geo_block
-#
-# 	if len(update_cache_geo_block) <= 0:
-# 		return
-#
-# 	pos_in_front = fps_pos_in_front_2d(2)
-# 	ordered_update_cache_geo = OrderedDict(sorted(update_cache_geo_block.items(), key=lambda t: (t[1].x-pos_in_front.x/16)**2 + ((t[1].y -pos_in_front.y/scale_unit_y)/1.5)**2 + (t[1].z - pos_in_front.z/16)**2))
-#
-# 	# get a not already updating Node
-# 	for name_block, block_pos in iter(ordered_update_cache_geo.items()):
-# 		current_layer_block_name = hash_from_pos(block_pos.x, block_pos.y, block_pos.z)
-# 		upper_layer_block_name = hash_from_pos(block_pos.x, block_pos.y + 1, block_pos.z)
-#
-# 		if current_layer_block_name in cache_block and upper_layer_block_name in cache_block:
-# 			def check_block_can_generate_geo(x, y, z):
-# 				# can update the geo block because it has all the neighbour
-# 				return hash_from_pos(x, y, z+1) in cache_block and hash_from_pos(x + 1, y, z) in cache_block
-#
-# 			if check_block_can_generate_geo(block_pos.x, block_pos.y, block_pos.z) and check_block_can_generate_geo(block_pos.x, block_pos.y + 1, block_pos.z):
-# 				cache_geo_block[current_layer_block_name] = create_iso_geo_from_block(current_layer_block_name, upper_layer_block_name, cache_block[current_layer_block_name], cache_block[upper_layer_block_name], block_pos)
-# 				update_cache_geo_block.pop(current_layer_block_name)
-# 				break
-#

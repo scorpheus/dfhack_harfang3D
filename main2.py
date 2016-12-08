@@ -86,7 +86,6 @@ while not plus.KeyPress(gs.InputDevice.KeyEscape):
 
 	plus.Text2D(0, 45, "BIG BLOCK: %d, CACHE BLOCK: %d, BLOCK VISIBLE: %d" % (len(blocks_builder.array_world_big_block), big_block_available, big_block_visible), 16, gs.Color.Red)
 	plus.Text2D(0, 25, "FPS.X = %f, FPS.Y = %f, FPS.Z = %f" % (fps.GetPos().x, fps.GetPos().y, fps.GetPos().z), 16, gs.Color.Red)
-	plus.Text2D(0, 65, "timeget = %f, time_parse = %f" % (time_get, time_parse), 16, gs.Color.Red)
 
 	plus.UpdateScene(scn, dt_sec)
 	plus.Flip()

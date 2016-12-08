@@ -7,7 +7,6 @@ import proto.build.BasicApi_pb2 as BasicApi
 import proto.build.Block_pb2 as Block
 import proto.build.Tile_pb2 as Tile
 import proto.build.CoreProtocol_pb2 as CoreProtocol
-import time
 
 HOST, PORT = "localhost", 5000
 
@@ -225,11 +224,7 @@ def get_block_complex(pos):
 	return None if len(dfblock.map_blocks) <= 0 else dfblock.map_blocks[0]
 
 
-time_get = 0
-time_parse = 0
-
 def get_block_list(p_min, p_max):
-	global time_get, time_parse
 
 	# create function request
 	message_request = CoreProtocol.CoreBindRequest()
@@ -261,14 +256,10 @@ def get_block_list(p_min, p_max):
 	# print("y %d, %d"%(input_block_message.min_y, p_min.y))
 	# print("z %d, %d"%(input_block_message.min_z, p_min.z))
 
-	# time_before = time.clock()
 	received = get_info_from_dfhack(message_request, input_block_message)
-	# time_get += time.clock() - time_before
 
-	# time_before = time.clock()
 	out = remote_fortress.BlockList()
 	out.ParseFromString(received)
-	# time_parse += time.clock() - time_before
 	return out
 
 
