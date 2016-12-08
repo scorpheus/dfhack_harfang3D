@@ -193,24 +193,31 @@ def get_viewing_min_max(cam):
 	return pos_min, pos_max
 
 
-class UpdateBigBlock(threading.Thread):
-	def __init__(self):
-		threading.Thread.__init__(self)
-		self.big_block = None
+def parse_big_block(big_block, fresh_blocks):
+	for fresh_block in fresh_blocks.map_blocks:
+		parse_block(fresh_block, big_block)
+	big_block["to_update"] = False
 
-	def run(self):
-		fresh_blocks = get_block_list(from_world_to_dfworld(self.big_block["min"]), from_world_to_dfworld(self.big_block["min"] + size_big_block))
-		for fresh_block in fresh_blocks.map_blocks:
-			parse_block(fresh_block, self.big_block)
-		self.big_block["to_update"] = False
+parse_big_block_thread = None
 
-big_block_thread = UpdateBigBlock()
+
+def load_big_block(big_block):
+	global parse_big_block_thread
+
+	fresh_blocks = get_block_list(from_world_to_dfworld(big_block["min"]), from_world_to_dfworld(big_block["min"] + size_big_block))
+
+	if parse_big_block_thread is not None and parse_big_block_thread.is_alive():
+		parse_big_block_thread.join()
+	parse_big_block_thread = threading.Thread(target=parse_big_block, args=(big_block, fresh_blocks))
+	parse_big_block_thread.start()
+
+big_block_thread = None
 
 
 def update_block(cam):
 	global big_block_thread
 
-	if not big_block_thread.is_alive():
+	if big_block_thread is None or not big_block_thread.is_alive():
 		p_min, p_max = get_viewing_min_max(cam)
 
 		# grow the array_big_block
@@ -229,8 +236,7 @@ def update_block(cam):
 			if big_block["to_update"] == 1:# and p_min.x < big_block["min"].x < p_max.x and p_min.y < big_block["min"].y < p_max.y and p_min.z < big_block["min"].z < p_max.z:
 				big_block["to_update"] = 2
 
-				big_block_thread = UpdateBigBlock()
-				big_block_thread.big_block = big_block
+				big_block_thread = threading.Thread(target=load_big_block, args=(big_block,))
 				big_block_thread.start()
 				break
 
