@@ -2,11 +2,7 @@ __author__ = 'scorpheus'
 
 from dfhack_connect import *
 import gs
-import geometry_iso
-
-from collections import OrderedDict
 import threading
-import numpy as np
 
 
 dwarfs_pos = {}

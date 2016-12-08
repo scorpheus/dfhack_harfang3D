@@ -2,7 +2,7 @@ __author__ = 'scorpheus'
 
 from dfhack_connect import *
 import gs
-import geometry_iso
+# import geometry_iso
 import blocks_builder
 from update_dwarf import *
 
@@ -35,7 +35,7 @@ def fps_pos_in_front_2d(dist):
 	return fps.GetPos() + world.GetZ() * dist
 
 
-fps = gs.FPSController(90, 140*blocks_builder.scale_unit_y, 90)
+fps = gs.FPSController(95, 95*blocks_builder.scale_unit_y, 150)
 fps.SetRot(gs.Vector3(0.5, 0, 0))
 
 block_drawn = 0
@@ -57,7 +57,8 @@ while not plus.KeyPress(gs.InputDevice.KeyEscape):
 	blocks_builder.update_block(cam)
 
 	# draw the block
-	blocks_builder.draw_block(scn.GetRenderableSystem())
+	big_block_visible = blocks_builder.draw_block(scn.GetRenderableSystem(), cam)
+	# big_block_visible = 0
 
 	# blocks_builder.update_geo_block()
 
@@ -72,13 +73,11 @@ while not plus.KeyPress(gs.InputDevice.KeyEscape):
 	# blocks_builder.check_to_delete_far_block()
 
 	big_block_available = 0
-	block_available = 0
 	for id, big_block in blocks_builder.array_world_big_block.items():
-		if not big_block["to_update"]:
+		if not big_block["to_update"] or big_block["to_update"] == 2:
 			big_block_available += 1
-			block_available += len(big_block["blocks"])
 
-	plus.Text2D(0, 45, "BIG BLOCK: %d, CACHE BLOCK: %d, BLOCK VISIBLE: %d" % (len(blocks_builder.array_world_big_block), big_block_available, block_available), 16, gs.Color.Red)
+	plus.Text2D(0, 45, "BIG BLOCK: %d, CACHE BLOCK: %d, BLOCK VISIBLE: %d" % (len(blocks_builder.array_world_big_block), big_block_available, big_block_visible), 16, gs.Color.Red)
 	plus.Text2D(0, 25, "FPS.X = %f, FPS.Y = %f, FPS.Z = %f" % (fps.GetPos().x, fps.GetPos().y, fps.GetPos().z), 16, gs.Color.Red)
 	plus.Text2D(0, 65, "timeget = %f, time_parse = %f" % (time_get, time_parse), 16, gs.Color.Red)
 

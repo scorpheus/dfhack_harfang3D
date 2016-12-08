@@ -2,6 +2,8 @@ __author__ = 'scorpheus'
 
 from dfhack_connect import *
 import gs
+import threading
+from collections import OrderedDict
 import numpy as np
 
 
@@ -14,6 +16,7 @@ material_list = None
 building_geos = None
 dwarf_geo = None
 cube_geo = None
+cube_geo_big_block = None
 mats_path = ["empty.mat", "floor.mat", "magma.mat", "rock.mat", "water.mat", "tree.mat", "floor.mat", "floor.mat"]
 
 scale_unit_y = 1.0
@@ -27,7 +30,7 @@ def from_dfworld_to_world(new_pos):
 	return gs.Vector3(new_pos.x, new_pos.z, new_pos.y)
 
 
-size_big_block = gs.Vector3(16 * 3, 3, 16 * 3)
+size_big_block = gs.Vector3(16 * 1, 1, 16 * 1)
 array_world_big_block = {}
 
 
@@ -52,11 +55,11 @@ class building_type():
 
 
 def hash_from_pos(x, y, z):
-	return x + y * 2048 + z * 2048 * 2048
+	return x + y * 2048 + z * 2048**2
 
 
 def setup():
-	global map_info, tile_type_list, material_list, geos, building_geos, dwarf_geo, cube_geo
+	global map_info, tile_type_list, material_list, geos, building_geos, dwarf_geo, cube_geo, cube_geo_big_block
 
 	connect_socket()
 	handshake()
@@ -70,6 +73,7 @@ def setup():
 	# dwarf_geo = plus.CreateGeometry(plus.CreateCube(0.1, 0.6, 0.1, "iso.mat"))
 	dwarf_geo = plus.LoadGeometry("minecraft_assets/default_dwarf/default_dwarf.geo")
 	cube_geo = plus.CreateGeometry(plus.CreateCube(0.5, 0.5*scale_unit_y, 0.5, "iso.mat"))
+	cube_geo_big_block = plus.CreateGeometry(plus.CreateCube(size_big_block.x, size_big_block.y*0.5*scale_unit_y, size_big_block.z, "iso.mat"))
 
 
 	geos = [plus.LoadGeometry("environment_kit_inca/stone_high_03.geo"), plus.LoadGeometry("environment_kit_inca/stone_high_01.geo")]
@@ -204,10 +208,11 @@ def draw_cube_block(renderable_system, name_block, pos_block):
 
 
 def get_viewing_min_max(cam):
+	zfar = 25
 	pos_min = gs.Vector3(99999, 99999, 99999)
 	pos_max = gs.Vector3(-99999, -99999, -99999)
-	cam_pos_up_left = cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetY() * 50 + cam.GetTransform().GetWorld().GetX() * -50
-	cam_pos_down_right_max = cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetY() * -50 + cam.GetTransform().GetWorld().GetX() * 50 + cam.GetTransform().GetWorld().GetZ() * 50
+	cam_pos_up_left = cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetY() * zfar + cam.GetTransform().GetWorld().GetX() * -zfar
+	cam_pos_down_right_max = cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetY() * -zfar + cam.GetTransform().GetWorld().GetX() * zfar + cam.GetTransform().GetWorld().GetZ() * zfar
 
 	if cam_pos_up_left.x < cam_pos_down_right_max.x:
 		pos_min.x = cam_pos_up_left.x
@@ -233,32 +238,69 @@ def get_viewing_min_max(cam):
 	return pos_min, pos_max
 
 
+class UpdateBigBlock(threading.Thread):
+	def __init__(self):
+		threading.Thread.__init__(self)
+		self.big_block = None
+
+	def run(self):
+		fresh_blocks = get_block_list(from_world_to_dfworld(self.big_block["min"]), from_world_to_dfworld(self.big_block["min"] + size_big_block))
+		for fresh_block in fresh_blocks.map_blocks:
+			parse_block(fresh_block, self.big_block)
+		self.big_block["to_update"] = False
+
+big_block_thread = UpdateBigBlock()
+
+
 def update_block(cam):
+	global big_block_thread
+
+	if not big_block_thread.is_alive():
+		p_min, p_max = get_viewing_min_max(cam)
+
+		# grow the array_big_block
+		for x in range(int(p_min.x // size_big_block.x) - 1, int(p_max.x // size_big_block.x) + 1):
+			for y in range(int(p_min.y // size_big_block.y) - 1, int(p_max.y // size_big_block.y) + 1):
+				for z in range(int(p_min.z // size_big_block.z) - 1, int(p_max.z // size_big_block.z) + 1):
+					id = hash_from_pos(x, y, z)
+					if id not in array_world_big_block:
+						array_world_big_block[id] = {"min": gs.Vector3(x, y, z) * size_big_block, "blocks": {}, "to_update": 1, "time": 1000}
+
+		pos_in_front = cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetZ() * 2
+		ordered_array_world_big_block = OrderedDict(sorted(array_world_big_block.items(), key=lambda t: ((t[1]["min"].x + size_big_block.x/2) - pos_in_front.x) ** 2 + (((t[1]["min"].y + size_big_block.y/2) - pos_in_front.y) / scale_unit_y) ** 2 + ((t[1]["min"].z + size_big_block.z/2) - pos_in_front.z) ** 2))
+
+		# find a block to update
+		for id, big_block in ordered_array_world_big_block.items():
+			if big_block["to_update"] == 1:
+				big_block["to_update"] = 2
+				# fresh_blocks = get_block_list(from_world_to_dfworld(big_block["min"]), from_world_to_dfworld(big_block["min"] + size_big_block))
+				# for fresh_block in fresh_blocks.map_blocks:
+				# 	parse_block(fresh_block, big_block)
+				# big_block["to_update"] = False
+
+				big_block_thread = UpdateBigBlock()
+				big_block_thread.big_block = big_block
+				big_block_thread.start()
+				break
+
+
+def draw_block(renderable_system, cam):
 	p_min, p_max = get_viewing_min_max(cam)
-
+	count_draw = 0
 	# grow the array_big_block
-	for x in range(int(p_min.x // size_big_block.x), int(p_max.x // size_big_block.x)):
-		for y in range(int(p_min.y // size_big_block.y), int(p_max.y // size_big_block.y)):
-			for z in range(int(p_min.z // size_big_block.z), int(p_max.z // size_big_block.z)):
+	for x in range(int(p_min.x // size_big_block.x) - 1, int(p_max.x // size_big_block.x) + 1):
+		for y in range(int(p_min.y // size_big_block.y) - 1, int(p_max.y // size_big_block.y) + 1):
+			for z in range(int(p_min.z // size_big_block.z) - 1, int(p_max.z // size_big_block.z) + 1):
 				id = hash_from_pos(x, y, z)
-				if id not in array_world_big_block:
-					array_world_big_block[id] = {"min": gs.Vector3(x, y, z) * size_big_block, "blocks": {}, "to_update": True, "time": 1000}
+				if id in array_world_big_block:
+					big_block = array_world_big_block[id]
+					if not big_block["to_update"]:
+						for id, block in big_block["blocks"].items():
+							renderable_system.DrawGeometry(cube_geo, block["m"])
+						# renderable_system.DrawGeometry(cube_geo_big_block, gs.Matrix4.TranslationMatrix(big_block["min"] + size_big_block * 0.5))
+						count_draw += 1
+	return count_draw
 
-	# find a block to update
-	for id, big_block in array_world_big_block.items():
-		if big_block["to_update"]:
-			fresh_blocks = get_block_list(from_world_to_dfworld(big_block["min"]), from_world_to_dfworld(big_block["min"] + size_big_block))
-			for fresh_block in fresh_blocks.map_blocks:
-				parse_block(fresh_block, big_block)
-			big_block["to_update"] = False
-			break
-
-
-def draw_block(renderable_system):
-	for id, big_block in array_world_big_block.items():
-		if not big_block["to_update"]:
-			for id, block in big_block["blocks"].items():
-				renderable_system.DrawGeometry(cube_geo, block["m"])
 
 # def update_geo_block():
 # 	global update_cache_geo_block
