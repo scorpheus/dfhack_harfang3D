@@ -100,7 +100,7 @@ def setup():
 	# precompile material
 	tile_geos = []
 	for mat in mats_path:
-		tile_geos.append(plus.CreateGeometry(plus.CreateCube(0.8, 0.8*scale_unit_y, 0.8, mat)))
+		tile_geos.append(plus.CreateGeometry(plus.CreateCube(1.0, 1.0*scale_unit_y, 1.0, mat)))
 
 
 def parse_block(fresh_block, big_block):
