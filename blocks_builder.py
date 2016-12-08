@@ -118,7 +118,7 @@ def parse_block(fresh_block, big_block):
 	# world_block_pos.x *= 16
 	# world_block_pos.z *= 16
 
-	x, z = 15, 0
+	x, z = 0, 0
 	for tile, magma, water, material in zip(fresh_block.tiles, fresh_block.magma, fresh_block.water, fresh_block.materials):
 		if tile != 0:
 			type = tile_type_list.tiletype_list[tile]
@@ -165,9 +165,9 @@ def parse_block(fresh_block, big_block):
 			# if building != -1:
 			# 	array_building.append((gs.Vector3(block_pos.x*16 + x, block_pos.y, block_pos.z*16 + z), building))
 
-		x -= 1
-		if x < 0:
-			x = 15
+		x += 1
+		if x > 15:
+			x = 0
 			z += 1
 
 block_drawn = 0
@@ -209,31 +209,34 @@ def draw_cube_block(renderable_system, name_block, pos_block):
 
 def get_viewing_min_max(cam):
 	zfar = 25
-	pos_min = gs.Vector3(99999, 99999, 99999)
-	pos_max = gs.Vector3(-99999, -99999, -99999)
-	cam_pos_up_left = cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetY() * zfar + cam.GetTransform().GetWorld().GetX() * -zfar
-	cam_pos_down_right_max = cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetY() * -zfar + cam.GetTransform().GetWorld().GetX() * zfar + cam.GetTransform().GetWorld().GetZ() * zfar
+	vecs = [cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * zfar + cam.GetTransform().GetWorld().GetY() * zfar,
+	        cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * zfar - cam.GetTransform().GetWorld().GetY() * zfar,
+	        cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * zfar + cam.GetTransform().GetWorld().GetY() * zfar,
+	        cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * zfar - cam.GetTransform().GetWorld().GetY() * zfar,
 
-	if cam_pos_up_left.x < cam_pos_down_right_max.x:
-		pos_min.x = cam_pos_up_left.x
-		pos_max.x = cam_pos_down_right_max.x
-	else:
-		pos_min.x = cam_pos_down_right_max.x
-		pos_max.x = cam_pos_up_left.x
+	        cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * zfar + cam.GetTransform().GetWorld().GetY() * zfar + cam.GetTransform().GetWorld().GetZ() * zfar,
+	        cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * zfar - cam.GetTransform().GetWorld().GetY() * zfar + cam.GetTransform().GetWorld().GetZ() * zfar,
+	        cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * zfar + cam.GetTransform().GetWorld().GetY() * zfar + cam.GetTransform().GetWorld().GetZ() * zfar,
+	        cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * zfar - cam.GetTransform().GetWorld().GetY() * zfar + cam.GetTransform().GetWorld().GetZ() * zfar
+	        ]
 
-	if cam_pos_up_left.y < cam_pos_down_right_max.y:
-		pos_min.y = cam_pos_up_left.y
-		pos_max.y = cam_pos_down_right_max.y
-	else:
-		pos_min.y = cam_pos_down_right_max.y
-		pos_max.y = cam_pos_up_left.y
+	def get_min_max(a, b):
+		if a < b:
+			return a, b
+		else:
+			return b, a
 
-	if cam_pos_up_left.z < cam_pos_down_right_max.z:
-		pos_min.z = cam_pos_up_left.z
-		pos_max.z = cam_pos_down_right_max.z
-	else:
-		pos_min.z = cam_pos_down_right_max.z
-		pos_max.z = cam_pos_up_left.z
+	pos_min = gs.Vector3(vecs[0])
+	pos_max = gs.Vector3(vecs[0])
+	for vec in vecs:
+		pos_min.x, temp = get_min_max(pos_min.x, vec.x)
+		temp, pos_max.x = get_min_max(pos_max.x, vec.x)
+		
+		pos_min.y, temp = get_min_max(pos_min.y, vec.y)
+		temp, pos_max.y = get_min_max(pos_max.y, vec.y)
+		
+		pos_min.z, temp = get_min_max(pos_min.z, vec.z)
+		temp, pos_max.z = get_min_max(pos_max.z, vec.z)
 
 	return pos_min, pos_max
 
@@ -266,17 +269,13 @@ def update_block(cam):
 					if id not in array_world_big_block:
 						array_world_big_block[id] = {"min": gs.Vector3(x, y, z) * size_big_block, "blocks": {}, "to_update": 1, "time": 1000}
 
-		pos_in_front = cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetZ() * 2
+		pos_in_front = cam.GetTransform().GetPosition() # + cam.GetTransform().GetWorld().GetZ() * 2
 		ordered_array_world_big_block = OrderedDict(sorted(array_world_big_block.items(), key=lambda t: ((t[1]["min"].x + size_big_block.x/2) - pos_in_front.x) ** 2 + (((t[1]["min"].y + size_big_block.y/2) - pos_in_front.y) / scale_unit_y) ** 2 + ((t[1]["min"].z + size_big_block.z/2) - pos_in_front.z) ** 2))
 
 		# find a block to update
 		for id, big_block in ordered_array_world_big_block.items():
-			if big_block["to_update"] == 1:
+			if big_block["to_update"] == 1 and p_min.x < big_block["min"].x < p_max.x and p_min.y < big_block["min"].y < p_max.y and p_min.z < big_block["min"].z < p_max.z:
 				big_block["to_update"] = 2
-				# fresh_blocks = get_block_list(from_world_to_dfworld(big_block["min"]), from_world_to_dfworld(big_block["min"] + size_big_block))
-				# for fresh_block in fresh_blocks.map_blocks:
-				# 	parse_block(fresh_block, big_block)
-				# big_block["to_update"] = False
 
 				big_block_thread = UpdateBigBlock()
 				big_block_thread.big_block = big_block

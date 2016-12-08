@@ -12,19 +12,24 @@ gs.LoadPlugins(gs.get_default_plugins_path())
 
 plus.CreateWorkers()
 
-plus.RenderInit(1024, 768)
+
+width, height = 1024, 768
+plus.RenderInit(width, height)
 gs.MountFileDriver(gs.StdFileDriver(""))
 
 blocks_builder.setup()
 
 scn = plus.NewScene()
 
-sky_script = gs.LogicScript("@core/lua/sky_lighting.lua")
-sky_script.Set("time_of_day", 15.0)
-sky_script.Set("attenuation", 0.75)
-sky_script.Set("shadow_range", 1000.0) # 1km shadow range
-sky_script.Set("shadow_split", gs.Vector4(0.1, 0.2, 0.3, 0.4))
-scn.AddComponent(sky_script)
+# sky_script = gs.LogicScript("@core/lua/sky_lighting.lua")
+# sky_script.Set("time_of_day", 15.0)
+# sky_script.Set("attenuation", 0.75)
+# sky_script.Set("shadow_range", 1000.0) # 1km shadow range
+# sky_script.Set("shadow_split", gs.Vector4(0.1, 0.2, 0.3, 0.4))
+# scn.AddComponent(sky_script)
+
+light_cam = plus.AddLight(scn, gs.Matrix4.TranslationMatrix(gs.Vector3(6, 200, -6)))
+light_cam.GetLight().SetShadow(gs.Light.Shadow_None)
 
 cam = plus.AddCamera(scn, gs.Matrix4.TranslationMatrix(gs.Vector3(112, 62, 112)))
 cam.GetCamera().SetZoomFactor(gs.FovToZoomFactor(1.57))
@@ -51,12 +56,14 @@ while not plus.KeyPress(gs.InputDevice.KeyEscape):
 
 	dt_sec = plus.UpdateClock()
 	fps.UpdateAndApplyToNode(cam, dt_sec)
-	# light_cam.GetTransform().SetPosition(fps.GetPos())
+	light_cam.GetTransform().SetPosition(fps.GetPos())
 
 	# get the block info from df
 	blocks_builder.update_block(cam)
 
 	# draw the block
+	# frustum_planes = gs.BuildFrustumPlanesFromProjectionMatrix(cam.GetCamera().GetProjectionMatrix(gs.Vector2(height/float(width), 1)))
+	# big_block_visible = blocks_builder.draw_block(scn.GetRenderableSystem(), frustum_planes)
 	big_block_visible = blocks_builder.draw_block(scn.GetRenderableSystem(), cam)
 	# big_block_visible = 0
 
