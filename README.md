@@ -12,6 +12,8 @@ Install:
     * pip install ookpy
     * pip install protobuf
   * Launch the code (after the dwarf fortress game as started):
+    * git clone https://github.com/scorpheus/dfhack_harfang3D.git
+    * cd dfhack_harfang3D
     * python main2.py (yep it's the 2, I will clean it one day ;p)
   
 

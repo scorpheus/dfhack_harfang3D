@@ -35,19 +35,21 @@ cam = plus.AddCamera(scn, gs.Matrix4.TranslationMatrix(gs.Vector3(112, 62, 112))
 cam.GetCamera().SetZoomFactor(gs.FovToZoomFactor(1.57))
 
 
-def fps_pos_in_front_2d(dist):
-	world = gs.Matrix3.FromEuler(0, fps.GetRot().y, 0)
-	return fps.GetPos() + world.GetZ() * dist
+# get first dwarf position
+unit_list = get_all_unit_list()
+dwarfs_pos = gs.Vector3(95, 95*blocks_builder.scale_unit_y, 150)
+# get position on the first dwarf encounter
+for unit in unit_list.creature_list:
+	if unit:
+		dwarfs_pos = gs.Vector3(unit.pos_x, unit.pos_z*blocks_builder.scale_unit_y + 1, unit.pos_y)
+		break
 
-
-fps = gs.FPSController(95, 95*blocks_builder.scale_unit_y, 150)
+fps = gs.FPSController(dwarfs_pos.x, dwarfs_pos.y, dwarfs_pos.z)
 fps.SetRot(gs.Vector3(0.5, 0, 0))
 
 block_drawn = 0
 props_drawn = 0
 
-# get first dwarf position
-# unit_list = get_all_unit_list()
 
 
 # main loop
