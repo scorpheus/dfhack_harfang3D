@@ -83,7 +83,7 @@ while not plus.KeyPress(gs.InputDevice.KeyEscape):
 
 	big_block_available = 0
 	for id, big_block in blocks_builder.array_world_big_block.items():
-		if not big_block["to_update"] or big_block["to_update"] == 2:
+		if big_block["status"] == blocks_builder.status_ready:
 			big_block_available += 1
 
 	plus.Text2D(0, 45, "BIG BLOCK: %d, CACHE BLOCK: %d, BLOCK VISIBLE: %d" % (len(blocks_builder.array_world_big_block), big_block_available, big_block_visible), 16, gs.Color.Red)

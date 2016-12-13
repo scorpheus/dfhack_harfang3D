@@ -2,40 +2,32 @@ __author__ = 'scorpheus'
 
 from dfhack_connect import *
 import gs
+import uuid
 import threading
 from collections import OrderedDict
 import random
+import numpy as np
+from helpers import *
+from iso_mesh_from_big_block import make_big_block_iso
 
 
 plus = gs.GetPlus()
 geos = None
 
+
 map_info = None
 tile_type_list = None
 material_list = None
 building_geos = None
+tile_core_geos = None
 tile_geos = None
 dwarf_geo = None
 cube_geo_big_block = None
-mats_path = ["empty.mat", "floor.mat", "magma.mat", "rock.mat", "water.mat", "tree.mat", "floor.mat", "floor.mat"]
 
 scale_unit_y = 1.0
 visible_area_length = 15
 
-
-def from_world_to_dfworld(new_pos):
-	return gs.Vector3(new_pos.x, new_pos.z, new_pos.y)
-
-
-def from_dfworld_to_world(new_pos):
-	return gs.Vector3(new_pos.x, new_pos.z, new_pos.y)
-
-
-size_big_block = gs.Vector3(16 * 1, 3, 16 * 1)
 array_world_big_block = {}
-
-
-cache_block = {}
 
 
 class building_type():
@@ -47,12 +39,8 @@ class building_type():
 	WaterWheel, Windmill, TractionBench, Slab, Nest, NestBox, Hive, Rollers = range(51)
 
 
-def hash_from_pos(x, y, z):
-	return x + y * 2048 + z * 2048**2
-
-
 def setup():
-	global map_info, tile_type_list, material_list, tile_geos, geos, building_geos, dwarf_geo, cube_geo_big_block
+	global map_info, tile_type_list, material_list, tile_core_geos, tile_geos, geos, building_geos, dwarf_geo, cube_geo_big_block
 
 	connect_socket()
 	handshake()
@@ -67,7 +55,6 @@ def setup():
 	# dwarf_geo = plus.CreateGeometry(plus.CreateCube(0.1, 0.6, 0.1, "iso.mat"))
 	dwarf_geo = plus.LoadGeometry("minecraft_assets/default_dwarf/default_dwarf.geo")
 	cube_geo_big_block = plus.CreateGeometry(plus.CreateCube(size_big_block.x, size_big_block.y*0.5*scale_unit_y, size_big_block.z, "iso.mat"))
-
 
 	geos = [plus.LoadGeometry("environment_kit_inca/stone_high_03.geo"), plus.LoadGeometry("environment_kit_inca/stone_high_01.geo")]
 	building_geos = {building_type.Chair: None, building_type.Bed: None,
@@ -98,14 +85,19 @@ def setup():
 					 building_type.Hive: None, building_type.Rollers: None}
 
 	# precompile material
+	tile_core_geos = []
 	tile_geos = []
 	for mat in mats_path:
-		tile_geos.append(plus.CreateGeometry(plus.CreateCube(1.0, 1.0*scale_unit_y, 1.0, mat)))
+		core_geo = plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, mat)
+		tile_core_geos.append(core_geo)
+		tile_geos.append(plus.CreateGeometry(core_geo))
 
 
-def parse_block(fresh_block, big_block):
+def parse_block(fresh_block, block):
 	world_block_pos = from_dfworld_to_world(gs.Vector3(fresh_block.map_x, fresh_block.map_y, fresh_block.map_z))
 
+	iso_array = np.zeros((17, 17), np.int8)
+	iso_array_mat = np.zeros((17, 17), np.int8)
 	x, z = 0, 0
 	for tile, magma, water, material in zip(fresh_block.tiles, fresh_block.magma, fresh_block.water, fresh_block.materials):
 		if tile != 0:
@@ -115,8 +107,10 @@ def parse_block(fresh_block, big_block):
 			block_mat = 0
 			if magma > 0:
 				block_mat = 2
+				iso_array[x, z] = 1
 			elif water > 0:
 				block_mat = 4
+				iso_array[x, z] = 1
 			elif type.shape == remote_fortress.FLOOR:
 				block_mat = 1
 			elif type.shape == remote_fortress.RAMP:
@@ -131,6 +125,7 @@ def parse_block(fresh_block, big_block):
 				# array_props.append((gs.Vector3(block_pos.x*16 + x, block_pos.y, block_pos.z*16 + z), 1))
 			elif type.shape == remote_fortress.WALL or type.shape == remote_fortress.FORTIFICATION:
 				block_mat = 3
+				iso_array[x, z] = 1
 			# if type.material == remote_fortress.PLANT:
 			# 	block_mat = 2
 			elif type.shape == remote_fortress.SHRUB or type.shape == remote_fortress.SAPLING:
@@ -139,16 +134,19 @@ def parse_block(fresh_block, big_block):
 			if type.material == remote_fortress.TREE_MATERIAL or type.shape == remote_fortress.TRUNK_BRANCH or\
 				type.shape == remote_fortress.TWIG:
 				block_mat = 5
+				iso_array[x, z] = 1
+
+			iso_array_mat[x, z] = block_mat
 
 			# if it's not air, add it to draw it
 			tile_pos = gs.Vector3(world_block_pos.x + x, world_block_pos.y, world_block_pos.z + z)
 			id_tile = hash_from_pos(tile_pos.x, tile_pos.y, tile_pos.z)
 			if block_mat != 0:
-				# big_block["blocks"][id_tile] = {"m": gs.Matrix4.TranslationMatrix(tile_pos), "mat": block_mat} # perfect grid
-				big_block["blocks"][id_tile] = {"m": gs.Matrix4.TransformationMatrix(tile_pos, gs.Vector3(random.random()*0.2-0.1, random.random()*0.2-0.1, random.random()*0.2-0.1)), "mat": block_mat} # with rumble
+				# block["blocks"][id_tile] = {"m": gs.Matrix4.TranslationMatrix(tile_pos), "mat": block_mat} # perfect grid
+				block["tiles"][id_tile] = {"m": gs.Matrix4.TransformationMatrix(tile_pos, gs.Vector3(random.random() * 0.2 - 0.1, random.random() * 0.2 - 0.1, random.random() * 0.2 - 0.1)), "mat": block_mat} # with rumble
 			else:
-				if id_tile in big_block["blocks"]:
-					del big_block["blocks"][id_tile]
+				if id_tile in block["tiles"]:
+					del block["tiles"][id_tile]
 
 			# add props
 			# if building != -1:
@@ -158,6 +156,14 @@ def parse_block(fresh_block, big_block):
 		if x > 15:
 			x = 0
 			z += 1
+
+	iso_array[:, -1] = iso_array[:, -2]
+	iso_array[-1, :] = iso_array[-2, :]
+	block["iso_array"] = iso_array
+
+	iso_array_mat[:, -1] = iso_array_mat[:, -2]
+	iso_array_mat[-1, :] = iso_array_mat[-2, :]
+	block["iso_array_mat"] = iso_array_mat
 
 
 def get_viewing_min_max(cam):
@@ -193,10 +199,26 @@ def get_viewing_min_max(cam):
 	return pos_min, pos_max
 
 
+def make_big_block_merge(array_world_big_block, big_block):
+	geos = []
+	ms = []
+	for id, block in big_block["blocks"].items():
+		geos.append(tile_core_geos[block["mat"]])
+		ms.append(block["m"])
+
+	# if len(geos) > 0:
+	# 	big_block["iso_mesh"] = gs.GeometryMerge(str(uuid.uuid4()), geos, ms)
+
+
 def parse_big_block(big_block, fresh_blocks):
-	for fresh_block in fresh_blocks.map_blocks:
-		parse_block(fresh_block, big_block)
-	big_block["to_update"] = False
+	for id, fresh_block in enumerate(fresh_blocks.map_blocks):
+		if id >= len(big_block["blocks"]):
+			big_block["blocks"].append({"tiles": {}, "iso_array": np.zeros((17, 17), np.int8), "iso_array_mat": np.zeros((17, 17), np.int8)})
+		parse_block(fresh_block, big_block["blocks"][id])
+
+	big_block["status"] = status_ready
+	# make_big_block_iso(array_world_big_block, big_block)
+	# make_big_block_merge(array_world_big_block, big_block)
 
 parse_big_block_thread = None
 
@@ -204,7 +226,7 @@ parse_big_block_thread = None
 def load_big_block(big_block):
 	global parse_big_block_thread
 
-	fresh_blocks = get_block_list(from_world_to_dfworld(big_block["min"]), from_world_to_dfworld(big_block["min"] + size_big_block))
+	fresh_blocks = get_block_list(from_world_to_dfworld(big_block["min_pos"]), from_world_to_dfworld(big_block["min_pos"] + size_big_block))
 
 	if parse_big_block_thread is not None and parse_big_block_thread.is_alive():
 		parse_big_block_thread.join()
@@ -226,15 +248,19 @@ def update_block(cam):
 				for z in range(int(p_min.z // size_big_block.z) - 1, int(p_max.z // size_big_block.z) + 1):
 					id = hash_from_pos(x, y, z)
 					if id not in array_world_big_block:
-						array_world_big_block[id] = {"min": gs.Vector3(x, y, z) * size_big_block, "blocks": {}, "to_update": 1, "time": 1000}
+						array_world_big_block[id] = {"min_pos": gs.Vector3(x, y, z) * size_big_block, "blocks": [], "status": status_to_parse, "time": 1000, "iso_mesh": None}
 
-		pos_in_front = cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetZ() * 8
-		ordered_array_world_big_block = OrderedDict(sorted(array_world_big_block.items(), key=lambda t: ((t[1]["min"].x - pos_in_front.x) // size_big_block.x) ** 2 + ((((t[1]["min"].y - pos_in_front.y) // size_big_block.y)/2) / scale_unit_y) ** 2 + ((t[1]["min"].z - pos_in_front.z) // size_big_block.x) ** 2))
+		dir = cam.GetTransform().GetWorld().GetZ()
+		# dir.y = 0
+		pos_in_front = cam.GetTransform().GetPosition() + dir.Normalized() * 2
+		ordered_array_world_big_block = OrderedDict(sorted(array_world_big_block.items(), key=lambda t: ((t[1]["min_pos"].x + size_big_block.x/2 - pos_in_front.x) // size_big_block.x) ** 2 +
+		                                                                                                ((((t[1]["min_pos"].y + size_big_block.y/2 - pos_in_front.y) // size_big_block.y)) / scale_unit_y) ** 2 +
+		                                                                                                ((t[1]["min_pos"].z + size_big_block.z/2 - pos_in_front.z) // size_big_block.x) ** 2))
 
 		# find a block to update
 		for id, big_block in ordered_array_world_big_block.items():
-			if big_block["to_update"] == 1:# and p_min.x < big_block["min"].x < p_max.x and p_min.y < big_block["min"].y < p_max.y and p_min.z < big_block["min"].z < p_max.z:
-				big_block["to_update"] = 2
+			if big_block["status"] == status_to_parse:
+				big_block["status"] = status_parsing
 
 				big_block_thread = threading.Thread(target=load_big_block, args=(big_block,))
 				big_block_thread.start()
@@ -251,9 +277,13 @@ def draw_block(renderable_system, cam):
 				id = hash_from_pos(x, y, z)
 				if id in array_world_big_block:
 					big_block = array_world_big_block[id]
-					if not big_block["to_update"]:
-						for id, block in big_block["blocks"].items():
-							renderable_system.DrawGeometry(tile_geos[block["mat"]], block["m"])
-							count_draw += 1
-						# renderable_system.DrawGeometry(cube_geo_big_block, gs.Matrix4.TranslationMatrix(big_block["min"] + size_big_block * 0.5))
+					if big_block["status"] == status_ready:
+						for block in big_block["blocks"]:
+							for id, tile in block["tiles"].items():
+								renderable_system.DrawGeometry(tile_geos[tile["mat"]], tile["m"])
+								count_draw += 1
+
+						# if big_block["iso_mesh"] is not None and big_block["iso_mesh"][0].IsReady():
+						# 	renderable_system.DrawGeometry(big_block["iso_mesh"][0], gs.Matrix4.TranslationMatrix(big_block["min_pos"]))
+						# 	count_draw += 1
 	return count_draw

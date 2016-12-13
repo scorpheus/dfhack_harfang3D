@@ -416,7 +416,8 @@ def find_valid_material_in_cube(x, y, z, mats):
 	return mat
 
 resolution = 2
-resolution_y = 4
+resolution_y = 8
+
 
 def CreateIsoFBO(array, width, height, length, isolevel, mats):
 	index_array = []
@@ -436,11 +437,12 @@ def CreateIsoFBO(array, width, height, length, isolevel, mats):
 
 	return index_array, vtx_array, normal_array, material_array
 
-import noise
+# import noise
+
 
 def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path=None, pos= None):
 
-	inv_scale = gs.Vector3.One/gs.Vector3(resolution, resolution_y*2-1, resolution)
+	inv_scale = gs.Vector3(1/resolution, 1/(resolution_y*2-1), 1/resolution)
 
 	# increase size of the array by the resolution
 	array_res = np.kron(array, np.ones((resolution, resolution_y, resolution)))
@@ -457,7 +459,7 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 
 	# for the ramp, if ramp down, add 1 to half the height
 	id = np.where(mats_res[:, 0, :] == 6)
-	array_res[id[0], :array_res.shape[1]*0.5, id[1]] = 1
+	array_res[id[0], :int(array_res.shape[1]*0.5), id[1]] = 1
 
 	id = np.where(mats_res[:, 1, :] == 6)
 	array_res[id[0], array_res.shape[1]-1, id[1]] = 1
@@ -465,11 +467,11 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 	if array_res.sum() == 0 or np.average(array_res) == 1:
 		return None
 
-	it = np.nditer(array_res, flags=['multi_index'])
-	while not it.finished:
-		if array_res[it.multi_index[0], it.multi_index[1], it.multi_index[2]] == 1:
-			array_res[it.multi_index[0], it.multi_index[1], it.multi_index[2]] = noise.snoise3((it.multi_index[0]*inv_scale.x+pos.x*16)*100, (it.multi_index[1]*inv_scale.y+pos.y)*100, (it.multi_index[2]*inv_scale.z+pos.z*16)*100)*0.25+0.75
-		it.iternext()
+	# it = np.nditer(array_res, flags=['multi_index'])
+	# while not it.finished:
+	# 	if array_res[it.multi_index[0], it.multi_index[1], it.multi_index[2]] == 1:
+	# 		array_res[it.multi_index[0], it.multi_index[1], it.multi_index[2]] = noise.snoise3((it.multi_index[0]*inv_scale.x+pos.x*16)*100, (it.multi_index[1]*inv_scale.y+pos.y)*100, (it.multi_index[2]*inv_scale.z+pos.z*16)*100)*0.25+0.75
+	# 	it.iternext()
 
 	# smooth the value on XZ axis
 	# array_copy = np.copy(array_res)
@@ -493,7 +495,7 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 	field.WriteFloats(np.swapaxes(array_res[:-1, :, :-1], 1, 2).flatten('F').tolist())
 
 	iso = gs.IsoSurface()
-	gs.PolygoniseIsoSurface(w, h, d, field, isolevel, iso, inv_scale)
+	gs.PolygoniseIsoSurface(w-2, h-2, d-2, field, isolevel, iso, inv_scale)
 
 	# mat = plus.LoadMaterial("tree.mat")
 	mat = plus.LoadMaterial("@core/materials/default.mat")
@@ -517,9 +519,9 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 	count +=1
 	name = str(name)
 
-	geo = plus.GetRenderSystem().HasGeometry(name)
-	if geo is not None:
-		return geo
+	# geo = plus.GetRenderSystem().HasGeometry(name)
+	# if geo is not None:
+	# 	return geo
 
 	geo = gs.CoreGeometry()
 	if material_path is None:
@@ -576,7 +578,7 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 
 	# send the vertices to the geometry with scaling them down to the right size
 	count = 0
-	inv_scale = gs.Vector3.One/gs.Vector3(resolution, resolution_y*2-1, resolution)
+	inv_scale = gs.Vector3(1/resolution, 1/(resolution_y*2-1), 1/resolution)
 	for vtx in vtx_array:
 		geo.SetVertex(count, vtx.x*inv_scale.x, vtx.y*inv_scale.y, vtx.z*inv_scale.z)
 		count += 1
