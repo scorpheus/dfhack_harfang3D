@@ -270,11 +270,11 @@ def update_block(cam):
 		# 			if id not in array_world_big_block:
 		# 				array_world_big_block[id] = {"min_pos": gs.Vector3(x, y, z) * size_big_block, "blocks": {}, "status": status_to_parse, "time": 1000, "iso_mesh": None}
 
-		p_min.x -= size_big_block.x
-		p_min.z -= size_big_block.z
-
-		p_max.x += size_big_block.x
-		p_max.z += size_big_block.z
+		# p_min.x -= size_big_block.x
+		# p_min.z -= size_big_block.z
+		#
+		# p_max.x += size_big_block.x
+		# p_max.z += size_big_block.z
 
 		big_block_thread = threading.Thread(target=load_big_block, args=(p_min, p_max))
 		big_block_thread.start()
