@@ -12,6 +12,10 @@ def hash_from_pos(x, y, z):
 	return x + y * 2048 + z * 2048**2
 
 
+def hash_from_pos_v(v):
+	return hash_from_pos(v.x, v.y, v.z)
+
+
 def from_world_to_dfworld(new_pos):
 	return gs.Vector3(new_pos.x, new_pos.z, new_pos.y)
 

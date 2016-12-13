@@ -10,7 +10,7 @@ enum BasicMaterial {
     LIQUID = 3;
     PLANT = 4;
     WOOD = 5;
-};
+}
 
 enum LiquidType {
     ICE = 0;

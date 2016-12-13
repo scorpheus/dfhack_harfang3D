@@ -1,0 +1,2 @@
+pyrobuf --install .
+pause

@@ -2,6 +2,7 @@ __author__ = 'scorpheus'
 
 from dfhack_connect import *
 import gs
+from math import *
 import uuid
 import threading
 from collections import OrderedDict
@@ -27,6 +28,7 @@ cube_geo_big_block = None
 scale_unit_y = 1.0
 visible_area_length = 15
 
+mutex_big_block = threading.Lock()
 array_world_big_block = {}
 
 
@@ -210,27 +212,45 @@ def make_big_block_merge(array_world_big_block, big_block):
 	# 	big_block["iso_mesh"] = gs.GeometryMerge(str(uuid.uuid4()), geos, ms)
 
 
-def parse_big_block(big_block, fresh_blocks):
+def parse_big_block(fresh_blocks):
 	for id, fresh_block in enumerate(fresh_blocks.map_blocks):
-		if id >= len(big_block["blocks"]):
-			big_block["blocks"].append({"tiles": {}, "iso_array": np.zeros((17, 17), np.int8), "iso_array_mat": np.zeros((17, 17), np.int8)})
-		parse_block(fresh_block, big_block["blocks"][id])
+		world_block_pos = from_dfworld_to_world(gs.Vector3(fresh_block.map_x, fresh_block.map_y, fresh_block.map_z))
+		world_big_block_pos = world_block_pos / size_big_block
+		world_big_block_pos.x = floor(world_big_block_pos.x)
+		world_big_block_pos.y = floor(world_big_block_pos.y)
+		world_big_block_pos.z = floor(world_big_block_pos.z)
 
-	big_block["status"] = status_ready
+		id_block = (world_block_pos / size_big_block) - world_big_block_pos
+		id_block *= size_big_block
+
+		id_block = hash_from_pos_v(id_block)
+		id_world = hash_from_pos_v(world_big_block_pos)
+
+		if id_world not in array_world_big_block:
+			array_world_big_block[id_world] = {"min_pos": world_big_block_pos * size_big_block, "blocks": {}, "status": status_ready, "time": 1000, "iso_mesh": None}
+
+		big_block = array_world_big_block[id_world]
+
+		if id_block not in big_block["blocks"]:
+			with mutex_big_block:
+				big_block["blocks"][id_block] = {"tiles": {}, "iso_array": np.zeros((17, 17), np.int8), "iso_array_mat": np.zeros((17, 17), np.int8)}
+		parse_block(fresh_block, big_block["blocks"][id_block])
+	#
+	# big_block["status"] = status_ready
 	# make_big_block_iso(array_world_big_block, big_block)
 	# make_big_block_merge(array_world_big_block, big_block)
 
 parse_big_block_thread = None
 
 
-def load_big_block(big_block):
+def load_big_block(min, max):
 	global parse_big_block_thread
 
-	fresh_blocks = get_block_list(from_world_to_dfworld(big_block["min_pos"]), from_world_to_dfworld(big_block["min_pos"] + size_big_block))
+	fresh_blocks = get_block_list(from_world_to_dfworld(min), from_world_to_dfworld(max))
 
 	if parse_big_block_thread is not None and parse_big_block_thread.is_alive():
 		parse_big_block_thread.join()
-	parse_big_block_thread = threading.Thread(target=parse_big_block, args=(big_block, fresh_blocks))
+	parse_big_block_thread = threading.Thread(target=parse_big_block, args=(fresh_blocks,))
 	parse_big_block_thread.start()
 
 big_block_thread = None
@@ -243,28 +263,37 @@ def update_block(cam):
 		p_min, p_max = get_viewing_min_max(cam)
 
 		# grow the array_big_block
-		for x in range(int(p_min.x // size_big_block.x) - 1, int(p_max.x // size_big_block.x) + 1):
-			for y in range(int(p_min.y // size_big_block.y) - 1, int(p_max.y // size_big_block.y) + 1):
-				for z in range(int(p_min.z // size_big_block.z) - 1, int(p_max.z // size_big_block.z) + 1):
-					id = hash_from_pos(x, y, z)
-					if id not in array_world_big_block:
-						array_world_big_block[id] = {"min_pos": gs.Vector3(x, y, z) * size_big_block, "blocks": [], "status": status_to_parse, "time": 1000, "iso_mesh": None}
+		# for x in range(int(p_min.x // size_big_block.x) - 1, int(p_max.x // size_big_block.x) + 1):
+		# 	for y in range(int(p_min.y // size_big_block.y) - 1, int(p_max.y // size_big_block.y) + 1):
+		# 		for z in range(int(p_min.z // size_big_block.z) - 1, int(p_max.z // size_big_block.z) + 1):
+		# 			id = hash_from_pos(x, y, z)
+		# 			if id not in array_world_big_block:
+		# 				array_world_big_block[id] = {"min_pos": gs.Vector3(x, y, z) * size_big_block, "blocks": {}, "status": status_to_parse, "time": 1000, "iso_mesh": None}
 
-		dir = cam.GetTransform().GetWorld().GetZ()
-		# dir.y = 0
-		pos_in_front = cam.GetTransform().GetPosition() + dir.Normalized() * 2
-		ordered_array_world_big_block = OrderedDict(sorted(array_world_big_block.items(), key=lambda t: ((t[1]["min_pos"].x + size_big_block.x/2 - pos_in_front.x) // size_big_block.x) ** 2 +
-		                                                                                                ((((t[1]["min_pos"].y + size_big_block.y/2 - pos_in_front.y) // size_big_block.y)) / scale_unit_y) ** 2 +
-		                                                                                                ((t[1]["min_pos"].z + size_big_block.z/2 - pos_in_front.z) // size_big_block.x) ** 2))
+		p_min.x -= size_big_block.x
+		p_min.z -= size_big_block.z
 
-		# find a block to update
-		for id, big_block in ordered_array_world_big_block.items():
-			if big_block["status"] == status_to_parse:
-				big_block["status"] = status_parsing
+		p_max.x += size_big_block.x
+		p_max.z += size_big_block.z
 
-				big_block_thread = threading.Thread(target=load_big_block, args=(big_block,))
-				big_block_thread.start()
-				break
+		big_block_thread = threading.Thread(target=load_big_block, args=(p_min, p_max))
+		big_block_thread.start()
+
+		# dir = cam.GetTransform().GetWorld().GetZ()
+		# # dir.y = 0
+		# pos_in_front = cam.GetTransform().GetPosition() + dir.Normalized() * 2
+		# ordered_array_world_big_block = OrderedDict(sorted(array_world_big_block.items(), key=lambda t: ((t[1]["min_pos"].x + size_big_block.x/2 - pos_in_front.x) // size_big_block.x) ** 2 +
+		#                                                                                                 ((((t[1]["min_pos"].y + size_big_block.y/2 - pos_in_front.y) // size_big_block.y)) / scale_unit_y) ** 2 +
+		#                                                                                                 ((t[1]["min_pos"].z + size_big_block.z/2 - pos_in_front.z) // size_big_block.x) ** 2))
+		#
+		# # find a block to update
+		# for id, big_block in ordered_array_world_big_block.items():
+		# 	if big_block["status"] == status_to_parse:
+		# 		big_block["status"] = status_parsing
+		#
+		# 		big_block_thread = threading.Thread(target=load_big_block, args=(big_block,))
+		# 		big_block_thread.start()
+		# 		break
 
 
 def draw_block(renderable_system, cam):
@@ -278,10 +307,11 @@ def draw_block(renderable_system, cam):
 				if id in array_world_big_block:
 					big_block = array_world_big_block[id]
 					if big_block["status"] == status_ready:
-						for block in big_block["blocks"]:
-							for id, tile in block["tiles"].items():
-								renderable_system.DrawGeometry(tile_geos[tile["mat"]], tile["m"])
-								count_draw += 1
+						with mutex_big_block:
+							for id_block, block in big_block["blocks"].items():
+								for id, tile in block["tiles"].items():
+									renderable_system.DrawGeometry(tile_geos[tile["mat"]], tile["m"])
+									count_draw += 1
 
 						# if big_block["iso_mesh"] is not None and big_block["iso_mesh"][0].IsReady():
 						# 	renderable_system.DrawGeometry(big_block["iso_mesh"][0], gs.Matrix4.TranslationMatrix(big_block["min_pos"]))

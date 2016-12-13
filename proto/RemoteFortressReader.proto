@@ -44,7 +44,7 @@ enum TiletypeSpecial
     WORN_3 = 9;
     TRACK = 10;
     SMOOTH_DEAD = 11;
-};
+}
 enum TiletypeMaterial
 {
     NO_MATERIAL = -1;
@@ -82,7 +82,7 @@ enum TiletypeVariant
     VAR_2 = 1;
     VAR_3 = 2;
     VAR_4 = 3;
-};
+}
 
 enum WorldPoles
 {
@@ -127,7 +127,7 @@ message Tiletype
     optional TiletypeMaterial material = 6;
     optional TiletypeVariant variant = 7;
     optional string direction = 8;
-};
+}
 
 message TiletypeList
 {

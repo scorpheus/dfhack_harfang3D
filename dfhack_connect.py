@@ -2,11 +2,12 @@ __author__ = 'scorpheus'
 
 import socket
 import struct
-import proto.build.RemoteFortressReader_pb2 as remote_fortress
-import proto.build.BasicApi_pb2 as BasicApi
-import proto.build.Block_pb2 as Block
-import proto.build.Tile_pb2 as Tile
-import proto.build.CoreProtocol_pb2 as CoreProtocol
+
+import RemoteFortressReader_proto as remote_fortress
+import BasicApi_proto as BasicApi
+import Block_proto as Block
+import Tile_proto as Tile
+import CoreProtocol_proto as CoreProtocol
 
 HOST, PORT = "localhost", 5000
 
@@ -235,12 +236,12 @@ def get_block_list(p_min, p_max):
 
 	# input message: which part of datablock we want
 	input_block_message = remote_fortress.BlockRequest()
-	input_block_message.min_x = int(p_min.x / 16)
-	input_block_message.max_x = int(p_max.x / 16)
-	input_block_message.min_y = int(p_min.y / 16)
-	input_block_message.max_y = int(p_max.y / 16)
-	input_block_message.min_z = int(p_min.z)
-	input_block_message.max_z = int(p_max.z)
+	input_block_message.min_x = max(0, int(p_min.x / 16))
+	input_block_message.max_x = max(0, int(p_max.x / 16))
+	input_block_message.min_y = max(0, int(p_min.y / 16))
+	input_block_message.max_y = max(0, int(p_max.y / 16))
+	input_block_message.min_z = max(0, int(p_min.z))
+	input_block_message.max_z = max(0, int(p_max.z))
 	input_block_message.blocks_needed = (input_block_message.max_x - input_block_message.min_x) * (input_block_message.max_y - input_block_message.min_y) * (input_block_message.max_z - input_block_message.min_z)
 
 	# for one block in p_min
