@@ -201,18 +201,21 @@ def get_viewing_min_max(cam):
 	return pos_min, pos_max
 
 
-def make_big_block_merge(array_world_big_block, big_block):
+def make_big_block_merge(big_block):
 	geos = []
 	ms = []
-	for id, block in big_block["blocks"].items():
-		geos.append(tile_core_geos[block["mat"]])
-		ms.append(block["m"])
+	for id_block, block in big_block["blocks"].items():
+		for id, tile in block["tiles"].items():
+			geos.append(tile_core_geos[tile["mat"]])
+			ms.append(tile["m"])
 
-	# if len(geos) > 0:
-	# 	big_block["iso_mesh"] = gs.GeometryMerge(str(uuid.uuid4()), geos, ms)
+	if len(geos) > 0:
+		big_block["iso_mesh"] = gs.GeometryMerge(str(uuid.uuid4()), geos, ms)
 
 
 def parse_big_block(fresh_blocks):
+	id_big_block_to_merge = {}
+
 	for id, fresh_block in enumerate(fresh_blocks.map_blocks):
 		world_block_pos = from_dfworld_to_world(gs.Vector3(fresh_block.map_x, fresh_block.map_y, fresh_block.map_z))
 		world_big_block_pos = world_block_pos / size_big_block
@@ -230,6 +233,7 @@ def parse_big_block(fresh_blocks):
 			array_world_big_block[id_world] = {"min_pos": world_big_block_pos * size_big_block, "blocks": {}, "status": status_ready, "time": 1000, "iso_mesh": None}
 
 		big_block = array_world_big_block[id_world]
+		id_big_block_to_merge[id_world] = True
 
 		if id_block not in big_block["blocks"]:
 			with mutex_big_block:
@@ -237,8 +241,9 @@ def parse_big_block(fresh_blocks):
 		parse_block(fresh_block, big_block["blocks"][id_block])
 	#
 	# big_block["status"] = status_ready
-	# make_big_block_iso(array_world_big_block, big_block)
-	# make_big_block_merge(array_world_big_block, big_block)
+	# for id_big_block in id_big_block_to_merge.keys():
+		# make_big_block_iso(array_world_big_block, big_block)
+		# make_big_block_merge(array_world_big_block[id_big_block])
 
 parse_big_block_thread = None
 
@@ -312,7 +317,7 @@ def draw_block(renderable_system, cam):
 								for id, tile in block["tiles"].items():
 									renderable_system.DrawGeometry(tile_geos[tile["mat"]], tile["m"])
 									count_draw += 1
-
+						#
 						# if big_block["iso_mesh"] is not None and big_block["iso_mesh"][0].IsReady():
 						# 	renderable_system.DrawGeometry(big_block["iso_mesh"][0], gs.Matrix4.TranslationMatrix(big_block["min_pos"]))
 						# 	count_draw += 1
