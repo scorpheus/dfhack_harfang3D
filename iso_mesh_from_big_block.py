@@ -6,16 +6,16 @@ from helpers import *
 
 def create_iso_geo_from_block(id_block, id_block_up, array_world_big_block):
 
-	array_has_geo = np.empty((17, 2, 17), np.int8)
+	array_has_geo = np.empty((17, 2, 17))#, np.int8)
 	array_has_geo[:, 0, :] = list(array_world_big_block[id_block]["blocks"].values())[0]["iso_array"]
 	array_has_geo[:, 1, :] = list(array_world_big_block[id_block_up]["blocks"].values())[0]["iso_array"]
 
-	array_mats = np.empty((17, 2, 17), np.int8)
+	array_mats = np.empty((17, 2, 17))#, np.int8)
 	array_mats[:, 0, :] = list(array_world_big_block[id_block]["blocks"].values())[0]["iso_array_mat"]
 	array_mats[:, 1, :] = list(array_world_big_block[id_block_up]["blocks"].values())[0]["iso_array_mat"]
 
-	# return geometry_iso.create_iso_c(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, array_world_big_block[id_block]["min_pos"])
-	return geometry_iso.create_iso(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, id_block)
+	return geometry_iso.create_iso_c(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, array_world_big_block[id_block]["min_pos"])
+	# return geometry_iso.create_iso(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, id_block)
 
 
 def update_iso_mesh(array_world_big_block, id_block, pos):

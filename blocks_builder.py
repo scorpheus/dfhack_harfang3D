@@ -26,7 +26,6 @@ cube_geo_big_block = None
 scale_unit_y = 1.0
 visible_area_length = 15
 
-mutex_big_block = threading.Lock()
 mutex_array_world_big_block = threading.Lock()
 array_world_big_block = {}
 
@@ -92,6 +91,18 @@ def setup():
 		tile_geos.append(plus.CreateGeometry(core_geo))
 
 
+def make_big_block_merge(big_block):
+	geos = []
+	ms = []
+	for id_block, block in big_block["blocks"].items():
+		for id, tile in block["tiles"].items():
+			geos.append(tile_core_geos[tile["mat"]])
+			ms.append(tile["m"])
+
+	if len(geos) > 0:
+		big_block["iso_mesh"] = gs.GeometryMerge(str(uuid.uuid4()), geos, ms)
+
+
 def parse_block_only_water(fresh_block, tiles, iso_array, iso_array_mat):
 	world_block_pos = from_dfworld_to_world(gs.Vector3(map_info.block_size_x*16-16 - fresh_block.map_x, fresh_block.map_y, fresh_block.map_z))
 
@@ -102,9 +113,8 @@ def parse_block_only_water(fresh_block, tiles, iso_array, iso_array_mat):
 			tile_scale = gs.Vector3(1, water/7., 1)
 
 			iso_array_mat[x, z] = 4
-			iso_array[x, z] = 1
+			iso_array[x, z] = water/7.
 
-			# if it's not air, add it to draw it
 			id_tile = hash_from_pos(tile_pos.x, tile_pos.y, tile_pos.z)
 
 			# block["blocks"][id_tile] = {"m": gs.Matrix4.TranslationMatrix(tile_pos), "mat": block_mat} # perfect grid
@@ -131,8 +141,8 @@ def parse_block(fresh_block):
 	tiles = {}
 	world_block_pos = from_dfworld_to_world(gs.Vector3(map_info.block_size_x*16-16 - fresh_block.map_x, fresh_block.map_y, fresh_block.map_z))
 
-	iso_array = np.zeros((17, 17), np.int8)
-	iso_array_mat = np.zeros((17, 17), np.int8)
+	iso_array = np.zeros((17, 17))#, np.int8)
+	iso_array_mat = np.zeros((17, 17))#, np.int8)
 	x, z = 15, 0
 	for tile, magma, water, material in zip(fresh_block.tiles, fresh_block.magma, fresh_block.water, fresh_block.materials):
 		tile_pos = gs.Vector3(world_block_pos.x + x, world_block_pos.y, world_block_pos.z + z)
@@ -146,12 +156,12 @@ def parse_block(fresh_block):
 				tile_pos.y -= (1.0 - magma / 7) * 0.5
 				tile_scale.y = magma / 7.
 				block_mat = 2
-				iso_array[x, z] = 1
+				iso_array[x, z] = magma / 7
 			elif water > 0:
 				tile_pos.y -= (1.0 - water / 7) * 0.5
 				tile_scale.y = water/7.
 				block_mat = 4
-				iso_array[x, z] = 1
+				iso_array[x, z] = water/7.
 			# elif type.shape == remote_fortress.FLOOR:
 			# 	block_mat = 1
 			# elif type.shape == remote_fortress.RAMP:
@@ -206,18 +216,6 @@ def parse_block(fresh_block):
 	return tiles, iso_array, iso_array_mat
 
 
-def make_big_block_merge(big_block):
-	geos = []
-	ms = []
-	for id_block, block in big_block["blocks"].items():
-		for id, tile in block["tiles"].items():
-			geos.append(tile_core_geos[tile["mat"]])
-			ms.append(tile["m"])
-
-	if len(geos) > 0:
-		big_block["iso_mesh"] = gs.GeometryMerge(str(uuid.uuid4()), geos, ms)
-
-
 def parse_big_block(fresh_blocks):
 	id_big_block_to_merge = {}
 
@@ -236,7 +234,7 @@ def parse_big_block(fresh_blocks):
 
 		if id_big_block not in array_world_big_block:
 			with mutex_array_world_big_block:
-				array_world_big_block[id_big_block] = {"min_pos": world_big_block_pos * size_big_block, "blocks": {}, "status": status_ready, "time": 1000, "iso_mesh": None}
+				array_world_big_block[id_big_block] = {"min_pos": world_big_block_pos * size_big_block, "blocks": {}, "status": status_ready, "time": 1000, "iso_mesh": None, "mutex": threading.Lock()}
 
 		big_block = array_world_big_block[id_big_block]
 
@@ -244,17 +242,19 @@ def parse_big_block(fresh_blocks):
 		if len(fresh_block.tiles) > 0 or id_block not in big_block["blocks"]:
 			id_big_block_to_merge[id_big_block] = True
 			tiles, iso_array, iso_array_mat = parse_block(fresh_block)
-			with mutex_big_block:
+			with big_block["mutex"]:
 				big_block["blocks"][id_block] = {"tiles": tiles, "iso_array": iso_array, "iso_array_mat": iso_array_mat}
 
 		elif len(fresh_block.water) > 0:
-			with mutex_big_block:
+			id_big_block_to_merge[id_big_block] = True
+			with big_block["mutex"]:
 				tiles, iso_array, iso_array_mat = parse_block_only_water(fresh_block, big_block["blocks"][id_block]["tiles"], big_block["blocks"][id_block]["iso_array"], big_block["blocks"][id_block]["iso_array_mat"])
 				big_block["blocks"][id_block] = {"tiles": tiles, "iso_array": iso_array, "iso_array_mat": iso_array_mat}
 
-	# for id_big_block in id_big_block_to_merge.keys():
-	# 	make_big_block_iso(array_world_big_block, array_world_big_block[id_big_block])
+	for id_big_block in id_big_block_to_merge.keys():
+		make_big_block_iso(array_world_big_block, array_world_big_block[id_big_block])
 		# make_big_block_merge(array_world_big_block[id_big_block])
+
 
 parse_big_block_thread = None
 
@@ -340,13 +340,13 @@ def draw_block(renderable_system, cam):
 				if id in array_world_big_block:
 					big_block = array_world_big_block[id]
 					if big_block["status"] == status_ready:
-						with mutex_big_block:
-							for id_block, block in big_block["blocks"].items():
-								for id, tile in block["tiles"].items():
-									renderable_system.DrawGeometry(tile_geos[tile["mat"]], tile["m"])
-									count_draw += 1
-
-						# if big_block["iso_mesh"] is not None and big_block["iso_mesh"][0].IsReady():
-						# 	renderable_system.DrawGeometry(big_block["iso_mesh"][0], gs.Matrix4.TranslationMatrix(big_block["min_pos"]))
-						# 	count_draw += 1
+						# with big_block["mutex"]:
+						# 	for id_block, block in big_block["blocks"].items():
+						# 		for id, tile in block["tiles"].items():
+						# 			renderable_system.DrawGeometry(tile_geos[tile["mat"]], tile["m"])
+						# 			count_draw += 1
+						#
+						if big_block["iso_mesh"] is not None and big_block["iso_mesh"][0].IsReady():
+							renderable_system.DrawGeometry(big_block["iso_mesh"][0], gs.Matrix4.TranslationMatrix(big_block["min_pos"]))
+							count_draw += 1
 	return count_draw

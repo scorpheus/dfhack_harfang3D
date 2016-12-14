@@ -9,7 +9,7 @@ size_big_block = gs.Vector3(16 * 1, 1, 16 * 1)
 
 
 def hash_from_pos(x, y, z):
-	return x + y * 2048 + z * 2048**2
+	return int(x + y * 2048 + z * 2048**2)
 
 
 def hash_from_pos_v(v):

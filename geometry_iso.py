@@ -2,6 +2,7 @@ import gs
 import math
 import random
 import numpy as np
+import noise
 
 plus = gs.GetPlus()
 
@@ -416,7 +417,7 @@ def find_valid_material_in_cube(x, y, z, mats):
 	return mat
 
 resolution = 2
-resolution_y = 8
+resolution_y = 4
 
 
 def CreateIsoFBO(array, width, height, length, isolevel, mats):
@@ -437,12 +438,8 @@ def CreateIsoFBO(array, width, height, length, isolevel, mats):
 
 	return index_array, vtx_array, normal_array, material_array
 
-# import noise
-
 
 def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path=None, pos= None):
-
-	inv_scale = gs.Vector3(1/resolution, 1/(resolution_y*2-1), 1/resolution)
 
 	# increase size of the array by the resolution
 	array_res = np.kron(array, np.ones((resolution, resolution_y, resolution)))
@@ -488,14 +485,27 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 	# 				array_res[x, y, z] = (array_copy[x-kernel_size_half:x+kernel_size_half+1, y, z-kernel_size_half:z+kernel_size_half+1]*kernel).sum() / kernel_sum
 
 	w, h, d = array_res.shape[0]-(resolution - 1), array_res.shape[1], array_res.shape[2]-(resolution - 1)
+	array_res = np.swapaxes(array_res[:-1, :, :-1], 1, 2)
+
+	# add axes all around (+2)
+	big_array = np.zeros((w+2, d+2, h+2))
+	big_array[1:-1, 1:-1, 1:-1] = array_res
+	big_array[0, :, :] = big_array[1, :, :]
+	big_array[-1, :, :] = big_array[-2, :, :]
+	big_array[:, 0, :] = big_array[:, 1, :]
+	big_array[:, -1, :] = big_array[:, -2, :]
+	big_array[:, :, 0] = big_array[:, :, 1]
+	big_array[:, :, -1] = big_array[:, :, -2]
 
 	field = gs.BinaryBlob()
 
-	field.Grow(w*d*h)
-	field.WriteFloats(np.swapaxes(array_res[:-1, :, :-1], 1, 2).flatten('F').tolist())
+	field.Grow((w+2)*(d+2)*(h+2))
+	field.WriteFloats(big_array.flatten('F').tolist())
+
+	inv_scale = gs.Vector3(16./w, 1/h, 16./d)
 
 	iso = gs.IsoSurface()
-	gs.PolygoniseIsoSurface(w-2, h-2, d-2, field, isolevel, iso, inv_scale)
+	gs.PolygoniseIsoSurface(w, h, d, field, isolevel, iso, inv_scale)
 
 	# mat = plus.LoadMaterial("tree.mat")
 	mat = plus.LoadMaterial("@core/materials/default.mat")
@@ -516,7 +526,7 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 	# if name is None:
 	name = "@gen/iso_%f%s%d" % (isolevel, name, count)
 
-	count +=1
+	count += 1
 	name = str(name)
 
 	# geo = plus.GetRenderSystem().HasGeometry(name)
