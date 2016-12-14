@@ -5,7 +5,7 @@ status_parsing = 2
 status_ready = 3
 
 mats_path = ["empty.mat", "floor.mat", "magma.mat", "rock.mat", "water.mat", "tree.mat", "floor.mat", "floor.mat"]
-size_big_block = gs.Vector3(16 * 3, 1, 16 * 3)
+size_big_block = gs.Vector3(16 * 1, 1, 16 * 1)
 
 
 def hash_from_pos(x, y, z):

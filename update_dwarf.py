@@ -4,34 +4,22 @@ from dfhack_connect import *
 import gs
 import threading
 
-
 dwarfs_pos = {}
-
-
-class UpdateUnitListFromDF(threading.Thread):
-	def __init__(self):
-		threading.Thread.__init__(self)
-		self.unit_list = None
-
-	def run(self):
-		self.unit_list = get_list_units()
-
-unit_list_thread = UpdateUnitListFromDF()
+mutex_dwarfs_pos = threading.Lock()
 
 
 def update_dwarf_pos():
-	global unit_list_thread, dwarfs_pos
+	global dwarfs_pos
 
-	if not unit_list_thread.is_alive():
-		if unit_list_thread.unit_list is not None:
-			for unit in unit_list_thread.unit_list.value:
-				if unit.unit_id in dwarfs_pos:
-					d = gs.Vector3(unit.pos_x, unit.pos_y, unit.pos_z) - dwarfs_pos[unit.unit_id][0]
+	with mutex_dwarfs_pos:
+		unit_list = get_all_unit_list()
+		for unit in unit_list.creature_list:
+			if unit.race.mat_type == 572:
+				if unit.id in dwarfs_pos:
+					d = gs.Vector3(unit.pos_x, unit.pos_y, unit.pos_z) - dwarfs_pos[unit.id][0]
 					if d.Len2() != 0:
-						dwarfs_pos[unit.unit_id][1] = gs.Matrix3.LookAt(gs.Vector3(-d.x, d.z, d.y).Normalized())
-					dwarfs_pos[unit.unit_id][0] += d*0.5
+						dwarfs_pos[unit.id][1] = gs.Matrix3.LookAt(gs.Vector3(-d.x, d.z, d.y).Normalized())
+					dwarfs_pos[unit.id][0] += d*0.5
 				else:
-					dwarfs_pos[unit.unit_id] = [gs.Vector3(unit.pos_x, unit.pos_y, unit.pos_z), gs.Matrix3.Identity]
-		unit_list_thread = UpdateUnitListFromDF()
-		unit_list_thread.start()
+					dwarfs_pos[unit.id] = [gs.Vector3(unit.pos_x, unit.pos_y, unit.pos_z), gs.Matrix3.Identity]
 

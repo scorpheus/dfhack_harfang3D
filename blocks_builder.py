@@ -2,14 +2,13 @@ __author__ = 'scorpheus'
 
 from dfhack_connect import *
 import gs
-from math import *
 import uuid
 import threading
-from collections import OrderedDict
-import random
 import numpy as np
 from helpers import *
+import update_dwarf
 from iso_mesh_from_big_block import make_big_block_iso
+import noise
 
 
 plus = gs.GetPlus()
@@ -22,13 +21,13 @@ material_list = None
 building_geos = None
 tile_core_geos = None
 tile_geos = None
-dwarf_geo = None
 cube_geo_big_block = None
 
 scale_unit_y = 1.0
 visible_area_length = 15
 
 mutex_big_block = threading.Lock()
+mutex_array_world_big_block = threading.Lock()
 array_world_big_block = {}
 
 
@@ -42,7 +41,7 @@ class building_type():
 
 
 def setup():
-	global map_info, tile_type_list, material_list, tile_core_geos, tile_geos, geos, building_geos, dwarf_geo, cube_geo_big_block
+	global map_info, tile_type_list, material_list, tile_core_geos, tile_geos, geos, building_geos, cube_geo_big_block
 
 	connect_socket()
 	handshake()
@@ -54,8 +53,6 @@ def setup():
 	tile_type_list = get_tiletype_list()
 	# material_list = get_material_list()
 
-	# dwarf_geo = plus.CreateGeometry(plus.CreateCube(0.1, 0.6, 0.1, "iso.mat"))
-	dwarf_geo = plus.LoadGeometry("minecraft_assets/default_dwarf/default_dwarf.geo")
 	cube_geo_big_block = plus.CreateGeometry(plus.CreateCube(size_big_block.x, size_big_block.y*0.5*scale_unit_y, size_big_block.z, "iso.mat"))
 
 	geos = [plus.LoadGeometry("environment_kit_inca/stone_high_03.geo"), plus.LoadGeometry("environment_kit_inca/stone_high_01.geo")]
@@ -95,35 +92,77 @@ def setup():
 		tile_geos.append(plus.CreateGeometry(core_geo))
 
 
-def parse_block(fresh_block, block):
-	world_block_pos = from_dfworld_to_world(gs.Vector3(fresh_block.map_x, fresh_block.map_y, fresh_block.map_z))
+def parse_block_only_water(fresh_block, tiles, iso_array, iso_array_mat):
+	world_block_pos = from_dfworld_to_world(gs.Vector3(map_info.block_size_x*16-16 - fresh_block.map_x, fresh_block.map_y, fresh_block.map_z))
+
+	x, z = 15, 0
+	for water in fresh_block.water:
+		if water > 0:
+			tile_pos = gs.Vector3(world_block_pos.x + x, world_block_pos.y - (1.0 - water / 7)*0.5, world_block_pos.z + z)
+			tile_scale = gs.Vector3(1, water/7., 1)
+
+			iso_array_mat[x, z] = 4
+			iso_array[x, z] = 1
+
+			# if it's not air, add it to draw it
+			id_tile = hash_from_pos(tile_pos.x, tile_pos.y, tile_pos.z)
+
+			# block["blocks"][id_tile] = {"m": gs.Matrix4.TranslationMatrix(tile_pos), "mat": block_mat} # perfect grid
+			n1 = noise.snoise3(tile_pos.x, tile_pos.y, tile_pos.z)
+			n2 = noise.snoise3(tile_pos.x+0.5, tile_pos.y, tile_pos.z)
+			n3 = noise.snoise3(tile_pos.x, tile_pos.y+0.5, tile_pos.z)
+			tiles[id_tile] = {"m": gs.Matrix4.TransformationMatrix(tile_pos, gs.Vector3(n1 * 0.1, n2 * 0.1, n3 * 0.1), tile_scale), "mat": 4} # with rumble
+
+		x -= 1
+		if x < 0:
+			x = 15
+			z += 1
+
+	iso_array[:, -1] = iso_array[:, -2]
+	iso_array[-1, :] = iso_array[-2, :]
+
+	iso_array_mat[:, -1] = iso_array_mat[:, -2]
+	iso_array_mat[-1, :] = iso_array_mat[-2, :]
+
+	return tiles, iso_array, iso_array_mat
+
+
+def parse_block(fresh_block):
+	tiles = {}
+	world_block_pos = from_dfworld_to_world(gs.Vector3(map_info.block_size_x*16-16 - fresh_block.map_x, fresh_block.map_y, fresh_block.map_z))
 
 	iso_array = np.zeros((17, 17), np.int8)
 	iso_array_mat = np.zeros((17, 17), np.int8)
-	x, z = 0, 0
+	x, z = 15, 0
 	for tile, magma, water, material in zip(fresh_block.tiles, fresh_block.magma, fresh_block.water, fresh_block.materials):
+		tile_pos = gs.Vector3(world_block_pos.x + x, world_block_pos.y, world_block_pos.z + z)
+		tile_scale = gs.Vector3(1, 1, 1)
 		if tile != 0:
 			type = tile_type_list.tiletype_list[tile]
 
 			# choose a material
 			block_mat = 0
 			if magma > 0:
+				tile_pos.y -= (1.0 - magma / 7) * 0.5
+				tile_scale.y = magma / 7.
 				block_mat = 2
 				iso_array[x, z] = 1
 			elif water > 0:
+				tile_pos.y -= (1.0 - water / 7) * 0.5
+				tile_scale.y = water/7.
 				block_mat = 4
 				iso_array[x, z] = 1
-			elif type.shape == remote_fortress.FLOOR:
-				block_mat = 1
-			elif type.shape == remote_fortress.RAMP:
-				block_mat = 6
-			elif type.shape == remote_fortress.RAMP_TOP:
-				block_mat = 7
-			elif type.shape == remote_fortress.BOULDER:
-				block_mat = 3
+			# elif type.shape == remote_fortress.FLOOR:
+			# 	block_mat = 1
+			# elif type.shape == remote_fortress.RAMP:
+			# 	block_mat = 6
+			# elif type.shape == remote_fortress.RAMP_TOP:
+			# 	block_mat = 7
+			# elif type.shape == remote_fortress.BOULDER:
+			# 	block_mat = 3
 				# array_props.append((gs.Vector3(block_pos.x*16 + x, block_pos.y, block_pos.z*16 + z), 0))
-			elif type.shape == remote_fortress.PEBBLES:
-				block_mat = 3
+			# elif type.shape == remote_fortress.PEBBLES:
+			# 	block_mat = 3
 				# array_props.append((gs.Vector3(block_pos.x*16 + x, block_pos.y, block_pos.z*16 + z), 1))
 			elif type.shape == remote_fortress.WALL or type.shape == remote_fortress.FORTIFICATION:
 				block_mat = 3
@@ -141,64 +180,30 @@ def parse_block(fresh_block, block):
 			iso_array_mat[x, z] = block_mat
 
 			# if it's not air, add it to draw it
-			tile_pos = gs.Vector3(world_block_pos.x + x, world_block_pos.y, world_block_pos.z + z)
 			id_tile = hash_from_pos(tile_pos.x, tile_pos.y, tile_pos.z)
 			if block_mat != 0:
 				# block["blocks"][id_tile] = {"m": gs.Matrix4.TranslationMatrix(tile_pos), "mat": block_mat} # perfect grid
-				block["tiles"][id_tile] = {"m": gs.Matrix4.TransformationMatrix(tile_pos, gs.Vector3(random.random() * 0.2 - 0.1, random.random() * 0.2 - 0.1, random.random() * 0.2 - 0.1)), "mat": block_mat} # with rumble
-			else:
-				if id_tile in block["tiles"]:
-					del block["tiles"][id_tile]
+				n1 = noise.snoise3(tile_pos.x, tile_pos.y, tile_pos.z)
+				n2 = noise.snoise3(tile_pos.x+0.5, tile_pos.y, tile_pos.z)
+				n3 = noise.snoise3(tile_pos.x, tile_pos.y+0.5, tile_pos.z)
+				tiles[id_tile] = {"m": gs.Matrix4.TransformationMatrix(tile_pos, gs.Vector3(n1 * 0.1, n2 * 0.1, n3 * 0.1), tile_scale), "mat": block_mat} # with rumble
 
 			# add props
 			# if building != -1:
 			# 	array_building.append((gs.Vector3(block_pos.x*16 + x, block_pos.y, block_pos.z*16 + z), building))
 
-		x += 1
-		if x > 15:
-			x = 0
+		x -= 1
+		if x < 0:
+			x = 15
 			z += 1
 
 	iso_array[:, -1] = iso_array[:, -2]
 	iso_array[-1, :] = iso_array[-2, :]
-	block["iso_array"] = iso_array
 
 	iso_array_mat[:, -1] = iso_array_mat[:, -2]
 	iso_array_mat[-1, :] = iso_array_mat[-2, :]
-	block["iso_array_mat"] = iso_array_mat
 
-
-def get_viewing_min_max(cam):
-	vecs = [cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * visible_area_length + cam.GetTransform().GetWorld().GetY() * visible_area_length - cam.GetTransform().GetWorld().GetZ() * 1,
-	        cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * visible_area_length - cam.GetTransform().GetWorld().GetY() * visible_area_length - cam.GetTransform().GetWorld().GetZ() * 1,
-	        cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * visible_area_length + cam.GetTransform().GetWorld().GetY() * visible_area_length - cam.GetTransform().GetWorld().GetZ() * 1,
-	        cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * visible_area_length - cam.GetTransform().GetWorld().GetY() * visible_area_length - cam.GetTransform().GetWorld().GetZ() * 1,
-
-	        cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * visible_area_length + cam.GetTransform().GetWorld().GetY() * visible_area_length + cam.GetTransform().GetWorld().GetZ() * visible_area_length,
-	        cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * visible_area_length - cam.GetTransform().GetWorld().GetY() * visible_area_length + cam.GetTransform().GetWorld().GetZ() * visible_area_length,
-	        cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * visible_area_length + cam.GetTransform().GetWorld().GetY() * visible_area_length + cam.GetTransform().GetWorld().GetZ() * visible_area_length,
-	        cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * visible_area_length - cam.GetTransform().GetWorld().GetY() * visible_area_length + cam.GetTransform().GetWorld().GetZ() * visible_area_length
-	        ]
-
-	def get_min_max(a, b):
-		if a < b:
-			return a, b
-		else:
-			return b, a
-
-	pos_min = gs.Vector3(vecs[0])
-	pos_max = gs.Vector3(vecs[0])
-	for vec in vecs:
-		pos_min.x, temp = get_min_max(pos_min.x, vec.x)
-		temp, pos_max.x = get_min_max(pos_max.x, vec.x)
-		
-		pos_min.y, temp = get_min_max(pos_min.y, vec.y)
-		temp, pos_max.y = get_min_max(pos_max.y, vec.y)
-		
-		pos_min.z, temp = get_min_max(pos_min.z, vec.z)
-		temp, pos_max.z = get_min_max(pos_max.z, vec.z)
-
-	return pos_min, pos_max
+	return tiles, iso_array, iso_array_mat
 
 
 def make_big_block_merge(big_block):
@@ -217,39 +222,50 @@ def parse_big_block(fresh_blocks):
 	id_big_block_to_merge = {}
 
 	for id, fresh_block in enumerate(fresh_blocks.map_blocks):
-		world_block_pos = from_dfworld_to_world(gs.Vector3(fresh_block.map_x, fresh_block.map_y, fresh_block.map_z))
+		world_block_pos = from_dfworld_to_world(gs.Vector3(map_info.block_size_x*16 - size_big_block.x - fresh_block.map_x, fresh_block.map_y, fresh_block.map_z))
 		world_big_block_pos = world_block_pos / size_big_block
-		world_big_block_pos.x = floor(world_big_block_pos.x)
-		world_big_block_pos.y = floor(world_big_block_pos.y)
-		world_big_block_pos.z = floor(world_big_block_pos.z)
+		world_big_block_pos.x = int(world_big_block_pos.x)
+		world_big_block_pos.y = int(world_big_block_pos.y)
+		world_big_block_pos.z = int(world_big_block_pos.z)
 
 		id_block = (world_block_pos / size_big_block) - world_big_block_pos
 		id_block *= size_big_block
 
 		id_block = hash_from_pos_v(id_block)
-		id_world = hash_from_pos_v(world_big_block_pos)
+		id_big_block = hash_from_pos_v(world_big_block_pos)
 
-		if id_world not in array_world_big_block:
-			array_world_big_block[id_world] = {"min_pos": world_big_block_pos * size_big_block, "blocks": {}, "status": status_ready, "time": 1000, "iso_mesh": None}
+		if id_big_block not in array_world_big_block:
+			with mutex_array_world_big_block:
+				array_world_big_block[id_big_block] = {"min_pos": world_big_block_pos * size_big_block, "blocks": {}, "status": status_ready, "time": 1000, "iso_mesh": None}
 
-		big_block = array_world_big_block[id_world]
-		id_big_block_to_merge[id_world] = True
+		big_block = array_world_big_block[id_big_block]
 
-		if id_block not in big_block["blocks"]:
+		# create or initialize the block, if the block actually contains something
+		if len(fresh_block.tiles) > 0 or id_block not in big_block["blocks"]:
+			id_big_block_to_merge[id_big_block] = True
+			tiles, iso_array, iso_array_mat = parse_block(fresh_block)
 			with mutex_big_block:
-				big_block["blocks"][id_block] = {"tiles": {}, "iso_array": np.zeros((17, 17), np.int8), "iso_array_mat": np.zeros((17, 17), np.int8)}
-		parse_block(fresh_block, big_block["blocks"][id_block])
-	#
-	# big_block["status"] = status_ready
+				big_block["blocks"][id_block] = {"tiles": tiles, "iso_array": iso_array, "iso_array_mat": iso_array_mat}
+
+		elif len(fresh_block.water) > 0:
+			with mutex_big_block:
+				tiles, iso_array, iso_array_mat = parse_block_only_water(fresh_block, big_block["blocks"][id_block]["tiles"], big_block["blocks"][id_block]["iso_array"], big_block["blocks"][id_block]["iso_array_mat"])
+				big_block["blocks"][id_block] = {"tiles": tiles, "iso_array": iso_array, "iso_array_mat": iso_array_mat}
+
 	# for id_big_block in id_big_block_to_merge.keys():
-		# make_big_block_iso(array_world_big_block, big_block)
+	# 	make_big_block_iso(array_world_big_block, array_world_big_block[id_big_block])
 		# make_big_block_merge(array_world_big_block[id_big_block])
 
 parse_big_block_thread = None
 
 
 def load_big_block(min, max):
-	global parse_big_block_thread
+	global parse_big_block_thread, unit_list
+
+	# inverse on x because dwarf fortress is inverted on this axis
+	temp = min.x
+	min.x = map_info.block_size_x * 16 - max.x
+	max.x = map_info.block_size_x * 16 - temp
 
 	fresh_blocks = get_block_list(from_world_to_dfworld(min), from_world_to_dfworld(max))
 
@@ -258,7 +274,43 @@ def load_big_block(min, max):
 	parse_big_block_thread = threading.Thread(target=parse_big_block, args=(fresh_blocks,))
 	parse_big_block_thread.start()
 
+	# update dwarf position in this thread, no race with the get blocks
+	update_dwarf.update_dwarf_pos()
+
 big_block_thread = None
+
+
+def get_viewing_min_max(cam):
+	vecs = [
+		cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * visible_area_length + cam.GetTransform().GetWorld().GetY() * visible_area_length - cam.GetTransform().GetWorld().GetZ() * 1,
+		cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * visible_area_length - cam.GetTransform().GetWorld().GetY() * visible_area_length - cam.GetTransform().GetWorld().GetZ() * 1,
+		cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * visible_area_length + cam.GetTransform().GetWorld().GetY() * visible_area_length - cam.GetTransform().GetWorld().GetZ() * 1,
+		cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * visible_area_length - cam.GetTransform().GetWorld().GetY() * visible_area_length - cam.GetTransform().GetWorld().GetZ() * 1,
+
+		cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * visible_area_length + cam.GetTransform().GetWorld().GetY() * visible_area_length + cam.GetTransform().GetWorld().GetZ() * visible_area_length,
+		cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * visible_area_length - cam.GetTransform().GetWorld().GetY() * visible_area_length + cam.GetTransform().GetWorld().GetZ() * visible_area_length,
+		cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * visible_area_length + cam.GetTransform().GetWorld().GetY() * visible_area_length + cam.GetTransform().GetWorld().GetZ() * visible_area_length,
+		cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * visible_area_length - cam.GetTransform().GetWorld().GetY() * visible_area_length + cam.GetTransform().GetWorld().GetZ() * visible_area_length]
+
+	def get_min_max(a, b):
+		if a < b:
+			return a, b
+		else:
+			return b, a
+
+	pos_min = gs.Vector3(vecs[0])
+	pos_max = gs.Vector3(vecs[0])
+	for vec in vecs:
+		pos_min.x, temp = get_min_max(pos_min.x, vec.x)
+		temp, pos_max.x = get_min_max(pos_max.x, vec.x)
+
+		pos_min.y, temp = get_min_max(pos_min.y, vec.y)
+		temp, pos_max.y = get_min_max(pos_max.y, vec.y)
+
+		pos_min.z, temp = get_min_max(pos_min.z, vec.z)
+		temp, pos_max.z = get_min_max(pos_max.z, vec.z)
+
+	return pos_min, pos_max
 
 
 def update_block(cam):
@@ -267,38 +319,14 @@ def update_block(cam):
 	if big_block_thread is None or not big_block_thread.is_alive():
 		p_min, p_max = get_viewing_min_max(cam)
 
-		# grow the array_big_block
-		# for x in range(int(p_min.x // size_big_block.x) - 1, int(p_max.x // size_big_block.x) + 1):
-		# 	for y in range(int(p_min.y // size_big_block.y) - 1, int(p_max.y // size_big_block.y) + 1):
-		# 		for z in range(int(p_min.z // size_big_block.z) - 1, int(p_max.z // size_big_block.z) + 1):
-		# 			id = hash_from_pos(x, y, z)
-		# 			if id not in array_world_big_block:
-		# 				array_world_big_block[id] = {"min_pos": gs.Vector3(x, y, z) * size_big_block, "blocks": {}, "status": status_to_parse, "time": 1000, "iso_mesh": None}
+		p_min.x -= size_big_block.x
+		p_min.z -= size_big_block.z
 
-		# p_min.x -= size_big_block.x
-		# p_min.z -= size_big_block.z
-		#
-		# p_max.x += size_big_block.x
-		# p_max.z += size_big_block.z
+		p_max.x += size_big_block.x
+		p_max.z += size_big_block.z
 
 		big_block_thread = threading.Thread(target=load_big_block, args=(p_min, p_max))
 		big_block_thread.start()
-
-		# dir = cam.GetTransform().GetWorld().GetZ()
-		# # dir.y = 0
-		# pos_in_front = cam.GetTransform().GetPosition() + dir.Normalized() * 2
-		# ordered_array_world_big_block = OrderedDict(sorted(array_world_big_block.items(), key=lambda t: ((t[1]["min_pos"].x + size_big_block.x/2 - pos_in_front.x) // size_big_block.x) ** 2 +
-		#                                                                                                 ((((t[1]["min_pos"].y + size_big_block.y/2 - pos_in_front.y) // size_big_block.y)) / scale_unit_y) ** 2 +
-		#                                                                                                 ((t[1]["min_pos"].z + size_big_block.z/2 - pos_in_front.z) // size_big_block.x) ** 2))
-		#
-		# # find a block to update
-		# for id, big_block in ordered_array_world_big_block.items():
-		# 	if big_block["status"] == status_to_parse:
-		# 		big_block["status"] = status_parsing
-		#
-		# 		big_block_thread = threading.Thread(target=load_big_block, args=(big_block,))
-		# 		big_block_thread.start()
-		# 		break
 
 
 def draw_block(renderable_system, cam):
@@ -317,7 +345,7 @@ def draw_block(renderable_system, cam):
 								for id, tile in block["tiles"].items():
 									renderable_system.DrawGeometry(tile_geos[tile["mat"]], tile["m"])
 									count_draw += 1
-						#
+
 						# if big_block["iso_mesh"] is not None and big_block["iso_mesh"][0].IsReady():
 						# 	renderable_system.DrawGeometry(big_block["iso_mesh"][0], gs.Matrix4.TranslationMatrix(big_block["min_pos"]))
 						# 	count_draw += 1

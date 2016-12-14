@@ -4,7 +4,7 @@ from dfhack_connect import *
 import gs
 # import geometry_iso
 import blocks_builder
-from update_dwarf import *
+import update_dwarf
 
 plus = gs.GetPlus()
 
@@ -13,7 +13,7 @@ gs.LoadPlugins(gs.get_default_plugins_path())
 plus.CreateWorkers()
 
 
-width, height = 1024, 768
+width, height = 1920, 1080
 plus.RenderInit(width, height)
 gs.MountFileDriver(gs.StdFileDriver(""))
 
@@ -34,26 +34,26 @@ light_cam.GetLight().SetShadow(gs.Light.Shadow_None)
 cam = plus.AddCamera(scn, gs.Matrix4.TranslationMatrix(gs.Vector3(112, 62, 112)))
 cam.GetCamera().SetZoomFactor(gs.FovToZoomFactor(1.57))
 
+# dwarf_geo = plus.CreateGeometry(plus.CreateCube(0.1, 0.6, 0.1, "iso.mat"))
+dwarf_geo = plus.LoadGeometry("minecraft_assets/default_dwarf/default_dwarf.geo")
 
 # get first dwarf position
 unit_list = get_all_unit_list()
-dwarfs_pos = gs.Vector3(95, 95*blocks_builder.scale_unit_y, 150)
+dwarf_pos = gs.Vector3(95, 95*blocks_builder.scale_unit_y, 150)
 # get position on the first dwarf encounter
 for unit in unit_list.creature_list:
 	if unit:
-		dwarfs_pos = gs.Vector3(unit.pos_x, unit.pos_z*blocks_builder.scale_unit_y + 1, unit.pos_y)
+		dwarf_pos = gs.Vector3(blocks_builder.map_info.block_size_x*16 - 16 - unit.pos_x, unit.pos_z*blocks_builder.scale_unit_y + 1, unit.pos_y)
 		break
 
-fps = gs.FPSController(dwarfs_pos.x, dwarfs_pos.y, dwarfs_pos.z)
+fps = gs.FPSController(dwarf_pos.x, dwarf_pos.y, dwarf_pos.z)
 fps.SetRot(gs.Vector3(0.5, 0, 0))
 
 block_drawn = 0
 props_drawn = 0
 
-
-
 # main loop
-while not plus.KeyPress(gs.InputDevice.KeyEscape):
+while not plus.IsAppEnded(plus.EndOnDefaultWindowClosed): #plus.EndOnEscapePressed |
 	plus.Clear()
 
 	dt_sec = plus.UpdateClock()
@@ -64,33 +64,25 @@ while not plus.KeyPress(gs.InputDevice.KeyEscape):
 	blocks_builder.update_block(cam)
 
 	# draw the block
-	# frustum_planes = gs.BuildFrustumPlanesFromProjectionMatrix(cam.GetCamera().GetProjectionMatrix(gs.Vector2(height/float(width), 1)))
-	# big_block_visible = blocks_builder.draw_block(scn.GetRenderableSystem(), frustum_planes)
 	big_block_visible = blocks_builder.draw_block(scn.GetRenderableSystem(), cam)
-	# big_block_visible = 0
-
-	# blocks_builder.update_geo_block()
 
 	# update unit draw
-	# update_dwarf_pos()
-	# dwarf_scale = gs.Vector3(0.01, 0.01, 0.01)
-	# for dwarf in dwarfs_pos.values():
-	# 	d_pos = dwarf[0]
-	# 	scn.GetRenderableSystem().DrawGeometry(dwarf_geo, gs.Matrix4.TransformationMatrix(gs.Vector3(map_info.block_size_x*16 - d_pos.x+16, (d_pos.z)*scale_unit_y, d_pos.y), dwarf[1], dwarf_scale))
-
-	# check if needed to remove block not used
-	# blocks_builder.check_to_delete_far_block()
+	with update_dwarf.mutex_dwarfs_pos:
+		dwarf_scale = gs.Vector3(0.01, 0.01, 0.01)
+		for dwarf in update_dwarf.dwarfs_pos.values():
+			d_pos = dwarf[0]
+			scn.GetRenderableSystem().DrawGeometry(dwarf_geo, gs.Matrix4.TransformationMatrix(gs.Vector3(blocks_builder.map_info.block_size_x * 16 - d_pos.x, d_pos.z * blocks_builder.scale_unit_y, d_pos.y), dwarf[1], dwarf_scale))
 
 	big_block_available = 0
-	for id, big_block in blocks_builder.array_world_big_block.items():
-		if big_block["status"] == blocks_builder.status_ready:
-			big_block_available += 1
+	with blocks_builder.mutex_array_world_big_block:
+		for id, big_block in blocks_builder.array_world_big_block.items():
+			if big_block["status"] == blocks_builder.status_ready:
+				big_block_available += 1
 
 	plus.Text2D(0, 45, "BIG BLOCK: %d, CACHE BLOCK: %d, BLOCK VISIBLE: %d" % (len(blocks_builder.array_world_big_block), big_block_available, big_block_visible), 16, gs.Color.Red)
 	plus.Text2D(0, 25, "FPS.X = %f, FPS.Y = %f, FPS.Z = %f" % (fps.GetPos().x, fps.GetPos().y, fps.GetPos().z), 16, gs.Color.Red)
 
 	plus.UpdateScene(scn, dt_sec)
 	plus.Flip()
-
 
 close_socket()

@@ -40,6 +40,6 @@ python setup.py test --cpp_implementation
 python setup.py install --cpp_implementation
 
 
-before launching the python
+############# before launching the python
 set PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 

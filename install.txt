@@ -1,0 +1,4 @@
+pip install noise
+
+easy_install proto/protobuf-3.1.0-py3.5-win-amd64.egg
+if not python 3.5 win64, then compile it using the file in proto/compile_protobuf_c_backend.txt
