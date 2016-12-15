@@ -6,11 +6,11 @@ from helpers import *
 
 def create_iso_geo_from_block(id_block, id_block_up, array_world_big_block):
 
-	array_has_geo = np.empty((17, 2, 17))#, np.int8)
+	array_has_geo = np.empty((17, 2, 17))
 	array_has_geo[:, 0, :] = list(array_world_big_block[id_block]["blocks"].values())[0]["iso_array"]
 	array_has_geo[:, 1, :] = list(array_world_big_block[id_block_up]["blocks"].values())[0]["iso_array"]
 
-	array_mats = np.empty((17, 2, 17))#, np.int8)
+	array_mats = np.empty((17, 2, 17))
 	array_mats[:, 0, :] = list(array_world_big_block[id_block]["blocks"].values())[0]["iso_array_mat"]
 	array_mats[:, 1, :] = list(array_world_big_block[id_block_up]["blocks"].values())[0]["iso_array_mat"]
 
@@ -22,12 +22,12 @@ def update_iso_mesh(array_world_big_block, id_block, pos):
 	# if neighbourgh up, update his own iso
 	up_id = hash_from_pos(pos.x, pos.y + 1, pos.z)
 	if up_id in array_world_big_block and array_world_big_block[up_id]["status"] == status_ready:
-		array_world_big_block[id_block]["iso_mesh"] = create_iso_geo_from_block(id_block, up_id, array_world_big_block)
+		array_world_big_block[id_block]["new_iso_mesh"] = create_iso_geo_from_block(id_block, up_id, array_world_big_block)
 
 	# if neighbourgh down, update the iso under
 	down_id = hash_from_pos(pos.x, pos.y - 1, pos.z)
 	if down_id in array_world_big_block and array_world_big_block[down_id]["status"] == status_ready:
-		array_world_big_block[down_id]["iso_mesh"] = create_iso_geo_from_block(down_id, id_block, array_world_big_block)
+		array_world_big_block[down_id]["new_iso_mesh"] = create_iso_geo_from_block(down_id, id_block, array_world_big_block)
 
 
 def make_big_block_iso(array_world_big_block, big_block):

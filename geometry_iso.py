@@ -324,6 +324,80 @@ def Lerp2Vertex(isolevel, p1, p2, valp1, valp2):
 	mu = (isolevel - valp1) / (valp2 - valp1)
 	return p1 + (p2 - p1) * mu
 
+half_size = 0.5
+cube_base_vtx = [gs.Vector3(-half_size, -half_size, -half_size), gs.Vector3(half_size, -half_size, -half_size),
+				 gs.Vector3(half_size, -half_size, half_size), gs.Vector3(-half_size, -half_size, half_size),
+				 gs.Vector3(-half_size, half_size, -half_size), gs.Vector3(half_size, half_size, -half_size),
+				 gs.Vector3(half_size, half_size, half_size), gs.Vector3(-half_size, half_size, half_size)]
+
+
+def get_simple_voxel_triangle(cube_val, isolevel):
+	"""Determine the index into the edge table which tells us which vertices are inside of the surface"""
+	cubeindex = 0
+	index_value = 1
+	for val in range(8):
+		if cube_val[val] < isolevel:
+			cubeindex = cubeindex + index_value
+
+		index_value = 2 ** (val + 1)
+
+	# Cube is entirely in/out of the surface
+	if edgeTable[cubeindex] == 0:
+		return 0, 0, 0
+
+	vertlist = [0] * 12
+	#    Find the vertices where the surface intersects the dwarf_geo
+	if edgeTable[cubeindex] & 1:
+		vertlist[0] = Lerp2Vertex(isolevel, cube_base_vtx[0], cube_base_vtx[1], cube_val[0], cube_val[1])
+
+	if edgeTable[cubeindex] & 2:
+		vertlist[1] = Lerp2Vertex(isolevel, cube_base_vtx[1], cube_base_vtx[2], cube_val[1], cube_val[2])
+
+	if edgeTable[cubeindex] & 4:
+		vertlist[2] = Lerp2Vertex(isolevel, cube_base_vtx[2], cube_base_vtx[3], cube_val[2], cube_val[3])
+
+	if edgeTable[cubeindex] & 8:
+		vertlist[3] = Lerp2Vertex(isolevel, cube_base_vtx[3], cube_base_vtx[0], cube_val[3], cube_val[0])
+
+	if edgeTable[cubeindex] & 16:
+		vertlist[4] = Lerp2Vertex(isolevel, cube_base_vtx[4], cube_base_vtx[5], cube_val[4], cube_val[5])
+
+	if edgeTable[cubeindex] & 32:
+		vertlist[5] = Lerp2Vertex(isolevel, cube_base_vtx[5], cube_base_vtx[6], cube_val[5], cube_val[6])
+
+	if edgeTable[cubeindex] & 64:
+		vertlist[6] = Lerp2Vertex(isolevel, cube_base_vtx[6], cube_base_vtx[7], cube_val[6], cube_val[7])
+
+	if edgeTable[cubeindex] & 128:
+		vertlist[7] = Lerp2Vertex(isolevel, cube_base_vtx[7], cube_base_vtx[4], cube_val[7], cube_val[4])
+
+	if edgeTable[cubeindex] & 256:
+		vertlist[8] = Lerp2Vertex(isolevel, cube_base_vtx[0], cube_base_vtx[4], cube_val[0], cube_val[4])
+
+	if edgeTable[cubeindex] & 512:
+		vertlist[9] = Lerp2Vertex(isolevel, cube_base_vtx[1], cube_base_vtx[5], cube_val[1], cube_val[5])
+
+	if edgeTable[cubeindex] & 1024:
+		vertlist[10] = Lerp2Vertex(isolevel, cube_base_vtx[2], cube_base_vtx[6], cube_val[2], cube_val[6])
+
+	if edgeTable[cubeindex] & 2048:
+		vertlist[11] = Lerp2Vertex(isolevel, cube_base_vtx[3], cube_base_vtx[7], cube_val[3], cube_val[7])
+
+	#    Create the triangles and app to the big list
+	vtx_array = []
+	normal_array = []
+	index_array = []
+	nbtri = 0
+	i = 0
+	while triTable[cubeindex][i] != -1:
+		index_array.append(get_index_to_create_it(vtx_array, normal_array, vertlist[triTable[cubeindex][i]]))
+		index_array.append(get_index_to_create_it(vtx_array, normal_array, vertlist[triTable[cubeindex][i + 2]]))
+		index_array.append(get_index_to_create_it(vtx_array, normal_array, vertlist[triTable[cubeindex][i + 1]]))
+		nbtri += 1
+		i += 3
+
+	return nbtri, index_array, vtx_array
+
 
 def IsoSurface(cube_val, cube_base_vtx, isolevel, index_array, vtx_array, normal_array, offset):
 	"""Determine the index into the edge table which tells us which vertices are inside of the surface"""
@@ -389,12 +463,6 @@ def IsoSurface(cube_val, cube_base_vtx, isolevel, index_array, vtx_array, normal
 
 	return nbtri
 
-
-half_size = 0.5
-cube_base_vtx = [gs.Vector3(-half_size, -half_size, -half_size), gs.Vector3(half_size, -half_size, -half_size),
-				 gs.Vector3(half_size, -half_size, half_size), gs.Vector3(-half_size, -half_size, half_size),
-				 gs.Vector3(-half_size, half_size, -half_size), gs.Vector3(half_size, half_size, -half_size),
-				 gs.Vector3(half_size, half_size, half_size), gs.Vector3(-half_size, half_size, half_size)]
 
 def find_valid_material_in_cube(x, y, z, mats):
 	"""find valid material in one of the 8 corners"""
