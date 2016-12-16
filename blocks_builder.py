@@ -169,12 +169,22 @@ def parse_block_only_water(fresh_block, array_geos_worlds, tiles, iso_array, iso
 def make_ramps(world_block_pos, ramp_to_evaluate, iso_array, array_geos_worlds):
 	for ramp in ramp_to_evaluate:
 		if 0 < ramp[0] < 16 and 0 < ramp[1] < 16:
-			cube_val = np.zeros((2, 2, 2))
+			cube_val = np.zeros((3, 3, 2))
 			cube_val[:, :, 0] = 1
-			cube_val[0, 0, 1] = 1 if iso_array[ramp[0] - 1, ramp[1]] or iso_array[ramp[0], ramp[1] - 1] or iso_array[ramp[0] - 1, ramp[1] - 1] else 0
-			cube_val[1, 0, 1] = 1 if iso_array[ramp[0] + 1, ramp[1]] or iso_array[ramp[0], ramp[1] - 1] or iso_array[ramp[0] + 1, ramp[1] - 1] else 0
-			cube_val[1, 1, 1] = 1 if iso_array[ramp[0] + 1, ramp[1]] or iso_array[ramp[0], ramp[1] + 1] or iso_array[ramp[0] + 1, ramp[1] + 1] else 0
-			cube_val[0, 1, 1] = 1 if iso_array[ramp[0] - 1, ramp[1]] or iso_array[ramp[0], ramp[1] + 1] or iso_array[ramp[0] - 1, ramp[1] + 1] else 0
+			# cube_val[1, 1, 1] = 0.5
+			# cube_val[0, 0, 1:] = 1 if iso_array[ramp[0] - 1, ramp[1]] or iso_array[ramp[0], ramp[1] - 1] or iso_array[ramp[0] - 1, ramp[1] - 1] else 0
+			# cube_val[-1, 0, 1:] = 1 if iso_array[ramp[0] + 1, ramp[1]] or iso_array[ramp[0], ramp[1] - 1] or iso_array[ramp[0] + 1, ramp[1] - 1] else 0
+			# cube_val[-1, -1, 1:] = 1 if iso_array[ramp[0] + 1, ramp[1]] or iso_array[ramp[0], ramp[1] + 1] or iso_array[ramp[0] + 1, ramp[1] + 1] else 0
+			# cube_val[0, -1, 1:] = 1 if iso_array[ramp[0] - 1, ramp[1]] or iso_array[ramp[0], ramp[1] + 1] or iso_array[ramp[0] - 1, ramp[1] + 1] else 0
+
+			if iso_array[ramp[0] - 1, ramp[1]]:
+				cube_val[0, :, :] = 1
+			if iso_array[ramp[0] + 1, ramp[1]]:
+				cube_val[-1, :, :] = 1
+			if iso_array[ramp[0], ramp[1] + 1]:
+				cube_val[:, -1, :] = 1
+			if iso_array[ramp[0], ramp[1] - 1]:
+				cube_val[:, 0, :] = 1
 
 			id_ramp = hash(str(cube_val))
 			if id_ramp not in ramp_geos:
@@ -187,7 +197,7 @@ def make_ramps(world_block_pos, ramp_to_evaluate, iso_array, array_geos_worlds):
 				field.WriteFloats(big_array.flatten('F').tolist())
 
 				iso = gs.IsoSurface()
-				gs.PolygoniseIsoSurface(w+2, h+2, d+2, field, 1.0, iso)
+				gs.PolygoniseIsoSurface(w+2, h+2, d+2, field, 1.0, iso, (1, 1, 1))
 
 				core_geo = gs.CoreGeometry()
 				gs.IsoSurfaceToCoreGeometry(iso, core_geo)
@@ -202,7 +212,7 @@ def make_ramps(world_block_pos, ramp_to_evaluate, iso_array, array_geos_worlds):
 				ramp_geos[id_ramp] = {"id_geo": len(render_geos) - 1}
 
 			id_geo = ramp_geos[id_ramp]["id_geo"]
-			tile_pos = gs.Vector3(world_block_pos.x + ramp[0] - 2.5, world_block_pos.y - 2.4, world_block_pos.z + ramp[1] - 2.5)
+			tile_pos = gs.Vector3(world_block_pos.x + ramp[0] - 1.5 , world_block_pos.y-1.5, world_block_pos.z + ramp[1] - 1.5)
 			n1 = noise.snoise3(tile_pos.x, tile_pos.y, tile_pos.z)
 			n2 = noise.snoise3(tile_pos.x + 0.5, tile_pos.y, tile_pos.z)
 			n3 = noise.snoise3(tile_pos.x, tile_pos.y + 0.5, tile_pos.z)
