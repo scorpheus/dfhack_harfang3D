@@ -14,8 +14,6 @@ import noise
 
 
 plus = gs.GetPlus()
-geos = None
-
 
 map_info = None
 df_tile_type_list = None
@@ -49,7 +47,7 @@ class tile_type():  # begin by the struct of remote_fortress.TiletypeShape
 
 
 def setup():
-	global map_info, df_tile_type_list, material_list, tile_geos, geos
+	global map_info, df_tile_type_list, material_list, tile_geos, building_geos
 
 	connect_socket()
 	handshake()
@@ -60,8 +58,8 @@ def setup():
 	# get once to use after (material list is huge)
 	df_tile_type_list = get_tiletype_list()
 	# material_list = get_material_list()
+	building_def_list = get_building_def_list()
 
-	geos = [plus.LoadGeometry("environment_kit_inca/stone_high_03.geo"), plus.LoadGeometry("environment_kit_inca/stone_high_01.geo")]
 	building_geos = {building_type.Chair: None, building_type.Bed: None,
 					 building_type.Table: {'g': plus.LoadGeometry("environment_kit/geo-table.geo"), 'o': gs.Matrix4.Identity},
 					 building_type.Coffin: None, building_type.FarmPlot: None, building_type.Furnace: None,
@@ -130,6 +128,22 @@ def setup():
 		if geo["render_g"] is not None:
 			render_geos.append({"g": geo["render_g"], "o": geo["o"]})
 			geo["id_geo"] = len(render_geos)-1
+
+
+def parse_block_building(fresh_block, array_geos_worlds, tiles):
+	# clean building
+	for id, building in building_geos.items():
+		if building is not None and "id_geo" in building:
+			array_geos_worlds[building["id_geo"]] = []
+
+	# parse building
+	for building in fresh_block.buildings:
+		if building_geos[building.building_type.building_type] is not None and "id_geo" in building_geos[building.building_type.building_type]:
+			tile_pos = from_dfworld_to_world(gs.Vector3(map_info.block_size_x*16-16 - building.pos_x_min, building.pos_y_min, building.pos_z_min))
+			m = gs.Matrix4.TranslationMatrix(tile_pos)
+			array_geos_worlds[building_geos[building.building_type.building_type]["id_geo"]].append(m)
+
+	return array_geos_worlds, tiles
 
 
 def parse_block_only_water_magma(fresh_block, array_geos_worlds, tiles, iso_array, iso_array_mat):
@@ -318,10 +332,6 @@ def parse_block(fresh_block, array_geos_worlds):
 						array_geos_worlds[id_geo] = []
 					array_geos_worlds[id_geo].append(m * render_geos[id_geo]["o"])
 
-			# add props
-			# if building != -1:
-			# 	array_building.append((gs.Vector3(block_pos.x*16 + x, block_pos.y, block_pos.z*16 + z), building))
-
 		x -= 1
 		if x < 0:
 			x = 15
@@ -336,7 +346,11 @@ def parse_block(fresh_block, array_geos_worlds):
 	# check the ramps
 	make_ramps(world_block_pos, ramp_to_evaluate, iso_array, array_geos_worlds)
 
+	# parse the water, magma
 	array_geos_worlds, tiles, iso_array, iso_array_mat = parse_block_only_water_magma(fresh_block, array_geos_worlds, tiles, iso_array, iso_array_mat)
+
+	# parse buildings
+	# parse_block_building(fresh_block, array_geos_worlds, tiles)
 
 	return array_geos_worlds, tiles, iso_array, iso_array_mat
 

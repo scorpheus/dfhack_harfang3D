@@ -4,6 +4,10 @@ from dfhack_connect import *
 import gs
 import blocks_builder
 import update_dwarf
+import os
+
+# for the protobuf to be fast with c backend
+os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "cpp"
 
 plus = gs.GetPlus()
 

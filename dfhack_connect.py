@@ -303,3 +303,19 @@ def get_material_list():
 
 	return out
 
+
+def get_building_def_list():
+
+	# create function request
+	message_request = CoreProtocol.CoreBindRequest()
+	message_request.method = "GetBuildingDefList"
+	message_request.input_msg = "dfproto.EmptyMessage"
+	message_request.output_msg = "RemoteFortressReader.BuildingList"
+	message_request.plugin = "RemoteFortressReader"
+
+	received = get_info_from_dfhack(message_request, CoreProtocol.EmptyMessage())
+
+	out = remote_fortress.BuildingList()
+	out.ParseFromString(received)
+
+	return out
