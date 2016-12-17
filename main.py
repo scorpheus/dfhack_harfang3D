@@ -39,7 +39,7 @@ dwarf_pos = gs.Vector3(95, 95*blocks_builder.scale_unit_y, 150)
 # get position on the first dwarf encounter
 for unit in unit_list.creature_list:
 	if unit:
-		dwarf_pos = gs.Vector3(blocks_builder.map_info.block_size_x*16 - 16 - unit.pos_x, unit.pos_z*blocks_builder.scale_unit_y + 1, unit.pos_y)
+		dwarf_pos = gs.Vector3(blocks_builder.map_info.block_size_x * 16 - unit.pos_x, unit.pos_z*blocks_builder.scale_unit_y + 1, unit.pos_y)
 		break
 
 fps = gs.FPSController(dwarf_pos.x, dwarf_pos.y, dwarf_pos.z)

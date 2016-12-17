@@ -132,17 +132,32 @@ def setup():
 			geo["id_geo"] = len(render_geos)-1
 
 
-def parse_block_only_water(fresh_block, array_geos_worlds, tiles, iso_array, iso_array_mat):
+def parse_block_only_water_magma(fresh_block, array_geos_worlds, tiles, iso_array, iso_array_mat):
 	world_block_pos = from_dfworld_to_world(gs.Vector3(map_info.block_size_x*16-16 - fresh_block.map_x, fresh_block.map_y, fresh_block.map_z))
 
+	# temporary array_geos
+	magma_array_geos = []
+	water_array_geos = []
+
 	x, z = 15, 0
-	for water in fresh_block.water:
-		if water > 0:
-			tile_pos = gs.Vector3(world_block_pos.x + x, world_block_pos.y - (1.0 - water / 7)*0.5, world_block_pos.z + z)
-			tile_scale = gs.Vector3(1, water/7., 1)
+	max_count = max(len(fresh_block.water), len(fresh_block.magma))
+	for i in range(max_count):
+		magma = fresh_block.magma[i] if i < len(fresh_block.magma) else 0
+		water = fresh_block.water[i] if i < len(fresh_block.water) else 0
+
+		if magma > 0 or water > 0:
+			if magma > 0:
+				tile_pos = gs.Vector3(world_block_pos.x + x, world_block_pos.y - (1.0 - magma / 7)*0.5, world_block_pos.z + z)
+				tile_scale = gs.Vector3(1, magma/7., 1)
+				iso_array[x, z] = magma/7.
+				current_array_geos = magma_array_geos
+			elif water > 0:
+				tile_pos = gs.Vector3(world_block_pos.x + x, world_block_pos.y - (1.0 - water / 7)*0.5, world_block_pos.z + z)
+				tile_scale = gs.Vector3(1, water/7., 1)
+				iso_array[x, z] = water/7.
+				current_array_geos = water_array_geos
 
 			iso_array_mat[x, z] = 4
-			iso_array[x, z] = water/7.
 
 			id_tile = hash_from_pos(tile_pos.x, tile_pos.y, tile_pos.z)
 
@@ -150,12 +165,22 @@ def parse_block_only_water(fresh_block, array_geos_worlds, tiles, iso_array, iso
 			n1 = noise.snoise3(tile_pos.x, tile_pos.y, tile_pos.z)
 			n2 = noise.snoise3(tile_pos.x+0.5, tile_pos.y, tile_pos.z)
 			n3 = noise.snoise3(tile_pos.x, tile_pos.y+0.5, tile_pos.z)
-			tiles[id_tile] = {"m": gs.Matrix4.TransformationMatrix(tile_pos, (n1 * 0.1, n2 * 0.1, n3 * 0.1), tile_scale), "mat": 4} # with rumble
+			m = gs.Matrix4.TransformationMatrix(tile_pos, (n1 * 0.1, n2 * 0.1, n3 * 0.1), tile_scale)
+			tiles[id_tile] = {"m": m, "mat": 4} # with rumble
+
+			current_array_geos.append(m)
 
 		x -= 1
 		if x < 0:
 			x = 15
 			z += 1
+
+	# reset water and magma
+	if len(magma_array_geos) > 0:
+		array_geos_worlds[tile_geos[tile_type.MAGMA]["id_geo"]] = magma_array_geos
+
+	if len(water_array_geos) > 0:
+		array_geos_worlds[tile_geos[tile_type.WATER]["id_geo"]] = water_array_geos
 
 	iso_array[:, -1] = iso_array[:, -2]
 	iso_array[-1, :] = iso_array[-2, :]
@@ -171,11 +196,10 @@ def make_ramps(world_block_pos, ramp_to_evaluate, iso_array, array_geos_worlds):
 		if 0 < ramp[0] < 16 and 0 < ramp[1] < 16:
 			cube_val = np.zeros((3, 3, 2))
 			cube_val[:, :, 0] = 1
-			# cube_val[1, 1, 1] = 0.5
-			# cube_val[0, 0, 1:] = 1 if iso_array[ramp[0] - 1, ramp[1]] or iso_array[ramp[0], ramp[1] - 1] or iso_array[ramp[0] - 1, ramp[1] - 1] else 0
-			# cube_val[-1, 0, 1:] = 1 if iso_array[ramp[0] + 1, ramp[1]] or iso_array[ramp[0], ramp[1] - 1] or iso_array[ramp[0] + 1, ramp[1] - 1] else 0
-			# cube_val[-1, -1, 1:] = 1 if iso_array[ramp[0] + 1, ramp[1]] or iso_array[ramp[0], ramp[1] + 1] or iso_array[ramp[0] + 1, ramp[1] + 1] else 0
-			# cube_val[0, -1, 1:] = 1 if iso_array[ramp[0] - 1, ramp[1]] or iso_array[ramp[0], ramp[1] + 1] or iso_array[ramp[0] - 1, ramp[1] + 1] else 0
+			cube_val[0, 0, 1:] = 1 if iso_array[ramp[0] - 1, ramp[1]] or iso_array[ramp[0], ramp[1] - 1] or iso_array[ramp[0] - 1, ramp[1] - 1] else 0
+			cube_val[-1, 0, 1:] = 1 if iso_array[ramp[0] + 1, ramp[1]] or iso_array[ramp[0], ramp[1] - 1] or iso_array[ramp[0] + 1, ramp[1] - 1] else 0
+			cube_val[-1, -1, 1:] = 1 if iso_array[ramp[0] + 1, ramp[1]] or iso_array[ramp[0], ramp[1] + 1] or iso_array[ramp[0] + 1, ramp[1] + 1] else 0
+			cube_val[0, -1, 1:] = 1 if iso_array[ramp[0] - 1, ramp[1]] or iso_array[ramp[0], ramp[1] + 1] or iso_array[ramp[0] - 1, ramp[1] + 1] else 0
 
 			if iso_array[ramp[0] - 1, ramp[1]]:
 				cube_val[0, :, :] = 1
@@ -189,15 +213,15 @@ def make_ramps(world_block_pos, ramp_to_evaluate, iso_array, array_geos_worlds):
 			id_ramp = hash(str(cube_val))
 			if id_ramp not in ramp_geos:
 				w, h, d = cube_val.shape[0], cube_val.shape[1], cube_val.shape[2]
-				big_array = np.zeros((w+4, h+4, d+4))
-				big_array[2:-2, 2:-2, 2:-2] = cube_val
+				big_array = np.zeros((w+4, h+4, d+6))
+				big_array[2:-2, 2:-2, 3:-3] = cube_val
 
 				field = gs.BinaryBlob()
-				field.Grow((w+4)*(d+4)*(h+4))
+				field.Grow((w+4)*(d+5)*(h+4))
 				field.WriteFloats(big_array.flatten('F').tolist())
 
 				iso = gs.IsoSurface()
-				gs.PolygoniseIsoSurface(w+2, h+2, d+2, field, 1.0, iso, (1, 1, 1))
+				gs.PolygoniseIsoSurface(w+2, h+2, d+3, field, 1.0, iso, (1/2, 1, 1/2))
 
 				core_geo = gs.CoreGeometry()
 				gs.IsoSurfaceToCoreGeometry(iso, core_geo)
@@ -206,13 +230,13 @@ def make_ramps(world_block_pos, ramp_to_evaluate, iso_array, array_geos_worlds):
 				core_geo.ComputeVertexNormal(math.radians(0.0), True)
 				core_geo.ComputeVertexTangent()
 
-				ramp_geo = plus.CreateGeometry(core_geo)
+				ramp_geo = plus.CreateGeometry(core_geo, False)
 
 				render_geos.append({"g": ramp_geo, "o": gs.Matrix4.Identity})
 				ramp_geos[id_ramp] = {"id_geo": len(render_geos) - 1}
 
 			id_geo = ramp_geos[id_ramp]["id_geo"]
-			tile_pos = gs.Vector3(world_block_pos.x + ramp[0] - 1.5 , world_block_pos.y-1.5, world_block_pos.z + ramp[1] - 1.5)
+			tile_pos = gs.Vector3(world_block_pos.x + ramp[0] - 1.5, world_block_pos.y-3.4, world_block_pos.z + ramp[1] - 1.5)
 			n1 = noise.snoise3(tile_pos.x, tile_pos.y, tile_pos.z)
 			n2 = noise.snoise3(tile_pos.x + 0.5, tile_pos.y, tile_pos.z)
 			n3 = noise.snoise3(tile_pos.x, tile_pos.y + 0.5, tile_pos.z)
@@ -224,8 +248,13 @@ def make_ramps(world_block_pos, ramp_to_evaluate, iso_array, array_geos_worlds):
 			array_geos_worlds[id_geo].append(m)
 
 
-def parse_block(fresh_block):
-	array_geos_worlds = {}
+def parse_block(fresh_block, array_geos_worlds):
+	# clear type tile in array_geos_worlds
+	# clean all except water and magma
+	for id_geo, array_geo in array_geos_worlds.items():
+		if id_geo != tile_geos[tile_type.MAGMA]["id_geo"] and id_geo != tile_geos[tile_type.WATER]["id_geo"]:
+			array_geos_worlds[id_geo] = []
+
 	tiles = {}
 	ramp_to_evaluate = []
 	world_block_pos = from_dfworld_to_world(gs.Vector3(map_info.block_size_x*16-16 - fresh_block.map_x, fresh_block.map_y, fresh_block.map_z))
@@ -233,36 +262,23 @@ def parse_block(fresh_block):
 	iso_array = np.zeros((17, 17))
 	iso_array_mat = np.zeros((17, 17))
 	x, z = 15, 0
-	for tile, magma, water, material in zip(fresh_block.tiles, fresh_block.magma, fresh_block.water, fresh_block.materials):
+	for tile, material in zip(fresh_block.tiles, fresh_block.materials):
 		tile_pos = gs.Vector3(world_block_pos.x + x, world_block_pos.y, world_block_pos.z + z)
 		tile_scale = gs.Vector3(1, 1, 1)
 		if tile != 0:
 			type = df_tile_type_list.tiletype_list[tile]
 
+			if type.shape == remote_fortress.RAMP:
+				ramp_to_evaluate.append((x, z))
+			# elif type.shape == remote_fortress.RAMP_TOP:
+			# 	block_mat = 7
+
 			# choose a material
 			block_mat = 0
 			tile_shape = None
-			if magma > 0:
-				tile_pos.y -= (1.0 - magma / 7) * 0.5
-				tile_scale.y = magma / 7.
-				tile_shape = tile_type.MAGMA
-				block_mat = 2
-				iso_array[x, z] = magma / 7
-			elif water > 0:
-				tile_pos.y -= (1.0 - water / 7) * 0.5
-				tile_scale.y = water/7.
-				tile_shape = tile_type.WATER
-				block_mat = 4
-				iso_array[x, z] = water/7.
-			elif type.shape == remote_fortress.FLOOR:
+			if type.shape == remote_fortress.FLOOR:
 				tile_shape = type.shape
 				block_mat = 1
-			elif type.shape == remote_fortress.RAMP:
-				ramp_to_evaluate.append((x, z))
-				# tile_shape = type.shape
-				# block_mat = 6
-			# elif type.shape == remote_fortress.RAMP_TOP:
-			# 	block_mat = 7
 			elif type.shape == remote_fortress.BOULDER:
 				tile_shape = type.shape
 				block_mat = 3
@@ -320,6 +336,8 @@ def parse_block(fresh_block):
 	# check the ramps
 	make_ramps(world_block_pos, ramp_to_evaluate, iso_array, array_geos_worlds)
 
+	array_geos_worlds, tiles, iso_array, iso_array_mat = parse_block_only_water_magma(fresh_block, array_geos_worlds, tiles, iso_array, iso_array_mat)
+
 	return array_geos_worlds, tiles, iso_array, iso_array_mat
 
 
@@ -348,7 +366,11 @@ def parse_big_block(fresh_blocks):
 		# create or initialize the block, if the block actually contains something
 		if len(fresh_block.tiles) > 0 or id_block not in big_block["blocks"]:
 			id_big_block_to_merge[id_big_block] = True
-			array_geos_worlds, tiles, iso_array, iso_array_mat = parse_block(fresh_block)
+			array_geos_worlds = {}
+			if id_block in big_block["blocks"]:
+				array_geos_worlds = big_block["blocks"][id_block]["array_geos_worlds"]
+
+			array_geos_worlds, tiles, iso_array, iso_array_mat = parse_block(fresh_block, array_geos_worlds)
 			if id_block not in big_block["blocks"] or len(tiles) > 0:
 				with big_block["mutex"]:
 					big_block["blocks"][id_block] = {"array_geos_worlds": array_geos_worlds, "tiles": tiles, "iso_array": iso_array, "iso_array_mat": iso_array_mat}
@@ -356,7 +378,7 @@ def parse_big_block(fresh_blocks):
 		elif len(fresh_block.water) > 0:
 			id_big_block_to_merge[id_big_block] = True
 			with big_block["mutex"]:
-				array_geos_worlds, tiles, iso_array, iso_array_mat = parse_block_only_water(fresh_block, big_block["blocks"][id_block]["array_geos_worlds"], big_block["blocks"][id_block]["tiles"], big_block["blocks"][id_block]["iso_array"], big_block["blocks"][id_block]["iso_array_mat"])
+				array_geos_worlds, tiles, iso_array, iso_array_mat = parse_block_only_water_magma(fresh_block, big_block["blocks"][id_block]["array_geos_worlds"], big_block["blocks"][id_block]["tiles"], big_block["blocks"][id_block]["iso_array"], big_block["blocks"][id_block]["iso_array_mat"])
 				big_block["blocks"][id_block] = {"array_geos_worlds": array_geos_worlds, "tiles": tiles, "iso_array": iso_array, "iso_array_mat": iso_array_mat}
 
 	# for id_big_block in id_big_block_to_merge.keys():
