@@ -41,4 +41,4 @@ def draw_dwarf(scn):
 				dwarf["rot"] = gs.Matrix3.LookAt(gs.Vector3(-d.x, d.z, d.y).Normalized())
 				dwarf["pos"] += d * 0.5
 
-			scn.GetRenderableSystem().DrawGeometry(dwarf_geo, gs.Matrix4.TransformationMatrix( gs.Vector3(blocks_builder.map_info.block_size_x * 16 - dwarf["pos"].x, dwarf["pos"].z * blocks_builder.scale_unit_y - 0.5, dwarf["pos"].y), dwarf["rot"], dwarf_scale))
+			scn.GetRenderableSystem().DrawGeometry(dwarf_geo, gs.Matrix4.TransformationMatrix(gs.Vector3(blocks_builder.map_info.block_size_x * 16 - dwarf["pos"].x, dwarf["pos"].z * blocks_builder.scale_unit_y - 0.5, dwarf["pos"].y), dwarf["rot"], dwarf_scale))

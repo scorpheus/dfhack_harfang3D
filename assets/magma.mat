@@ -1,11 +1,11 @@
 {
 	"Material": {
-		"Shader": "tree.isl",
+		"Shader": "assets/iso.isl",
 		"MaterialValues": {
 			"Value": {
 				"Name": "diffuse_color",
 				"Type": "vec4",
-				"Value": "vec4(0.1028, 0.3143, 0.1269, 1.0000)"
+				"Value": "vec4(1.0000, 0.0000, 0.0000, 1.0000)"
 			},
 			"Value": {
 				"Name": "specular_color",

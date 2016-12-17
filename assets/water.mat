@@ -1,0 +1,7 @@
+{
+	"Material": {
+		"Shader": "assets/water.isl",
+		"MaterialValues": {
+		}
+	}
+}

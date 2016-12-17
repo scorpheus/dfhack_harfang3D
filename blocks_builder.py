@@ -57,7 +57,7 @@ def setup():
 
 	# get once to use after (material list is huge)
 	df_tile_type_list = get_tiletype_list()
-	# material_list = get_material_list()
+	material_list = get_material_list()
 	building_def_list = get_building_def_list()
 
 	building_geos = {building_type.Chair: None, building_type.Bed: None,
@@ -68,7 +68,8 @@ def setup():
 					 building_type.Floodgate: None,
 					 building_type.Box: {'g': plus.LoadGeometry("environment_kit_inca/chest_top.geo"), 'o': gs.Matrix4.Identity},
 					 building_type.Weaponrack: None,
-					 building_type.Armorstand: None, building_type.Workshop: None,
+					 building_type.Armorstand: None,
+					 building_type.Workshop: {'g': plus.LoadGeometry("environment_kit/geo-bookshelf.geo"), 'o': gs.Matrix4.Identity},
 					 building_type.Cabinet: {'g': plus.LoadGeometry("environment_kit/geo-bookshelf.geo"), 'o': gs.Matrix4.Identity},
 					 building_type.Statue: {'g': plus.LoadGeometry("environment_kit/geo-greece_column.geo"), 'o': gs.Matrix4.RotationMatrix(gs.Vector3(-1.57, 0, 0))},
 					 building_type.WindowGlass: None, building_type.WindowGem: None,
@@ -91,11 +92,11 @@ def setup():
 	tile_geos = {
 		tile_type.NONE:           {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
 		tile_type.EMPTY:          {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.FLOOR:          {"core_g": plus.CreateCube(1.0, 0.1 * scale_unit_y, 1.0, "floor.mat"), "render_g": None, "o": gs.Matrix4.TranslationMatrix((0, -0.45 * scale_unit_y, 0))},
+		tile_type.FLOOR:          {"core_g": plus.CreateCube(1.0, 0.1 * scale_unit_y, 1.0, "assets/floor.mat"), "render_g": None, "o": gs.Matrix4.TranslationMatrix((0, -0.45 * scale_unit_y, 0))},
 		tile_type.BOULDER:        {"core_g": None, "render_g": plus.LoadGeometry("environment_kit_inca/stone_high_03.geo"), "o": gs.Matrix4.TransformationMatrix((0, -0.5, 0), (0, 0, 0), (0.1, 0.1, 0.1))},
 		tile_type.PEBBLES:        {"core_g": None, "render_g": plus.LoadGeometry("environment_kit_inca/stone_high_01.geo"), "o": gs.Matrix4.TransformationMatrix((0, -0.5, 0), (0, 0, 0), (0.1, 0.1, 0.1))},
-		tile_type.WALL:           {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "rock.mat"), "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.FORTIFICATION:  {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "rock.mat"), "render_g": None, "o": gs.Matrix4.Identity},
+		tile_type.WALL:           {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/rock.mat"), "render_g": None, "o": gs.Matrix4.Identity},
+		tile_type.FORTIFICATION:  {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/rock.mat"), "render_g": None, "o": gs.Matrix4.Identity},
 		tile_type.STAIR_UP:       {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
 		tile_type.STAIR_DOWN:     {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
 		tile_type.STAIR_UPDOWN:   {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
@@ -104,14 +105,14 @@ def setup():
 		tile_type.BROOK_BED:      {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
 		tile_type.BROOK_TOP:      {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
 		tile_type.TREE_SHAPE:     {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.SAPLING:        {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "floor.mat"), "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.SHRUB:          {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "floor.mat"), "render_g": None, "o": gs.Matrix4.Identity},
+		tile_type.SAPLING:        {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/floor.mat"), "render_g": None, "o": gs.Matrix4.Identity},
+		tile_type.SHRUB:          {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/floor.mat"), "render_g": None, "o": gs.Matrix4.Identity},
 		tile_type.ENDLESS_PIT:    {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.BRANCH:         {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "tree.mat"), "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.TRUNK_BRANCH:   {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "tree.mat"), "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.TWIG:           {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "tree.mat"), "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.WATER:          {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "water.mat"), "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.MAGMA:          {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "magma.mat"), "render_g": None, "o": gs.Matrix4.Identity},
+		tile_type.BRANCH:         {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/tree.mat"), "render_g": None, "o": gs.Matrix4.Identity},
+		tile_type.TRUNK_BRANCH:   {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/tree.mat"), "render_g": None, "o": gs.Matrix4.Identity},
+		tile_type.TWIG:           {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/tree.mat"), "render_g": None, "o": gs.Matrix4.Identity},
+		tile_type.WATER:          {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/water.mat"), "render_g": None, "o": gs.Matrix4.Identity},
+		tile_type.MAGMA:          {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/magma.mat"), "render_g": None, "o": gs.Matrix4.Identity},
 	}
 
 	for id, geo in tile_geos.items():
@@ -139,9 +140,9 @@ def parse_block_building(fresh_block, array_geos_worlds, tiles):
 	# parse building
 	for building in fresh_block.buildings:
 		if building_geos[building.building_type.building_type] is not None and "id_geo" in building_geos[building.building_type.building_type]:
-			tile_pos = from_dfworld_to_world(gs.Vector3(map_info.block_size_x*16-16 - building.pos_x_min, building.pos_y_min, building.pos_z_min))
-			m = gs.Matrix4.TranslationMatrix(tile_pos)
-			array_geos_worlds[building_geos[building.building_type.building_type]["id_geo"]].append(m)
+			tile_pos = from_dfworld_to_world(gs.Vector3(map_info.block_size_x * 16 - building.pos_x_min, building.pos_y_min * scale_unit_y, building.pos_z_min))
+			m = gs.Matrix4.TranslationMatrix(tile_pos) * gs.Matrix4.TransformationMatrix((-1, -0.45, 0), (0, 0, 0), (0.25, 0.25, 0.25))
+			array_geos_worlds[building_geos[building.building_type.building_type]["id_geo"]].append(m * building_geos[building.building_type.building_type]["o"])
 
 	return array_geos_worlds, tiles
 
@@ -239,7 +240,7 @@ def make_ramps(world_block_pos, ramp_to_evaluate, iso_array, array_geos_worlds):
 
 				core_geo = gs.CoreGeometry()
 				gs.IsoSurfaceToCoreGeometry(iso, core_geo)
-				core_geo.SetMaterial(0, "floor.mat")
+				core_geo.SetMaterial(0, "assets/floor.mat")
 
 				core_geo.ComputeVertexNormal(math.radians(0.0), True)
 				core_geo.ComputeVertexTangent()
@@ -350,7 +351,7 @@ def parse_block(fresh_block, array_geos_worlds):
 	array_geos_worlds, tiles, iso_array, iso_array_mat = parse_block_only_water_magma(fresh_block, array_geos_worlds, tiles, iso_array, iso_array_mat)
 
 	# parse buildings
-	# parse_block_building(fresh_block, array_geos_worlds, tiles)
+	parse_block_building(fresh_block, array_geos_worlds, tiles)
 
 	return array_geos_worlds, tiles, iso_array, iso_array_mat
 
