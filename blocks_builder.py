@@ -169,7 +169,7 @@ def setup():
 		tile_type.BROOK_BED:      {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
 		tile_type.BROOK_TOP:      {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
 		tile_type.TREE_SHAPE:     {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.SAPLING:        {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/floor.mat"), "render_g": None, "o": gs.Matrix4.Identity},
+		tile_type.SAPLING:        {"core_g": None, "render_g": plus.LoadGeometry("environment_kit_inca/tropical_bush_06.geo"), "render_g": None, "o": gs.Matrix4.Identity},
 		tile_type.SHRUB:          {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/floor.mat"), "render_g": None, "o": gs.Matrix4.Identity},
 		tile_type.ENDLESS_PIT:    {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
 		tile_type.BRANCH:         {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/tree.mat"), "render_g": None, "o": gs.Matrix4.Identity},
@@ -291,6 +291,7 @@ def make_ramps(world_block_pos, ramp_to_evaluate, iso_array, array_geos_worlds):
 			if iso_array[ramp[0], ramp[1] - 1]:
 				cube_val[:, 0, :] = 1
 
+			# create the iso surface if necessary
 			id_ramp = hash(str(cube_val))
 			if id_ramp not in ramp_geos:
 				w, h, d = cube_val.shape[0], cube_val.shape[1], cube_val.shape[2]
@@ -314,9 +315,25 @@ def make_ramps(world_block_pos, ramp_to_evaluate, iso_array, array_geos_worlds):
 				ramp_geo = plus.CreateGeometry(core_geo, False)
 
 				render_geos.append({"g": ramp_geo, "o": gs.Matrix4.Identity})
-				ramp_geos[id_ramp] = {"id_geo": len(render_geos) - 1}
+				ramp_geos[id_ramp] = {"id_geo": len(render_geos) - 1, "o": gs.Matrix4.Identity, "geos_color": {}, "core_g": core_geo}
 
-			id_geo = ramp_geos[id_ramp]["id_geo"]
+			# create the colored mesh if necessary
+			hash_color = hash(ramp[2])
+			if hash_color not in ramp_geos[id_ramp]["geos_color"]:
+				# create the color geo
+				new_render_geo = plus.CreateGeometry(ramp_geos[id_ramp]["core_g"], False)
+				while not new_render_geo.IsReady(): # don't know why it's not immediate ...
+					pass
+				new_mat = new_render_geo.GetMaterial(0).Clone()
+				new_mat.SetFloat4("diffuse_color", ramp[2][0], ramp[2][1], ramp[2][2], 1.0)
+				new_render_geo.SetMaterial(0, new_mat)
+
+				render_geos.append({"g": new_render_geo, "o": ramp_geos[id_ramp]["o"]})
+				ramp_geos[id_ramp]["geos_color"][hash_color] = len(render_geos)-1
+
+			id_geo = ramp_geos[id_ramp]["geos_color"][hash_color]
+
+			# id_geo = ramp_geos[id_ramp]["id_geo"]
 			tile_pos = gs.Vector3(world_block_pos.x + ramp[0] - 1.5, world_block_pos.y-3.4, world_block_pos.z + ramp[1] - 1.5)
 			n1 = noise.snoise3(tile_pos.x, tile_pos.y, tile_pos.z)
 			n2 = noise.snoise3(tile_pos.x + 0.5, tile_pos.y, tile_pos.z)
@@ -350,7 +367,7 @@ def parse_block(fresh_block, array_geos_worlds):
 			type = df_tile_type_list.tiletype_list[tile]
 
 			if type.shape == remote_fortress.RAMP:
-				ramp_to_evaluate.append((x, z))
+				ramp_to_evaluate.append((x, z, material_list_color[material.mat_type][material.mat_index]))
 			# elif type.shape == remote_fortress.RAMP_TOP:
 			# 	block_mat = 7
 
