@@ -2,11 +2,11 @@ in {
 	vec4 diffuse_color = vec4(0.7,0.7,0.7,1.0) [hint:color];
 	vec4 specular_color = vec4(0.5,0.5,0.5,1.0) [hint:color];
 	int ITER_GEOMETRY = 1;
-    int ITER_FRAGMENT = 4;
-    float SEA_HEIGHT = 0.3;
-    float SEA_CHOPPY = 2.0;
-    float SEA_SPEED = 0.1;
-    float SEA_FREQ = 0.4;
+    int ITER_FRAGMENT = 3;
+    float SEA_HEIGHT = 0.6;
+    float SEA_CHOPPY = 4.0;
+    float SEA_SPEED = 0.8;
+    float SEA_FREQ = 0.16;
     vec4 SEA_BASE = vec4(0.1, 0.19, 0.22, 1.0) [hint:color];
     vec4 SEA_WATER_COLOR = vec4(0.8, 0.9, 0.6, 1.0) [hint:color];
 }
@@ -80,7 +80,7 @@ variant {
 			pos.x += sin(vClock);
 			pos.z += sin(vClock*0.2);
             vec3 color = SEA_BASE.xyz + SEA_WATER_COLOR.xyz * 0.12;
-            color += SEA_WATER_COLOR.xyz * (map(pos, ITER_FRAGMENT) - SEA_HEIGHT) * 0.18;
+            color += SEA_WATER_COLOR.xyz * (map(pos*5, ITER_FRAGMENT) - SEA_HEIGHT) * 0.18;
 			%diffuse% = color;
 
 			%specular% = specular_color.xyz;

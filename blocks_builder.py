@@ -2,7 +2,6 @@ __author__ = 'scorpheus'
 
 from dfhack_connect import *
 import gs
-import uuid
 import threading
 import numpy as np
 from helpers import *
@@ -10,7 +9,9 @@ import update_dwarf
 import geometry_iso
 import math
 from iso_mesh_from_big_block import make_big_block_iso
+import os
 import noise
+import xmltodict
 
 
 plus = gs.GetPlus()
@@ -18,6 +19,7 @@ plus = gs.GetPlus()
 map_info = None
 df_tile_type_list = None
 material_list = None
+material_list_color = None
 
 building_geos = None
 tile_geos = None
@@ -46,8 +48,44 @@ class tile_type():  # begin by the struct of remote_fortress.TiletypeShape
 	BROOK_TOP, TREE_SHAPE, SAPLING, SHRUB, ENDLESS_PIT, BRANCH, TRUNK_BRANCH, TWIG, WATER, MAGMA = range(22)
 
 
+def create_colors_from_xml():
+	colors_from_xml = {}
+
+	with open("assets/colors/index.txt", "r") as index:
+		xmls = index.read().splitlines()
+
+	for color_path in xmls:
+		if not color_path.startswith("#"):
+			with open(os.path.join("assets/colors", color_path)) as fd:
+				doc = xmltodict.parse(fd.read())
+				for color in doc["colors"]["color"]:
+					c = (int(color["@red"])/255, int(color["@green"])/255, int(color["@blue"])/255)
+					if type(color["material"]) is list:
+						for token in color["material"]:
+							colors_from_xml[token["@token"]] = c
+					elif "@token" in color["material"]:
+						colors_from_xml[color["material"]["@token"]] = c
+					else:
+						value_material = color["material"]["@value"]
+						def get_token(value):
+							if value_material == "Inorganic":
+								return "INORGANIC:"+value.upper()
+							else:
+								return "PLANT:"+value.upper()+":"+value_material.upper()
+
+						if "subtype" not in color["material"]:
+							colors_from_xml[color["material"]["@value"]] = c
+						elif type(color["material"]["subtype"]) is list:
+							for subtype in color["material"]["subtype"]:
+								colors_from_xml[get_token(subtype["@value"])] = c
+						elif "@value" in color["material"]["subtype"]:
+							colors_from_xml[get_token(color["material"]["subtype"]["@value"])] = c
+
+	return colors_from_xml
+
+
 def setup():
-	global map_info, df_tile_type_list, material_list, tile_geos, building_geos
+	global map_info, df_tile_type_list, material_list, material_list_color, tile_geos, building_geos
 
 	connect_socket()
 	handshake()
@@ -57,7 +95,33 @@ def setup():
 
 	# get once to use after (material list is huge)
 	df_tile_type_list = get_tiletype_list()
+	# plant_list = get_plant_raw_list()
 	material_list = get_material_list()
+	material_list_color = {}
+	colors_from_xml = create_colors_from_xml()
+	for mat in material_list.material_list:
+		if mat.mat_pair.mat_type not in material_list_color:
+			material_list_color[mat.mat_pair.mat_type] = {}
+
+		color = mat.state_color
+		color = (color.red/255, color.green/255, color.blue/255)
+
+		if mat.id in colors_from_xml:
+			color = colors_from_xml[mat.id]
+		elif mat.id.startswith("PLANT:"):
+			id = mat.id.split(":")
+			if len(id) == 3:
+				id = id[0]+":*:"+id[2]
+				if id in colors_from_xml:
+					color = colors_from_xml[id]
+				else:
+					id = mat.id.split(":")
+					id = id[0]+":"+id[1]+":WOOD"
+					if id in colors_from_xml:
+						color = colors_from_xml[id]
+
+		material_list_color[mat.mat_pair.mat_type][mat.mat_pair.mat_index] = color
+
 	building_def_list = get_building_def_list()
 
 	building_geos = {building_type.Chair: None, building_type.Bed: None,
@@ -115,9 +179,11 @@ def setup():
 		tile_type.MAGMA:          {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/magma.mat"), "render_g": None, "o": gs.Matrix4.Identity},
 	}
 
+	# core_geo to render_geo
 	for id, geo in tile_geos.items():
 		if geo["core_g"] is not None:
 			geo["render_g"] = plus.CreateGeometry(geo["core_g"])
+			geo["geos_color"] = {}
 
 	# give id_geo to building
 	for id, building in building_geos.items():
@@ -290,10 +356,16 @@ def parse_block(fresh_block, array_geos_worlds):
 
 			# choose a material
 			block_mat = 0
+			color = None
 			tile_shape = None
 			if type.shape == remote_fortress.FLOOR:
 				tile_shape = type.shape
 				block_mat = 1
+				color = material_list_color[material.mat_type][material.mat_index]
+
+				# for mat in material_list.material_list:
+				# 	if mat.mat_pair.mat_type == material.mat_type and mat.mat_pair.mat_index == material.mat_index:
+				# 		break
 			elif type.shape == remote_fortress.BOULDER:
 				tile_shape = type.shape
 				block_mat = 3
@@ -304,6 +376,7 @@ def parse_block(fresh_block, array_geos_worlds):
 				tile_shape = type.shape
 				block_mat = 3
 				iso_array[x, z] = 1
+				color = material_list_color[material.mat_type][material.mat_index]
 			# if type.material == remote_fortress.PLANT:
 			# 	block_mat = 2
 			elif type.shape == remote_fortress.SHRUB or type.shape == remote_fortress.SAPLING:
@@ -329,6 +402,24 @@ def parse_block(fresh_block, array_geos_worlds):
 
 				if tile_shape is not None and "id_geo" in tile_geos[tile_shape]:
 					id_geo = tile_geos[tile_shape]["id_geo"]
+
+					# check if there is geo with a color
+					if color is not None:
+						hash_color = hash(color)
+						if hash_color not in tile_geos[tile_shape]["geos_color"]:
+							# create the color geo
+							new_render_geo = plus.CreateGeometry(tile_geos[tile_shape]["core_g"], False)
+							while not new_render_geo.IsReady(): # don't know why it's not immediate ...
+								pass
+							new_mat = new_render_geo.GetMaterial(0).Clone()
+							new_mat.SetFloat4("diffuse_color", color[0], color[1], color[2], 1.0)
+							new_render_geo.SetMaterial(0, new_mat)
+
+							render_geos.append({"g": new_render_geo, "o": tile_geos[tile_shape]["o"]})
+							tile_geos[tile_shape]["geos_color"][hash_color] = len(render_geos)-1
+
+						id_geo = tile_geos[tile_shape]["geos_color"][hash_color]
+
 					if id_geo not in array_geos_worlds:
 						array_geos_worlds[id_geo] = []
 					array_geos_worlds[id_geo].append(m * render_geos[id_geo]["o"])

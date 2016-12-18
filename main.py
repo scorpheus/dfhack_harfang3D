@@ -24,12 +24,16 @@ blocks_builder.setup()
 
 scn = plus.NewScene()
 
-# sky_script = gs.LogicScript("@core/lua/sky_lighting.lua")
-# sky_script.Set("time_of_day", 15.0)
-# sky_script.Set("attenuation", 0.55)
-# sky_script.Set("shadow_range", 1000.0) # 1km shadow range
-# sky_script.Set("shadow_split", gs.Vector4(0.1, 0.2, 0.3, 0.4))
-# scn.AddComponent(sky_script)
+sky_script = gs.LogicScript("@core/lua/sky_lighting.lua")
+sky_script.Set("time_of_day", 15.0)
+sky_script.Set("attenuation", 0.55)
+sky_script.Set("shadow_range", 10.0) # 1km shadow range
+sky_script.Set("shadow_split", gs.Vector4(0.1, 0.2, 0.3, 0.4))
+scn.AddComponent(sky_script)
+
+plus.UpdateScene(scn, gs.time(0.1))
+plus.UpdateScene(scn, gs.time(0.1))
+scn.GetNode("Sky Main Light").GetLight().SetShadow(gs.Light.Shadow_None)
 
 light_cam = plus.AddLight(scn, gs.Matrix4.TranslationMatrix(gs.Vector3(6, 200, -6)))
 light_cam.GetLight().SetShadow(gs.Light.Shadow_None)
