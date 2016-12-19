@@ -504,6 +504,12 @@ def parse_big_block(fresh_blocks):
 				array_geos_worlds, tiles, iso_array, iso_array_mat = parse_block_only_water_magma(fresh_block, big_block["blocks"][id_block]["array_geos_worlds"], big_block["blocks"][id_block]["tiles"], big_block["blocks"][id_block]["iso_array"], big_block["blocks"][id_block]["iso_array_mat"])
 				big_block["blocks"][id_block] = {"array_geos_worlds": array_geos_worlds, "tiles": tiles, "iso_array": iso_array, "iso_array_mat": iso_array_mat}
 
+		elif len(fresh_block.buildings) > 0:
+			# parse buildings
+			array_geos_worlds, tiles = parse_block_building(fresh_block, big_block["blocks"][id_block]["array_geos_worlds"], big_block["blocks"][id_block]["tiles"])
+			big_block["blocks"][id_block]["array_geos_worlds"] = array_geos_worlds
+			big_block["blocks"][id_block]["tiles"] = tiles
+
 	# for id_big_block in id_big_block_to_merge.keys():
 	# 	make_big_block_iso(array_world_big_block, array_world_big_block[id_big_block])
 
