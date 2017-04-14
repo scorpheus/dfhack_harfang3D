@@ -13,8 +13,8 @@ from google.protobuf import descriptor_pb2
 _sym_db = _symbol_database.Default()
 
 
-import Tile_pb2 as Tile__pb2
-import Plant_pb2 as Plant__pb2
+import proto.build.Tile_pb2 as Tile__pb2
+import proto.build.Plant_pb2 as Plant__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(

@@ -3,17 +3,12 @@ __author__ = 'scorpheus'
 import socket
 import struct
 
-import RemoteFortressReader_pb2 as remote_fortress
-import BasicApi_pb2 as BasicApi
-import Block_pb2 as Block
-import Tile_pb2 as Tile
-import CoreProtocol_pb2 as CoreProtocol
+import proto.build.RemoteFortressReader_pb2 as remote_fortress
+import proto.build.BasicApi_pb2 as BasicApi
+import proto.build.Block_pb2 as Block
+import proto.build.Tile_pb2 as Tile
+import proto.build.CoreProtocol_pb2 as CoreProtocol
 
-# import RemoteFortressReader_proto as remote_fortress
-# import BasicApi_proto as BasicApi
-# import Block_proto as Block
-# import Tile_proto as Tile
-# import CoreProtocol_proto as CoreProtocol
 
 HOST, PORT = "localhost", 5000
 

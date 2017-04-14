@@ -1,7 +1,6 @@
 __author__ = 'scorpheus'
 
 from dfhack_connect import *
-import gs
 import threading
 import numpy as np
 from helpers import *
@@ -15,6 +14,9 @@ import xmltodict
 
 
 plus = gs.GetPlus()
+
+# to test the iso surface, it's not finis
+use_iso_surface = False
 
 map_info = None
 df_tile_type_list = None
@@ -67,6 +69,7 @@ def create_colors_from_xml():
 						colors_from_xml[color["material"]["@token"]] = c
 					else:
 						value_material = color["material"]["@value"]
+
 						def get_token(value):
 							if value_material == "Inorganic":
 								return "INORGANIC:"+value.upper()
@@ -510,8 +513,9 @@ def parse_big_block(fresh_blocks):
 			big_block["blocks"][id_block]["array_geos_worlds"] = array_geos_worlds
 			big_block["blocks"][id_block]["tiles"] = tiles
 
-	# for id_big_block in id_big_block_to_merge.keys():
-	# 	make_big_block_iso(array_world_big_block, array_world_big_block[id_big_block])
+	if use_iso_surface:
+		for id_big_block in id_big_block_to_merge.keys():
+			make_big_block_iso(array_world_big_block, array_world_big_block[id_big_block])
 
 
 parse_big_block_thread = None
@@ -598,22 +602,23 @@ def draw_block(renderable_system, cam):
 				if id in array_world_big_block:
 					big_block = array_world_big_block[id]
 					if big_block["status"] == status_ready:
-						with big_block["mutex"]:
-							for id_block, block in big_block["blocks"].items():
-								for geo, ms in block["array_geos_worlds"].items():
-									renderable_system.DrawGeometry(render_geos[geo]["g"], ms)
-									count_draw += 1
+						if not use_iso_surface:
+							with big_block["mutex"]:
+								for id_block, block in big_block["blocks"].items():
+									for geo, ms in block["array_geos_worlds"].items():
+										renderable_system.DrawGeometry(render_geos[geo]["g"], ms)
+										count_draw += 1
 
-							# for id, tile in block["tiles"].items():
-								# 	renderable_system.DrawGeometry(tile_geos[tile["mat"]], tile["m"])
-								# 	count_draw += 1
+								# for id, tile in block["tiles"].items():
+									# 	renderable_system.DrawGeometry(tile_geos[tile["mat"]], tile["m"])
+									# 	count_draw += 1
 
-						#
-						# if big_block["new_iso_mesh"] is not None and big_block["new_iso_mesh"][0].IsReady():
-						# 	big_block["iso_mesh"] = big_block["new_iso_mesh"]
-						# 	big_block["new_iso_mesh"] = None
-						#
-						# if big_block["iso_mesh"] is not None:
-						# 	renderable_system.DrawGeometry(big_block["iso_mesh"][0], gs.Matrix4.TranslationMatrix(big_block["min_pos"]))
-						# 	count_draw += 1
+						if use_iso_surface:
+							if big_block["new_iso_mesh"] is not None and big_block["new_iso_mesh"][0].IsReady():
+								big_block["iso_mesh"] = big_block["new_iso_mesh"]
+								big_block["new_iso_mesh"] = None
+
+							if big_block["iso_mesh"] is not None:
+								renderable_system.DrawGeometry(big_block["iso_mesh"][0], gs.Matrix4.TranslationMatrix(big_block["min_pos"]))
+								count_draw += 1
 	return count_draw
