@@ -6,6 +6,8 @@ The world data are interpreted in 3D, using isosurface, textures and random geom
 
 Written in **Python 3.4**, using the **Harfang/Ookpy** library.
 
+Video and explanation: http://scorpheus.memoryleak.fr/?page_id=56
+
 Install:
   * Start a game of Dwarf Fortress (http://www.bay12games.com/dwarves/) or install from the LazyNewbPack (http://dffd.bay12games.com/file.php?id=7622)
   * In Python3:
@@ -15,5 +17,6 @@ Install:
     * git clone https://github.com/scorpheus/dfhack_harfang3D.git
     * cd dfhack_harfang3D
     * python main2.py (yep it's the 2, I will clean it one day ;p)
+    
   
 
