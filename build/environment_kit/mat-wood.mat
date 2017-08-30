@@ -1,0 +1,22 @@
+{
+	"Material": {
+		"Shader": "environment_kit/diffuse-texture_specular_texture.isl",
+		"MaterialValues": {
+			"Value": {
+				"Name": "diffuse_map",
+				"Type": "tex2D",
+				"Value": "environment_kit/tex-wooden_door_color.jpg"
+			},
+			"Value": {
+				"Name": "specular_map",
+				"Type": "tex2D",
+				"Value": "environment_kit/tex-wooden_door_spec.png"
+			},
+			"Value": {
+				"Name": "normal_map",
+				"Type": "tex2D",
+				"Value": "assets/RobotArm_bump.png"
+			}
+		}
+	}
+}

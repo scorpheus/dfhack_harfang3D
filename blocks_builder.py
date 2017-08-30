@@ -125,7 +125,7 @@ def setup():
 
 		material_list_color[mat.mat_pair.mat_type][mat.mat_pair.mat_index] = color
 
-	building_def_list = get_building_def_list()
+	# building_def_list = get_building_def_list()
 
 	building_geos = {building_type.Chair: None, building_type.Bed: None,
 					 building_type.Table: {'g': plus.LoadGeometry("environment_kit/geo-table.geo"), 'o': gs.Matrix4.Identity},

@@ -1,0 +1,15 @@
+<Material Shader="assets/ocean_displacement.isl">
+	<MaterialValues>
+		<Value Name="SEA_BASE" Type="vec4" Value="vec4(0.1000, 0.1900, 0.2200, 1.0000)"/>
+		<Value Name="SEA_WATER_COLOR" Type="vec4" Value="vec4(0.8000, 0.9000, 0.6000, 1.0000)"/>
+		<Value Name="ITER_GEOMETRY" Type="int" Value="1"/>
+		<Value Name="ITER_FRAGMENT" Type="int" Value="4"/>
+		<Value Name="SEA_HEIGHT" Type="float" Value="0.300000"/>
+		<Value Name="SEA_CHOPPY" Type="float" Value="2.000000"/>
+		<Value Name="SEA_SPEED" Type="float" Value="0.100000"/>
+		<Value Name="SEA_FREQ" Type="float" Value="0.500000"/>
+		<Value Name="min_layer" Type="float" Value="6.000000"/>
+		<Value Name="max_layer" Type="float" Value="16.000000"/>
+		<Value Name="parallaxScale" Type="float" Value="0.100000"/>
+	</MaterialValues>
+</Material>

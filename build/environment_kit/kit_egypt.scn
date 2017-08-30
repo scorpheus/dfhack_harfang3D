@@ -1,0 +1,286 @@
+{
+	"Scene": {
+		"Editor": {
+			"SceneTools": {}
+		},
+		"Components": {
+			"gs::core::Environment": {
+				"TimeOfDay": 0.2876,
+				"AmbientColor": {
+					"r": 0.15910000000000003,
+					"g": 0.34700000000000005,
+					"b": 0.3552,
+					"a": 1.25
+				},
+				"AmbientIntensity": 0.5,
+				"FogColor": {
+					"r": 1.0,
+					"g": 1.0,
+					"b": 1.0
+				}
+			},
+			"gs::core::LogicScript": {
+				"gs::core::Script": {
+					"Path": "@core/lua/sky_lighting.lua",
+					"Parameters": {
+						"Parameter": {
+							"Name": "time_of_day",
+							"Type": "float",
+							"Value": 6.9002
+						},
+						"Parameter": {
+							"Name": "longitude",
+							"Type": "float",
+							"Value": 0.30010000000000006
+						},
+						"Parameter": {
+							"Name": "attenuation",
+							"Type": "float",
+							"Value": 0.75
+						},
+						"Parameter": {
+							"Name": "shadow_range",
+							"Type": "int",
+							"Value": 50
+						},
+						"Parameter": {
+							"Name": "shadow_bias",
+							"Type": "float",
+							"Value": 0.01
+						},
+						"Parameter": {
+							"Name": "shadow_split",
+							"Type": "gs::Vector4",
+							"x": 0.25,
+							"y": 0.25,
+							"z": 0.25,
+							"w": 0.25
+						}
+					}
+				}
+			}
+		},
+		"Nodes": {
+			"Node": {
+				"Uid": 1,
+				"Name": "egypt_pot01",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 1.0007000000000002,
+							"y": 0.0,
+							"z": -2.8313
+						},
+						"Rotation": {
+							"x": -1.5707,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-egypt_pot01.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 2,
+				"Name": "egypt_column01",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 2.6929000000000005,
+							"y": 0.0,
+							"z": -2.8199
+						},
+						"Rotation": {
+							"x": -1.5707,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-egypt_column01.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 3,
+				"Name": "egypt_obelisk01",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -0.2587,
+							"y": 0.0,
+							"z": -2.7901000000000004
+						},
+						"Rotation": {
+							"x": -1.5707,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-egypt_obelisk01.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 4,
+				"Name": "egypt_column_broken_02",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -3.6756,
+							"y": 0.0,
+							"z": -2.8199
+						},
+						"Rotation": {
+							"x": -1.5707,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-egypt_column_broken_02.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 5,
+				"Name": "egypt_column_broken_03",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -2.0125,
+							"y": 0.0,
+							"z": -2.8199
+						},
+						"Rotation": {
+							"x": -1.5707,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-egypt_column_broken_03.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 6,
+				"Name": "egypt_wall",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 1.0379,
+							"y": 0.0,
+							"z": 2.5923000000000004
+						},
+						"Rotation": {
+							"x": -1.5707,
+							"y": 3.1416,
+							"z": 3.1416
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-egypt_wall.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 7,
+				"Name": "egypt_wall2h",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 2.1752000000000004,
+							"y": 0.0,
+							"z": 2.5923000000000004
+						},
+						"Rotation": {
+							"x": -1.5707,
+							"y": 3.1416,
+							"z": 3.1416
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-egypt_wall2h.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 8,
+				"Name": "ground",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 0.0,
+							"y": 0.0,
+							"z": -0.7189
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "environment_kit/geo-ground.geo"
+					},
+					"gs::core::BoxCollision": {
+						"gs::core::Collision": {
+							"Mass": 0.0,
+							"Matrix": {
+								"m13": -0.0658
+							},
+							"SelfMask": 0,
+							"CollisionMask": 0
+						},
+						"Dimensions": {
+							"x": 10.0,
+							"y": 0.2003,
+							"z": 10.0
+						}
+					},
+					"gs::core::RigidBody": {
+						"Restitution": 0.10020000000000001,
+						"Gravity": {
+							"x": 0.0,
+							"y": -9.81,
+							"z": 0.0
+						}
+					}
+				}
+			},
+			"Node": {
+				"Uid": 9,
+				"Name": "Default Camera",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 14.0303,
+							"y": 8.172,
+							"z": -12.3969
+						},
+						"Rotation": {
+							"x": 0.42100000000000006,
+							"y": -0.8766,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0001,
+							"y": 1.0001,
+							"z": 1.0001
+						}
+					},
+					"gs::core::Camera": {
+						"ZNear": 0.10020000000000001,
+						"ZFar": 50000.0
+					}
+				}
+			}
+		},
+		"NodeHierarchy": {},
+		"Skeletons": {},
+		"State": {
+			"CurrentCamera": {
+				"Uid": 9
+			}
+		}
+	}
+}

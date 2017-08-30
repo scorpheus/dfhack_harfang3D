@@ -27,8 +27,8 @@ options = {
 	'build_exe': {
 		'build_exe': 'build',
 		'no_compress': False,
-		'packages': ['gs'],
-		'include_files': ['assets/', 'environment_kit/', 'environment_kit_inca/', 'minecraft_assets/'] + extra_redist
+		'packages': ['gs', 'six', 'google', 'numpy.core._methods', 'numpy.lib.format'],
+		'include_files': ['assets/', 'environment_kit/', 'environment_kit_inca/', 'minecraft_assets/', ('proto/build', 'proto/build')] + extra_redist
 	}
 }
 

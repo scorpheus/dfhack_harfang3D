@@ -4,6 +4,7 @@ import socket
 import struct
 
 import proto.build.RemoteFortressReader_pb2 as remote_fortress
+import proto.build.Basic_pb2 as Basic
 import proto.build.BasicApi_pb2 as BasicApi
 import proto.build.Block_pb2 as Block
 import proto.build.Tile_pb2 as Tile

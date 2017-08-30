@@ -1,0 +1,22 @@
+{
+	"Material": {
+		"Shader": "@core/surfaces/diffuse_map_specular_map_normal_map.isl",
+		"MaterialValues": {
+			"Value": {
+				"Name": "diffuse_map",
+				"Type": "tex2D",
+				"Value": "environment_kit_inca/diffus_foliages_01.tga"
+			},
+			"Value": {
+				"Name": "normal_map",
+				"Type": "tex2D",
+				"Value": "environment_kit_inca/normal_foliages_01.png"
+			},
+			"Value": {
+				"Name": "specular_map",
+				"Type": "tex2D",
+				"Value": "environment_kit_inca/specular_foliages_01.png"
+			}
+		}
+	}
+}
