@@ -519,6 +519,7 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 	id = np.where(mats_res[:, 0, :] == 1)
 	array_res[id[0], 0, id[1]] = 1
 
+	# add roof if there is floor in top, under empty
 	id = np.where(mats_res[:, 1, :] == 1)
 	array_res[id[0], array_res.shape[1]-1, id[1]] = 1
 
@@ -575,7 +576,7 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 	iso = gs.IsoSurface()
 	gs.PolygoniseIsoSurface(w, h, d, field, isolevel, iso, inv_scale)
 
-	# mat = plus.LoadMaterial("tree.mat")
+	# mat = plus.LoadMaterial("assets/tree.mat")
 	mat = plus.LoadMaterial("@core/materials/default.mat")
 	geo = gs.RenderGeometry()
 	gs.IsoSurfaceToRenderGeometry(plus.GetRenderSystem(), iso, geo, mat)
@@ -628,6 +629,13 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 	array_res[id[0], 0, id[1]] = 1
 
 	id = np.where(mats_res[:, 1, :] == 1)
+	array_res[id[0], array_res.shape[1]-1, id[1]] = 1
+
+	# for the ramp, if ramp down, add 1 to half the height
+	id = np.where(mats_res[:, 0, :] == 6)
+	array_res[id[0], :int(array_res.shape[1]*0.5), id[1]] = 1
+
+	id = np.where(mats_res[:, 1, :] == 6)
 	array_res[id[0], array_res.shape[1]-1, id[1]] = 1
 
 	if array_res.sum() == 0 or np.average(array_res) == 1:

@@ -4,18 +4,24 @@ import gs
 from helpers import *
 
 
-def create_iso_geo_from_block(id_block, id_block_up, array_world_big_block):
+def create_iso_geo_from_block(id_block, id_block_up, array_world_big_block, up_is_air=False):
 
 	array_has_geo = np.empty((17, 2, 17))
 	array_has_geo[:, 0, :] = list(array_world_big_block[id_block]["blocks"].values())[0]["iso_array"]
-	array_has_geo[:, 1, :] = list(array_world_big_block[id_block_up]["blocks"].values())[0]["iso_array"]
+	if up_is_air:
+		array_has_geo[:, 1, :] = 0
+	else:
+		array_has_geo[:, 1, :] = list(array_world_big_block[id_block_up]["blocks"].values())[0]["iso_array"]
 
 	array_mats = np.empty((17, 2, 17))
 	array_mats[:, 0, :] = list(array_world_big_block[id_block]["blocks"].values())[0]["iso_array_mat"]
-	array_mats[:, 1, :] = list(array_world_big_block[id_block_up]["blocks"].values())[0]["iso_array_mat"]
+	if up_is_air:
+		array_mats[:, 1, :] = 0
+	else:
+		array_mats[:, 1, :] = list(array_world_big_block[id_block_up]["blocks"].values())[0]["iso_array_mat"]
 
-	return geometry_iso.create_iso_c(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, array_world_big_block[id_block]["min_pos"])
-	# return geometry_iso.create_iso(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, id_block)
+	# return geometry_iso.create_iso_c(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, array_world_big_block[id_block]["min_pos"])
+	return geometry_iso.create_iso(array_has_geo, 17, 2, 17, array_mats, 0.5, mats_path, id_block)
 
 
 def update_iso_mesh(array_world_big_block, id_block, pos):
@@ -23,6 +29,8 @@ def update_iso_mesh(array_world_big_block, id_block, pos):
 	up_id = hash_from_pos(pos.x, pos.y + 1, pos.z)
 	if up_id in array_world_big_block and array_world_big_block[up_id]["status"] == status_ready:
 		array_world_big_block[id_block]["new_iso_mesh"] = create_iso_geo_from_block(id_block, up_id, array_world_big_block)
+	else:# nothing up, could be air and will not be updated, force update with air
+		array_world_big_block[id_block]["new_iso_mesh"] = create_iso_geo_from_block(id_block, up_id, array_world_big_block, True)
 
 	# if neighbourgh down, update the iso under
 	down_id = hash_from_pos(pos.x, pos.y - 1, pos.z)

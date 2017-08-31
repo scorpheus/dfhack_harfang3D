@@ -11,12 +11,13 @@ from iso_mesh_from_big_block import make_big_block_iso
 import os
 import noise
 import xmltodict
+import helper_2d
 
 
 plus = gs.GetPlus()
 
 # to test the iso surface, it's not finis
-use_iso_surface = False
+use_iso_surface = True
 
 map_info = None
 df_tile_type_list = None
@@ -275,7 +276,7 @@ def parse_block_only_water_magma(fresh_block, array_geos_worlds, tiles, iso_arra
 	return array_geos_worlds, tiles, iso_array, iso_array_mat
 
 
-def make_ramps(world_block_pos, ramp_to_evaluate, iso_array, array_geos_worlds):
+def make_ramps(world_block_pos, ramp_to_evaluate, iso_array, iso_array_mat, array_geos_worlds):
 	for ramp in ramp_to_evaluate:
 		if 0 < ramp[0] < 16 and 0 < ramp[1] < 16:
 			cube_val = np.zeros((3, 3, 2))
@@ -293,6 +294,8 @@ def make_ramps(world_block_pos, ramp_to_evaluate, iso_array, array_geos_worlds):
 				cube_val[:, -1, :] = 1
 			if iso_array[ramp[0], ramp[1] - 1]:
 				cube_val[:, 0, :] = 1
+
+			iso_array_mat[ramp[0], ramp[1]] = 6
 
 			# create the iso surface if necessary
 			id_ramp = hash(str(cube_val))
@@ -456,7 +459,7 @@ def parse_block(fresh_block, array_geos_worlds):
 	iso_array_mat[-1, :] = iso_array_mat[-2, :]
 
 	# check the ramps
-	make_ramps(world_block_pos, ramp_to_evaluate, iso_array, array_geos_worlds)
+	make_ramps(world_block_pos, ramp_to_evaluate, iso_array, iso_array_mat, array_geos_worlds)
 
 	# parse the water, magma
 	array_geos_worlds, tiles, iso_array, iso_array_mat = parse_block_only_water_magma(fresh_block, array_geos_worlds, tiles, iso_array, iso_array_mat)
@@ -501,12 +504,14 @@ def parse_big_block(fresh_blocks):
 				with big_block["mutex"]:
 					big_block["blocks"][id_block] = {"array_geos_worlds": array_geos_worlds, "tiles": tiles, "iso_array": iso_array, "iso_array_mat": iso_array_mat}
 
+		# water block
 		elif len(fresh_block.water) > 0:
 			id_big_block_to_merge[id_big_block] = True
 			with big_block["mutex"]:
 				array_geos_worlds, tiles, iso_array, iso_array_mat = parse_block_only_water_magma(fresh_block, big_block["blocks"][id_block]["array_geos_worlds"], big_block["blocks"][id_block]["tiles"], big_block["blocks"][id_block]["iso_array"], big_block["blocks"][id_block]["iso_array_mat"])
 				big_block["blocks"][id_block] = {"array_geos_worlds": array_geos_worlds, "tiles": tiles, "iso_array": iso_array, "iso_array_mat": iso_array_mat}
 
+		# building block
 		elif len(fresh_block.buildings) > 0:
 			# parse buildings
 			array_geos_worlds, tiles = parse_block_building(fresh_block, big_block["blocks"][id_block]["array_geos_worlds"], big_block["blocks"][id_block]["tiles"])
@@ -517,13 +522,10 @@ def parse_big_block(fresh_blocks):
 		for id_big_block in id_big_block_to_merge.keys():
 			make_big_block_iso(array_world_big_block, array_world_big_block[id_big_block])
 
-
-parse_big_block_thread = None
+big_block_thread = None
 
 
 def load_big_block(min, max):
-	global parse_big_block_thread, unit_list
-
 	# inverse on x because dwarf fortress is inverted on this axis
 	temp = min.x
 	min.x = map_info.block_size_x * 16 - max.x
@@ -531,15 +533,10 @@ def load_big_block(min, max):
 
 	fresh_blocks = get_block_list(from_world_to_dfworld(min), from_world_to_dfworld(max))
 
-	if parse_big_block_thread is not None and parse_big_block_thread.is_alive():
-		parse_big_block_thread.join()
-	parse_big_block_thread = threading.Thread(target=parse_big_block, args=(fresh_blocks,))
-	parse_big_block_thread.start()
+	parse_big_block(fresh_blocks)
 
 	# update dwarf position in this thread, no race with the get blocks
 	update_dwarf.update_dwarf_pos()
-
-big_block_thread = None
 
 
 def get_viewing_min_max(cam):
@@ -589,9 +586,11 @@ def update_block(cam):
 
 		big_block_thread = threading.Thread(target=load_big_block, args=(p_min, p_max))
 		big_block_thread.start()
+	else:
+		plus.Text2D(0, 5, "Updating blocks", 16, gs.Color.Red)
 
 
-def draw_block(renderable_system, cam):
+def draw_block(renderable_system, cam, scene_simple_graphic):
 	p_min, p_max = get_viewing_min_max(cam)
 	count_draw = 0
 	# grow the array_big_block
@@ -614,6 +613,7 @@ def draw_block(renderable_system, cam):
 									# 	count_draw += 1
 
 						if use_iso_surface:
+							# helper_2d.draw_cube_from_mat(scene_simple_graphic, gs.Matrix4.TranslationMatrix(big_block["min_pos"]), gs.Color(len(big_block["blocks"]), 0, 1))
 							if big_block["new_iso_mesh"] is not None and big_block["new_iso_mesh"][0].IsReady():
 								big_block["iso_mesh"] = big_block["new_iso_mesh"]
 								big_block["new_iso_mesh"] = None

@@ -4,7 +4,7 @@ status_to_parse = 1
 status_parsing = 2
 status_ready = 3
 
-mats_path = ["empty.mat", "floor.mat", "magma.mat", "rock.mat", "water.mat", "tree.mat", "floor.mat", "floor.mat"]
+mats_path = ["assets/empty.mat", "assets/floor.mat", "assets/magma.mat", "assets/rock.mat", "assets/water.mat", "assets/tree.mat", "assets/floor.mat", "assets/floor.mat"]
 size_big_block = gs.Vector3(16 * 1, 1, 16 * 1)
 
 

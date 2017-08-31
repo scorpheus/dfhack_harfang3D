@@ -34,12 +34,18 @@ scn.AddComponent(sky_script)
 plus.UpdateScene(scn, gs.time(0.1))
 plus.UpdateScene(scn, gs.time(0.1))
 scn.GetNode("Sky Main Light").GetLight().SetShadow(gs.Light.Shadow_None)
+scn.GetNode("Sky Back Light").GetLight().SetShadow(gs.Light.Shadow_None)
 
 light_cam = plus.AddLight(scn, gs.Matrix4.TranslationMatrix(gs.Vector3(6, 200, -6)))
 light_cam.GetLight().SetShadow(gs.Light.Shadow_None)
 
 cam = plus.AddCamera(scn, gs.Matrix4.TranslationMatrix(gs.Vector3(112, 62, 112)))
 cam.GetCamera().SetZoomFactor(gs.FovToZoomFactor(1.57))
+
+scene_simple_graphic = gs.SimpleGraphicSceneOverlay(False)
+scene_simple_graphic.SetBlendMode(gs.BlendAlpha)
+scene_simple_graphic.SetDepthWrite(False)
+scn.AddComponent(scene_simple_graphic)
 
 # get first dwarf position
 unit_list = get_all_unit_list()
@@ -70,12 +76,12 @@ while not plus.IsAppEnded(plus.EndOnDefaultWindowClosed): #plus.EndOnEscapePress
 	blocks_builder.update_block(cam)
 
 	# draw the block
-	big_block_visible = blocks_builder.draw_block(scn.GetRenderableSystem(), cam)
+	big_block_visible = blocks_builder.draw_block(scn.GetRenderableSystem(), cam, scene_simple_graphic)
 
 	# update unit draw
 	update_dwarf.draw_dwarf(scn)
 
-
+	plus.Text2D(0, 65, "FPS:{0}".format(int(1/dt_sec.to_sec())))
 	plus.Text2D(0, 45, "BIG BLOCK: %d, BLOCK VISIBLE: %d" % (len(blocks_builder.array_world_big_block), big_block_visible), 16, gs.Color.Red)
 	plus.Text2D(0, 25, "FPS.X = %f, FPS.Y = %f, FPS.Z = %f" % (fps.GetPos().x, fps.GetPos().y, fps.GetPos().z), 16, gs.Color.Red)
 
