@@ -1,11 +1,12 @@
-import gs
+import harfang as hg
+from harfang_shortcut import *
 
 status_to_parse = 1
 status_parsing = 2
 status_ready = 3
 
 mats_path = ["assets/empty.mat", "assets/floor.mat", "assets/magma.mat", "assets/rock.mat", "assets/water.mat", "assets/tree.mat", "assets/floor.mat", "assets/floor.mat"]
-size_big_block = gs.Vector3(16 * 1, 1, 16 * 1)
+size_big_block = vec3(16 * 1, 1, 16 * 1)
 
 
 def hash_from_pos(x, y, z):
@@ -17,9 +18,9 @@ def hash_from_pos_v(v):
 
 
 def from_world_to_dfworld(new_pos):
-	return gs.Vector3(new_pos.x, new_pos.z, new_pos.y)
+	return vec3(new_pos.x, new_pos.z, new_pos.y)
 
 
 def from_dfworld_to_world(new_pos):
-	return gs.Vector3(new_pos.x, new_pos.z, new_pos.y)
+	return vec3(new_pos.x, new_pos.z, new_pos.y)
 

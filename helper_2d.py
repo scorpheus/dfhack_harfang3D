@@ -1,21 +1,31 @@
-import gs
+import harfang as hg
 import math
 import bspline
+from harfang_shortcut import *
 
 font = None
 
 
-def get_spline_val(t, p1, p2, p3, p4):
+def get_spline_val(t, v1, v2, v3, v4):
+	v = [v1, v2, v3, v4.z]
+
+	C = bspline.C_factory(v, 1, "clamped")
+	if C:
+		val = C(t * C.max)
+		return val
+	return v2
+
+def get_spline_val_vec(t, p1, p2, p3, p4):
 	P = [(p1.x, p1.y, p1.z), (p2.x, p2.y, p2.z), (p3.x, p3.y, p3.z), (p4.x, p4.y, p4.z)]
 
 	C = bspline.C_factory(P, 3, "clamped")
 	if C:
 		val = C(t * C.max)
-		return gs.Vector3(val[0], val[1], val[2])
+		return vec3(val[0], val[1], val[2])
 	return p2
 
 
-def draw_spline(scene_simple_graphic, p1, p2, p3, p4, color=gs.Color.White):
+def draw_spline(scene_simple_graphic, p1, p2, p3, p4, color=col.White):
 	P = [(p1.x, p1.y, p1.z), (p2.x, p2.y, p2.z), (p3.x, p3.y, p3.z), (p4.x, p4.y, p4.z)]
 
 	C = bspline.C_factory(P, 3, "clamped")
@@ -49,19 +59,30 @@ def rangeadjust_clamp(k, a, b, u, v):
 def lerp(k, a, b):
 	return a + (b - a) * k
 
+# Range : [0.0, 1.0]
+def	EaseInOutQuick(x):
+	x = clamp(x, 0.0, 1.0)
+	return	(x * x * (3 - 2 * x))
+
+# Range : [0.0, 1.0]
+def EaseInOutByPow(x, p = 2.0):
+	x = clamp(x, 0.0, 1.0)
+	y = pow(x, p) / (pow(x, p) + pow(1 - x, p))
+	return y
+
 
 def get_face_matrix(position, cam_pos):
 		vec_look_at = (position - cam_pos)
 		vec_look_at.y = 0
 		vec_look_at = vec_look_at.Normalized()
-		return gs.Matrix4.TransformationMatrix(position, gs.Matrix3.LookAt(vec_look_at))
+		return mat4.TransformationMatrix(position, mat3.LookAt(vec_look_at))
 
 
 def get_poly_from_minmax(minmax):
-	return [gs.Vector3(minmax.GetMax(gs.AxisX), 0, minmax.GetMax(gs.AxisZ)),
-			gs.Vector3(minmax.GetMax(gs.AxisX), 0, minmax.GetMin(gs.AxisZ)),
-			gs.Vector3(minmax.GetMin(gs.AxisX), 0, minmax.GetMin(gs.AxisZ)),
-			gs.Vector3(minmax.GetMin(gs.AxisX), 0, minmax.GetMax(gs.AxisZ))]
+	return [vec3(minmax.GetMax(hg.AxisX), 0, minmax.GetMax(hg.AxisZ)),
+			vec3(minmax.GetMax(hg.AxisX), 0, minmax.GetMin(hg.AxisZ)),
+			vec3(minmax.GetMin(hg.AxisX), 0, minmax.GetMin(hg.AxisZ)),
+			vec3(minmax.GetMin(hg.AxisX), 0, minmax.GetMax(hg.AxisZ))]
 
 
 def get_poly_from_obb(obb):
@@ -122,26 +143,26 @@ def overlap_obb_2d(obb1, obb2):
 	obb2_poly = get_cube_from_obb(obb2)
 
 	# 2D
-	if gs.TestOverlap(obb1.rotation.GetX(), obb1_poly, obb2_poly) and \
-		gs.TestOverlap(obb1.rotation.GetZ(), obb1_poly, obb2_poly) and \
-		gs.TestOverlap(obb1.rotation.GetX().Cross(obb2.rotation.GetX()), obb1_poly, obb2_poly) and \
-		gs.TestOverlap(obb1.rotation.GetX().Cross(obb2.rotation.GetZ()), obb1_poly, obb2_poly) and \
-		gs.TestOverlap(obb1.rotation.GetZ().Cross(obb2.rotation.GetX()), obb1_poly, obb2_poly) and \
-		gs.TestOverlap(obb1.rotation.GetZ().Cross(obb2.rotation.GetZ()), obb1_poly, obb2_poly):
+	if hg.TestOverlap(obb1.rotation.GetX(), obb1_poly, obb2_poly) and \
+		hg.TestOverlap(obb1.rotation.GetZ(), obb1_poly, obb2_poly) and \
+		hg.TestOverlap(obb1.rotation.GetX().Cross(obb2.rotation.GetX()), obb1_poly, obb2_poly) and \
+		hg.TestOverlap(obb1.rotation.GetX().Cross(obb2.rotation.GetZ()), obb1_poly, obb2_poly) and \
+		hg.TestOverlap(obb1.rotation.GetZ().Cross(obb2.rotation.GetX()), obb1_poly, obb2_poly) and \
+		hg.TestOverlap(obb1.rotation.GetZ().Cross(obb2.rotation.GetZ()), obb1_poly, obb2_poly):
 		return True
 	# 3D
-	# if gs.TestOverlap(obb1.rotation.GetX(), obb1_poly, obb2_poly) and \
-	# 	gs.TestOverlap(obb1.rotation.GetY(), obb1_poly, obb2_poly) and \
-	# 	gs.TestOverlap(obb1.rotation.GetZ(), obb1_poly, obb2_poly) and \
-	# 	gs.TestOverlap(obb1.rotation.GetX().Cross(obb2.rotation.GetX()), obb1_poly, obb2_poly) and \
-	# 	gs.TestOverlap(obb1.rotation.GetX().Cross(obb2.rotation.GetY()), obb1_poly, obb2_poly) and \
-	# 	gs.TestOverlap(obb1.rotation.GetX().Cross(obb2.rotation.GetZ()), obb1_poly, obb2_poly) and \
-	# 	gs.TestOverlap(obb1.rotation.GetY().Cross(obb2.rotation.GetX()), obb1_poly, obb2_poly) and \
-	# 	gs.TestOverlap(obb1.rotation.GetY().Cross(obb2.rotation.GetY()), obb1_poly, obb2_poly) and \
-	# 	gs.TestOverlap(obb1.rotation.GetY().Cross(obb2.rotation.GetZ()), obb1_poly, obb2_poly) and \
-	# 	gs.TestOverlap(obb1.rotation.GetZ().Cross(obb2.rotation.GetX()), obb1_poly, obb2_poly) and \
-	# 	gs.TestOverlap(obb1.rotation.GetZ().Cross(obb2.rotation.GetY()), obb1_poly, obb2_poly) and \
-	# 	gs.TestOverlap(obb1.rotation.GetZ().Cross(obb2.rotation.GetZ()), obb1_poly, obb2_poly):
+	# if hg.TestOverlap(obb1.rotation.GetX(), obb1_poly, obb2_poly) and \
+	# 	hg.TestOverlap(obb1.rotation.GetY(), obb1_poly, obb2_poly) and \
+	# 	hg.TestOverlap(obb1.rotation.GetZ(), obb1_poly, obb2_poly) and \
+	# 	hg.TestOverlap(obb1.rotation.GetX().Cross(obb2.rotation.GetX()), obb1_poly, obb2_poly) and \
+	# 	hg.TestOverlap(obb1.rotation.GetX().Cross(obb2.rotation.GetY()), obb1_poly, obb2_poly) and \
+	# 	hg.TestOverlap(obb1.rotation.GetX().Cross(obb2.rotation.GetZ()), obb1_poly, obb2_poly) and \
+	# 	hg.TestOverlap(obb1.rotation.GetY().Cross(obb2.rotation.GetX()), obb1_poly, obb2_poly) and \
+	# 	hg.TestOverlap(obb1.rotation.GetY().Cross(obb2.rotation.GetY()), obb1_poly, obb2_poly) and \
+	# 	hg.TestOverlap(obb1.rotation.GetY().Cross(obb2.rotation.GetZ()), obb1_poly, obb2_poly) and \
+	# 	hg.TestOverlap(obb1.rotation.GetZ().Cross(obb2.rotation.GetX()), obb1_poly, obb2_poly) and \
+	# 	hg.TestOverlap(obb1.rotation.GetZ().Cross(obb2.rotation.GetY()), obb1_poly, obb2_poly) and \
+	# 	hg.TestOverlap(obb1.rotation.GetZ().Cross(obb2.rotation.GetZ()), obb1_poly, obb2_poly):
 	# 	return True
 
 	return False
@@ -150,17 +171,17 @@ def overlap_obb_2d(obb1, obb2):
 def overlap_circles_2d(circles1, circles2):
 	for id1, c1 in enumerate(circles1):
 		for id2, c2 in enumerate(circles2):
-			if gs.Vector3.Dist2(c1["p"], c2["p"]) < (c1["r"] + c2["r"])**2:
+			if vec3.Dist2(c1["p"], c2["p"]) < (c1["r"] + c2["r"])**2:
 				return True, id1, id2
 	return False, None, None
 
 
 def overlap_min_max_2d(minmax1, minmax2):
 	return point_in_poly_2d(minmax1.mn, get_poly_from_minmax(minmax2)) or point_in_poly_2d(minmax1.mx, get_poly_from_minmax(minmax2)) or \
-		   point_in_poly_2d(gs.Vector3(minmax1.mn.x, 0, minmax1.mx.z), get_poly_from_minmax(minmax2)) or point_in_poly_2d(gs.Vector3(minmax1.mx.x, 0, minmax1.mn.z), get_poly_from_minmax(minmax2))
+		   point_in_poly_2d(vec3(minmax1.mn.x, 0, minmax1.mx.z), get_poly_from_minmax(minmax2)) or point_in_poly_2d(vec3(minmax1.mx.x, 0, minmax1.mn.z), get_poly_from_minmax(minmax2))
 
 
-def draw_minmax(scene_simple_graphic, minmax, color=gs.Color.White):
+def draw_minmax(scene_simple_graphic, minmax, color=col.White):
 	scene_simple_graphic.Line(minmax.mn.x, minmax.mn.y, minmax.mn.z, minmax.mx.x, minmax.mn.y, minmax.mn.z, color, color)
 	scene_simple_graphic.Line(minmax.mn.x, minmax.mn.y, minmax.mn.z, minmax.mn.x, minmax.mx.y, minmax.mn.z, color, color)
 	scene_simple_graphic.Line(minmax.mn.x, minmax.mn.y, minmax.mn.z, minmax.mn.x, minmax.mn.y, minmax.mx.z, color, color)
@@ -176,7 +197,7 @@ def draw_minmax(scene_simple_graphic, minmax, color=gs.Color.White):
 	scene_simple_graphic.Line(minmax.mx.x, minmax.mn.y, minmax.mx.z, minmax.mn.x, minmax.mn.y, minmax.mx.z, color, color)
 
 
-def draw_obb(scene_simple_graphic, obb, color=gs.Color.White):
+def draw_obb(scene_simple_graphic, obb, color=col.White):
 	cube = [
 	obb.position + obb.rotation.GetX() * obb.scale.x * 0.5 + obb.rotation.GetY() * obb.scale.y * 0.5 + obb.rotation.GetZ() * obb.scale.z * 0.5,
 	 obb.position + obb.rotation.GetX() * obb.scale.x * 0.5 + obb.rotation.GetY() * obb.scale.y * 0.5 + obb.rotation.GetZ() * -obb.scale.z * 0.5,
@@ -191,22 +212,7 @@ def draw_obb(scene_simple_graphic, obb, color=gs.Color.White):
 	draw_cube(scene_simple_graphic, cube, color)
 
 
-def draw_cube_from_mat(scene_simple_graphic, mat, color=gs.Color.White):
-	cube = [
-		gs.Vector3(-1, -1, -1) * mat,
-		gs.Vector3(-1, -1, 1) * mat,
-		gs.Vector3(1, -1, 1) * mat,
-		gs.Vector3(1, -1, -1) * mat,
-
-		gs.Vector3(-1, 1, -1) * mat,
-		gs.Vector3(-1, 1, 1) * mat,
-		gs.Vector3(1, 1, 1) * mat,
-		gs.Vector3(1, 1, -1) * mat
-	 ]
-	draw_cube(scene_simple_graphic, cube, color)
-
-
-def draw_cube(scene_simple_graphic, cube, color=gs.Color.White):
+def draw_cube(scene_simple_graphic, cube, color=col.White):
 	draw_line(scene_simple_graphic, cube[0], cube[1], color)
 	draw_line(scene_simple_graphic, cube[1], cube[2], color)
 	draw_line(scene_simple_graphic, cube[2], cube[3], color)
@@ -223,37 +229,37 @@ def draw_cube(scene_simple_graphic, cube, color=gs.Color.White):
 	draw_line(scene_simple_graphic, cube[3], cube[7], color)
 
 
-def draw_line(scene_simple_graphic, a, b, color=gs.Color.White):
+def draw_line(scene_simple_graphic, a, b, color=col.White):
 	scene_simple_graphic.Line(a.x, a.y, a.z, b.x, b.y, b.z, color, color)
 
 
-def draw_cross(scene_simple_graphic, pos, color=gs.Color.White, size=0.5):
+def draw_cross(scene_simple_graphic, pos, color=col.White, size=0.5):
 	scene_simple_graphic.Line(pos.x-size, pos.y, pos.z, pos.x+size, pos.y, pos.z, color, color)
 	scene_simple_graphic.Line(pos.x, pos.y-size, pos.z, pos.x, pos.y+size, pos.z, color, color)
 	scene_simple_graphic.Line(pos.x, pos.y, pos.z-size, pos.x, pos.y, pos.z+size, color, color)
 
 
-def draw_circle(scene_simple_graphic, world, r, color=gs.Color.White):
+def draw_circle(scene_simple_graphic, world, r, color=col.White):
 	step = 50
-	prev = gs.Vector3(math.cos(0) * r, 0, math.sin(0) * r) * world
+	prev = vec3(math.cos(0) * r, 0, math.sin(0) * r) * world
 	for i in range(step+1):
-		val = gs.Vector3(math.cos(math.pi*2*float(i)/step) * r, 0, math.sin(math.pi*2*float(i)/step) * r) * world
+		val = vec3(math.cos(math.pi*2*float(i)/step) * r, 0, math.sin(math.pi*2*float(i)/step) * r) * world
 
 		scene_simple_graphic.Line(prev.x, prev.y, prev.z, val.x, val.y, val.z, color, color)
 		prev = val
 
 
-def draw_text(scene_simple_graphic, text, mat, size=0.01, color=gs.Color.White, text_centered=False):
-	scene_simple_graphic.SetDepthTest(False)
-	scene_simple_graphic.SetBlendMode(gs.BlendAlpha)
+def draw_text(scene_simple_graphic, text, mat, size=0.01, color=col.White, text_centered=False):
+	scene_simple_graphic.SetDepthWrite(False)
+	scene_simple_graphic.SetBlendMode(hg.BlendAlpha)
 	if text_centered:
-		text_rect = font.GetTextRect(gs.GetPlus().GetRenderSystem(), text)
-		mat = mat * gs.Matrix4.TranslationMatrix((-(text_rect.ex - text_rect.sx) * 0.5 * size, 0, 0))
+		text_rect = font.GetTextRect(hg.GetPlus().GetRenderSystem(), text)
+		mat = mat * mat4.TranslationMatrix(vec3(-(text_rect.ex - text_rect.sx) * 0.5 * size, 0, 0))
 	scene_simple_graphic.Text(mat, text, color, font, size)
-	scene_simple_graphic.SetDepthTest(True)
+	scene_simple_graphic.SetDepthWrite(True)
 
 
-def draw_quad(scene_simple_graphic, mat, width, height, texture):
+def draw_quad(scene_simple_graphic, mat, width, height, texture, color = col.White):
 	pos = mat.GetTranslation()
 	axis = [mat.GetX() * width / 2, mat.GetY() * height / 2, mat.GetZ()]
 	a = pos - axis[0] - axis[1]
@@ -267,10 +273,10 @@ def draw_quad(scene_simple_graphic, mat, width, height, texture):
 				d.x, d.y, d.z,
 				0, 0, 1, 1,
 				texture,
-				gs.Color.White, gs.Color.White, gs.Color.White, gs.Color.White
+				color, color, color, color
 				)
 
 
 def draw_geometry(scene_simple_graphic, mat, geo):
-	p, s, r = mat.Decompose(gs.RotationOrder_Default)
+	p, s, r = mat.Decompose(hg.RotationOrder_Default)
 	scene_simple_graphic.Geometry(p.x, p.y, p.z, r.x, r.y, r.z, s.x, s.y, s.z, geo)

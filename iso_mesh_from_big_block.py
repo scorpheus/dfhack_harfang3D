@@ -1,6 +1,6 @@
 import geometry_iso
 import numpy as np
-import gs
+import harfang as hg
 from helpers import *
 
 
@@ -40,7 +40,7 @@ def update_iso_mesh(array_world_big_block, id_block, pos):
 
 def make_big_block_iso(array_world_big_block, big_block):
 	# check if all the neighbourgh exists
-	pos = gs.Vector3(big_block["min_pos"])
+	pos = vec3(big_block["min_pos"])
 	pos.x = int(pos.x / size_big_block.x)
 	pos.y = int(pos.y / size_big_block.y)
 	pos.z = int(pos.z / size_big_block.z)
@@ -55,7 +55,7 @@ def make_big_block_iso(array_world_big_block, big_block):
 	if north_id in array_world_big_block and array_world_big_block[north_id]["status"] == status_ready:
 		list(array_world_big_block[north_id]["blocks"].values())[0]["iso_array"][:, -1] = list(array_world_big_block[id_block]["blocks"].values())[0]["iso_array"][:, 0]
 		list(array_world_big_block[north_id]["blocks"].values())[0]["iso_array_mat"][:, -1] = list(array_world_big_block[id_block]["blocks"].values())[0]["iso_array_mat"][:, 0]
-		update_iso_mesh(array_world_big_block, north_id, gs.Vector3(pos.x, pos.y, pos.z - 1))
+		update_iso_mesh(array_world_big_block, north_id, vec3(pos.x, pos.y, pos.z - 1))
 
 	if south_name in array_world_big_block and array_world_big_block[south_name]["status"] == status_ready:
 		list(array_world_big_block[id_block]["blocks"].values())[0]["iso_array"][:, -1] = list(array_world_big_block[south_name]["blocks"].values())[0]["iso_array"][:, 0]
@@ -64,7 +64,7 @@ def make_big_block_iso(array_world_big_block, big_block):
 	if west_name in array_world_big_block and array_world_big_block[west_name]["status"] == status_ready:
 		list(array_world_big_block[west_name]["blocks"].values())[0]["iso_array"][-1, :] = list(array_world_big_block[id_block]["blocks"].values())[0]["iso_array"][0, :]
 		list(array_world_big_block[west_name]["blocks"].values())[0]["iso_array_mat"][-1, :] = list(array_world_big_block[id_block]["blocks"].values())[0]["iso_array_mat"][0, :]
-		update_iso_mesh(array_world_big_block, west_name, gs.Vector3(pos.x - 1, pos.y, pos.z))
+		update_iso_mesh(array_world_big_block, west_name, vec3(pos.x - 1, pos.y, pos.z))
 
 	if east_name in array_world_big_block and array_world_big_block[east_name]["status"] == status_ready:
 		list(array_world_big_block[id_block]["blocks"].values())[0]["iso_array"][-1, :] = list(array_world_big_block[east_name]["blocks"].values())[0]["iso_array"][0, :]

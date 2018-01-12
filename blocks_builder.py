@@ -14,10 +14,10 @@ import xmltodict
 import helper_2d
 
 
-plus = gs.GetPlus()
+plus = hg.GetPlus()
 
 # to test the iso surface, it's not finis
-use_iso_surface = True
+use_iso_surface = False
 
 map_info = None
 df_tile_type_list = None
@@ -129,17 +129,17 @@ def setup():
 	# building_def_list = get_building_def_list()
 
 	building_geos = {building_type.Chair: None, building_type.Bed: None,
-					 building_type.Table: {'g': plus.LoadGeometry("environment_kit/geo-table.geo"), 'o': gs.Matrix4.Identity},
+					 building_type.Table: {'g': plus.LoadGeometry("environment_kit/geo-table.geo"), 'o': mat4.Identity},
 					 building_type.Coffin: None, building_type.FarmPlot: None, building_type.Furnace: None,
 					 building_type.TradeDepot: None, building_type.Shop: None,
-					 building_type.Door: {'g': plus.LoadGeometry("environment_kit/geo-door.geo"), 'o': gs.Matrix4.Identity},
+					 building_type.Door: {'g': plus.LoadGeometry("environment_kit/geo-door.geo"), 'o': mat4.Identity},
 					 building_type.Floodgate: None,
-					 building_type.Box: {'g': plus.LoadGeometry("environment_kit_inca/chest_top.geo"), 'o': gs.Matrix4.Identity},
+					 building_type.Box: {'g': plus.LoadGeometry("environment_kit_inca/chest_top.geo"), 'o': mat4.Identity},
 					 building_type.Weaponrack: None,
 					 building_type.Armorstand: None,
-					 building_type.Workshop: {'g': plus.LoadGeometry("environment_kit/geo-bookshelf.geo"), 'o': gs.Matrix4.Identity},
-					 building_type.Cabinet: {'g': plus.LoadGeometry("environment_kit/geo-bookshelf.geo"), 'o': gs.Matrix4.Identity},
-					 building_type.Statue: {'g': plus.LoadGeometry("environment_kit/geo-greece_column.geo"), 'o': gs.Matrix4.RotationMatrix(gs.Vector3(-1.57, 0, 0))},
+					 building_type.Workshop: {'g': plus.LoadGeometry("environment_kit/geo-bookshelf.geo"), 'o': mat4.Identity},
+					 building_type.Cabinet: {'g': plus.LoadGeometry("environment_kit/geo-bookshelf.geo"), 'o': mat4.Identity},
+					 building_type.Statue: {'g': plus.LoadGeometry("environment_kit/geo-greece_column.geo"), 'o': mat4.RotationMatrix(vec3(-1.57, 0, 0))},
 					 building_type.WindowGlass: None, building_type.WindowGem: None,
 					 building_type.Well: None, building_type.Bridge: None, building_type.RoadDirt: None,
 					 building_type.RoadPaved: None, building_type.SiegeEngine: None, building_type.Trap: None,
@@ -147,7 +147,7 @@ def setup():
 					 building_type.Chain: None, building_type.Cage: None, building_type.Stockpile: None,
 					 building_type.Civzone: None,
 					 building_type.Weapon: None, building_type.Wagon: None, building_type.ScrewPump: None,
-					 building_type.Construction: {'g': plus.LoadGeometry("environment_kit/geo-egypt_wall.geo"), 'o': gs.Matrix4.Identity},
+					 building_type.Construction: {'g': plus.LoadGeometry("environment_kit/geo-egypt_wall.geo"), 'o': mat4.Identity},
 					 building_type.Hatch: None, building_type.GrateWall: None, building_type.GrateFloor: None,
 					 building_type.BarsVertical: None,
 					 building_type.BarsFloor: None, building_type.GearAssembly: None,
@@ -158,29 +158,29 @@ def setup():
 
 	# precompile material
 	tile_geos = {
-		tile_type.NONE:           {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.EMPTY:          {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.FLOOR:          {"core_g": plus.CreateCube(1.0, 0.1 * scale_unit_y, 1.0, "assets/floor.mat"), "render_g": None, "o": gs.Matrix4.TranslationMatrix((0, -0.45 * scale_unit_y, 0))},
-		tile_type.BOULDER:        {"core_g": None, "render_g": plus.LoadGeometry("environment_kit_inca/stone_high_03.geo"), "o": gs.Matrix4.TransformationMatrix((0, -0.5, 0), (0, 0, 0), (0.1, 0.1, 0.1))},
-		tile_type.PEBBLES:        {"core_g": None, "render_g": plus.LoadGeometry("environment_kit_inca/stone_high_01.geo"), "o": gs.Matrix4.TransformationMatrix((0, -0.5, 0), (0, 0, 0), (0.1, 0.1, 0.1))},
-		tile_type.WALL:           {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/rock.mat"), "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.FORTIFICATION:  {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/rock.mat"), "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.STAIR_UP:       {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.STAIR_DOWN:     {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.STAIR_UPDOWN:   {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.RAMP:           {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},       # ramp will build after
-		tile_type.RAMP_TOP:       {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.BROOK_BED:      {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.BROOK_TOP:      {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.TREE_SHAPE:     {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.SAPLING:        {"core_g": None, "render_g": plus.LoadGeometry("environment_kit_inca/tropical_bush_06.geo"), "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.SHRUB:          {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/floor.mat"), "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.ENDLESS_PIT:    {"core_g": None, "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.BRANCH:         {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/tree.mat"), "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.TRUNK_BRANCH:   {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/tree.mat"), "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.TWIG:           {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/tree.mat"), "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.WATER:          {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/water.mat"), "render_g": None, "o": gs.Matrix4.Identity},
-		tile_type.MAGMA:          {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/magma.mat"), "render_g": None, "o": gs.Matrix4.Identity},
+		tile_type.NONE:           {"core_g": None, "render_g": None, "o": mat4.Identity},
+		tile_type.EMPTY:          {"core_g": None, "render_g": None, "o": mat4.Identity},
+		tile_type.FLOOR:          {"core_g": plus.CreateCube(1.0, 0.1 * scale_unit_y, 1.0, "assets/floor.mat"), "render_g": None, "o": mat4.TranslationMatrix(vec3(0, -0.45 * scale_unit_y, 0))},
+		tile_type.BOULDER:        {"core_g": None, "render_g": plus.LoadGeometry("environment_kit_inca/stone_high_03.geo"), "o": mat4.TransformationMatrix(vec3(0, -0.5, 0), vec3(0, 0, 0), vec3(0.1, 0.1, 0.1))},
+		tile_type.PEBBLES:        {"core_g": None, "render_g": plus.LoadGeometry("environment_kit_inca/stone_high_01.geo"), "o": mat4.TransformationMatrix(vec3(0, -0.5, 0), vec3(0, 0, 0), vec3(0.1, 0.1, 0.1))},
+		tile_type.WALL:           {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/rock.mat"), "render_g": None, "o": mat4.Identity},
+		tile_type.FORTIFICATION:  {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/rock.mat"), "render_g": None, "o": mat4.Identity},
+		tile_type.STAIR_UP:       {"core_g": None, "render_g": None, "o": mat4.Identity},
+		tile_type.STAIR_DOWN:     {"core_g": None, "render_g": None, "o": mat4.Identity},
+		tile_type.STAIR_UPDOWN:   {"core_g": None, "render_g": None, "o": mat4.Identity},
+		tile_type.RAMP:           {"core_g": None, "render_g": None, "o": mat4.Identity},       # ramp will build after
+		tile_type.RAMP_TOP:       {"core_g": None, "render_g": None, "o": mat4.Identity},
+		tile_type.BROOK_BED:      {"core_g": None, "render_g": None, "o": mat4.Identity},
+		tile_type.BROOK_TOP:      {"core_g": None, "render_g": None, "o": mat4.Identity},
+		tile_type.TREE_SHAPE:     {"core_g": None, "render_g": None, "o": mat4.Identity},
+		tile_type.SAPLING:        {"core_g": None, "render_g": plus.LoadGeometry("environment_kit_inca/tropical_bush_06.geo"), "render_g": None, "o": mat4.Identity},
+		tile_type.SHRUB:          {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/floor.mat"), "render_g": None, "o": mat4.Identity},
+		tile_type.ENDLESS_PIT:    {"core_g": None, "render_g": None, "o": mat4.Identity},
+		tile_type.BRANCH:         {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/tree.mat"), "render_g": None, "o": mat4.Identity},
+		tile_type.TRUNK_BRANCH:   {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/tree.mat"), "render_g": None, "o": mat4.Identity},
+		tile_type.TWIG:           {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/tree.mat"), "render_g": None, "o": mat4.Identity},
+		tile_type.WATER:          {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/water.mat"), "render_g": None, "o": mat4.Identity},
+		tile_type.MAGMA:          {"core_g": plus.CreateCube(1.0, 1.0 * scale_unit_y, 1.0, "assets/magma.mat"), "render_g": None, "o": mat4.Identity},
 	}
 
 	# core_geo to render_geo
@@ -210,15 +210,15 @@ def parse_block_building(fresh_block, array_geos_worlds, tiles):
 	# parse building
 	for building in fresh_block.buildings:
 		if building_geos[building.building_type.building_type] is not None and "id_geo" in building_geos[building.building_type.building_type]:
-			tile_pos = from_dfworld_to_world(gs.Vector3(map_info.block_size_x * 16 - building.pos_x_min, building.pos_y_min * scale_unit_y, building.pos_z_min))
-			m = gs.Matrix4.TranslationMatrix(tile_pos) * gs.Matrix4.TransformationMatrix((-1, -0.45, 0), (0, 0, 0), (0.25, 0.25, 0.25))
+			tile_pos = from_dfworld_to_world(vec3(map_info.block_size_x * 16 - building.pos_x_min, building.pos_y_min * scale_unit_y, building.pos_z_min))
+			m = mat4.TranslationMatrix(tile_pos) * mat4.TransformationMatrix(vec3(-1, -0.45, 0), vec3(0, 0, 0), vec3(0.25, 0.25, 0.25))
 			array_geos_worlds[building_geos[building.building_type.building_type]["id_geo"]].append(m * building_geos[building.building_type.building_type]["o"])
 
 	return array_geos_worlds, tiles
 
 
 def parse_block_only_water_magma(fresh_block, array_geos_worlds, tiles, iso_array, iso_array_mat):
-	world_block_pos = from_dfworld_to_world(gs.Vector3(map_info.block_size_x*16-16 - fresh_block.map_x, fresh_block.map_y, fresh_block.map_z))
+	world_block_pos = from_dfworld_to_world(vec3(map_info.block_size_x*16-16 - fresh_block.map_x, fresh_block.map_y, fresh_block.map_z))
 
 	# temporary array_geos
 	magma_array_geos = []
@@ -232,13 +232,13 @@ def parse_block_only_water_magma(fresh_block, array_geos_worlds, tiles, iso_arra
 
 		if magma > 0 or water > 0:
 			if magma > 0:
-				tile_pos = gs.Vector3(world_block_pos.x + x, world_block_pos.y - (1.0 - magma / 7)*0.5, world_block_pos.z + z)
-				tile_scale = gs.Vector3(1, magma/7., 1)
+				tile_pos = vec3(world_block_pos.x + x, world_block_pos.y - (1.0 - magma / 7)*0.5, world_block_pos.z + z)
+				tile_scale = vec3(1, magma/7., 1)
 				iso_array[x, z] = magma/7.
 				current_array_geos = magma_array_geos
 			elif water > 0:
-				tile_pos = gs.Vector3(world_block_pos.x + x, world_block_pos.y - (1.0 - water / 7)*0.5, world_block_pos.z + z)
-				tile_scale = gs.Vector3(1, water/7., 1)
+				tile_pos = vec3(world_block_pos.x + x, world_block_pos.y - (1.0 - water / 7)*0.5, world_block_pos.z + z)
+				tile_scale = vec3(1, water/7., 1)
 				iso_array[x, z] = water/7.
 				current_array_geos = water_array_geos
 
@@ -246,11 +246,11 @@ def parse_block_only_water_magma(fresh_block, array_geos_worlds, tiles, iso_arra
 
 			id_tile = hash_from_pos(tile_pos.x, tile_pos.y, tile_pos.z)
 
-			# block["blocks"][id_tile] = {"m": gs.Matrix4.TranslationMatrix(tile_pos), "mat": block_mat} # perfect grid
+			# block["blocks"][id_tile] = {"m": mat4.TranslationMatrix(tile_pos), "mat": block_mat} # perfect grid
 			n1 = noise.snoise3(tile_pos.x, tile_pos.y, tile_pos.z)
 			n2 = noise.snoise3(tile_pos.x+0.5, tile_pos.y, tile_pos.z)
 			n3 = noise.snoise3(tile_pos.x, tile_pos.y+0.5, tile_pos.z)
-			m = gs.Matrix4.TransformationMatrix(tile_pos, (n1 * 0.1, n2 * 0.1, n3 * 0.1), tile_scale)
+			m = mat4.TransformationMatrix(tile_pos, vec3(n1 * 0.1, n2 * 0.1, n3 * 0.1), tile_scale)
 			tiles[id_tile] = {"m": m, "mat": 4} # with rumble
 
 			current_array_geos.append(m)
@@ -304,15 +304,15 @@ def make_ramps(world_block_pos, ramp_to_evaluate, iso_array, iso_array_mat, arra
 				big_array = np.zeros((w+4, h+4, d+6))
 				big_array[2:-2, 2:-2, 3:-3] = cube_val
 
-				field = gs.BinaryBlob()
+				field = hg.BinaryData()
 				field.Grow((w+4)*(d+5)*(h+4))
 				field.WriteFloats(big_array.flatten('F').tolist())
 
-				iso = gs.IsoSurface()
-				gs.PolygoniseIsoSurface(w+2, h+2, d+3, field, 1.0, iso, (1/2, 1, 1/2))
+				iso = hg.IsoSurface()
+				hg.PolygoniseIsoSurface(w+2, h+2, d+3, field, 1.0, iso, vec3(1/2, 1, 1/2))
 
-				core_geo = gs.CoreGeometry()
-				gs.IsoSurfaceToCoreGeometry(iso, core_geo)
+				core_geo = hg.Geometry()
+				hg.IsoSurfaceToCoreGeometry(iso, core_geo)
 				core_geo.SetMaterial(0, "assets/floor.mat")
 
 				core_geo.ComputeVertexNormal(math.radians(0.0), True)
@@ -320,15 +320,15 @@ def make_ramps(world_block_pos, ramp_to_evaluate, iso_array, iso_array_mat, arra
 
 				ramp_geo = plus.CreateGeometry(core_geo, False)
 
-				render_geos.append({"g": ramp_geo, "o": gs.Matrix4.Identity})
-				ramp_geos[id_ramp] = {"id_geo": len(render_geos) - 1, "o": gs.Matrix4.Identity, "geos_color": {}, "core_g": core_geo}
+				render_geos.append({"g": ramp_geo, "o": mat4.Identity})
+				ramp_geos[id_ramp] = {"id_geo": len(render_geos) - 1, "o": mat4.Identity, "geos_color": {}, "core_g": core_geo}
 
 			# create the colored mesh if necessary
 			hash_color = hash(ramp[2])
 			if hash_color not in ramp_geos[id_ramp]["geos_color"]:
 				# create the color geo
 				new_render_geo = plus.CreateGeometry(ramp_geos[id_ramp]["core_g"], False)
-				while not new_render_geo.IsReady(): # don't know why it's not immediate ...
+				while not new_render_geo.IsReadyOrFailed(): # don't know why it's not immediate ...
 					pass
 				new_mat = new_render_geo.GetMaterial(0).Clone()
 				new_mat.SetFloat4("diffuse_color", ramp[2][0], ramp[2][1], ramp[2][2], 1.0)
@@ -339,13 +339,12 @@ def make_ramps(world_block_pos, ramp_to_evaluate, iso_array, iso_array_mat, arra
 
 			id_geo = ramp_geos[id_ramp]["geos_color"][hash_color]
 
-			# id_geo = ramp_geos[id_ramp]["id_geo"]
-			tile_pos = gs.Vector3(world_block_pos.x + ramp[0] - 1.5, world_block_pos.y-3.4, world_block_pos.z + ramp[1] - 1.5)
+			tile_pos = vec3(world_block_pos.x + ramp[0] - 1.5, world_block_pos.y-3.4, world_block_pos.z + ramp[1] - 1.5)
 			n1 = noise.snoise3(tile_pos.x, tile_pos.y, tile_pos.z)
 			n2 = noise.snoise3(tile_pos.x + 0.5, tile_pos.y, tile_pos.z)
 			n3 = noise.snoise3(tile_pos.x, tile_pos.y + 0.5, tile_pos.z)
 
-			m = gs.Matrix4.TransformationMatrix(tile_pos, (n1 * 0.01, n2 * 0.01, n3 * 0.01))
+			m = mat4.TransformationMatrix(tile_pos, vec3(n1 * 0.01, n2 * 0.01, n3 * 0.01))
 
 			if id_geo not in array_geos_worlds:
 				array_geos_worlds[id_geo] = []
@@ -361,14 +360,14 @@ def parse_block(fresh_block, array_geos_worlds):
 
 	tiles = {}
 	ramp_to_evaluate = []
-	world_block_pos = from_dfworld_to_world(gs.Vector3(map_info.block_size_x*16-16 - fresh_block.map_x, fresh_block.map_y, fresh_block.map_z))
+	world_block_pos = from_dfworld_to_world(vec3(map_info.block_size_x*16-16 - fresh_block.map_x, fresh_block.map_y, fresh_block.map_z))
 
 	iso_array = np.zeros((17, 17))
 	iso_array_mat = np.zeros((17, 17))
 	x, z = 15, 0
 	for tile, material in zip(fresh_block.tiles, fresh_block.materials):
-		tile_pos = gs.Vector3(world_block_pos.x + x, world_block_pos.y, world_block_pos.z + z)
-		tile_scale = gs.Vector3(1, 1, 1)
+		tile_pos = vec3(world_block_pos.x + x, world_block_pos.y, world_block_pos.z + z)
+		tile_scale = vec3(1, 1, 1)
 		if tile != 0:
 			type = df_tile_type_list.tiletype_list[tile]
 
@@ -416,11 +415,11 @@ def parse_block(fresh_block, array_geos_worlds):
 			# if it's not air, add it to draw it
 			id_tile = hash_from_pos(tile_pos.x, tile_pos.y, tile_pos.z)
 			if block_mat != 0:
-				# block["blocks"][id_tile] = {"m": gs.Matrix4.TranslationMatrix(tile_pos), "mat": block_mat} # perfect grid
+				# block["blocks"][id_tile] = {"m": mat4.TranslationMatrix(tile_pos), "mat": block_mat} # perfect grid
 				n1 = noise.snoise3(tile_pos.x, tile_pos.y, tile_pos.z)
 				n2 = noise.snoise3(tile_pos.x+0.5, tile_pos.y, tile_pos.z)
 				n3 = noise.snoise3(tile_pos.x, tile_pos.y+0.5, tile_pos.z)
-				m = gs.Matrix4.TransformationMatrix(tile_pos, (n1 * 0.1, n2 * 0.1, n3 * 0.1), tile_scale)
+				m = mat4.TransformationMatrix(tile_pos, vec3(n1 * 0.1, n2 * 0.1, n3 * 0.1), tile_scale)
 				tiles[id_tile] = {"m": m, "geo": tile_shape} # with rumble
 
 				if tile_shape is not None and "id_geo" in tile_geos[tile_shape]:
@@ -432,7 +431,7 @@ def parse_block(fresh_block, array_geos_worlds):
 						if hash_color not in tile_geos[tile_shape]["geos_color"]:
 							# create the color geo
 							new_render_geo = plus.CreateGeometry(tile_geos[tile_shape]["core_g"], False)
-							while not new_render_geo.IsReady(): # don't know why it's not immediate ...
+							while not new_render_geo.IsReadyOrFailed(): # don't know why it's not immediate ...
 								pass
 							new_mat = new_render_geo.GetMaterial(0).Clone()
 							new_mat.SetFloat4("diffuse_color", color[0], color[1], color[2], 1.0)
@@ -474,7 +473,7 @@ def parse_big_block(fresh_blocks):
 	id_big_block_to_merge = {}
 
 	for id, fresh_block in enumerate(fresh_blocks.map_blocks):
-		world_block_pos = from_dfworld_to_world(gs.Vector3(map_info.block_size_x*16 - size_big_block.x - fresh_block.map_x, fresh_block.map_y, fresh_block.map_z))
+		world_block_pos = from_dfworld_to_world(vec3(map_info.block_size_x*16 - size_big_block.x - fresh_block.map_x, fresh_block.map_y, fresh_block.map_z))
 		world_big_block_pos = world_block_pos / size_big_block
 		world_big_block_pos.x = int(world_big_block_pos.x)
 		world_big_block_pos.y = int(world_big_block_pos.y)
@@ -540,16 +539,21 @@ def load_big_block(min, max):
 
 
 def get_viewing_min_max(cam):
+	cam_world = cam.GetTransform().GetWorld()
+	cam_world_x = cam_world.GetX()
+	cam_world_y = cam_world.GetY()
+	cam_world_z = cam_world.GetZ()
+	cam_pos = cam.GetTransform().GetPosition()
 	vecs = [
-		cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * visible_area_length + cam.GetTransform().GetWorld().GetY() * visible_area_length - cam.GetTransform().GetWorld().GetZ() * 1,
-		cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * visible_area_length - cam.GetTransform().GetWorld().GetY() * visible_area_length - cam.GetTransform().GetWorld().GetZ() * 1,
-		cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * visible_area_length + cam.GetTransform().GetWorld().GetY() * visible_area_length - cam.GetTransform().GetWorld().GetZ() * 1,
-		cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * visible_area_length - cam.GetTransform().GetWorld().GetY() * visible_area_length - cam.GetTransform().GetWorld().GetZ() * 1,
+		cam_pos + cam_world_x * visible_area_length + cam_world_y * visible_area_length - cam_world_z * 1,
+		cam_pos + cam_world_x * visible_area_length - cam_world_y * visible_area_length - cam_world_z * 1,
+		cam_pos - cam_world_x * visible_area_length + cam_world_y * visible_area_length - cam_world_z * 1,
+		cam_pos - cam_world_x * visible_area_length - cam_world_y * visible_area_length - cam_world_z * 1,
 
-		cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * visible_area_length + cam.GetTransform().GetWorld().GetY() * visible_area_length + cam.GetTransform().GetWorld().GetZ() * visible_area_length,
-		cam.GetTransform().GetPosition() + cam.GetTransform().GetWorld().GetX() * visible_area_length - cam.GetTransform().GetWorld().GetY() * visible_area_length + cam.GetTransform().GetWorld().GetZ() * visible_area_length,
-		cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * visible_area_length + cam.GetTransform().GetWorld().GetY() * visible_area_length + cam.GetTransform().GetWorld().GetZ() * visible_area_length,
-		cam.GetTransform().GetPosition() - cam.GetTransform().GetWorld().GetX() * visible_area_length - cam.GetTransform().GetWorld().GetY() * visible_area_length + cam.GetTransform().GetWorld().GetZ() * visible_area_length]
+		cam_pos + cam_world_x * visible_area_length + cam_world_y * visible_area_length + cam_world_z * visible_area_length,
+		cam_pos + cam_world_x * visible_area_length - cam_world_y * visible_area_length + cam_world_z * visible_area_length,
+		cam_pos - cam_world_x * visible_area_length + cam_world_y * visible_area_length + cam_world_z * visible_area_length,
+		cam_pos - cam_world_x * visible_area_length - cam_world_y * visible_area_length + cam_world_z * visible_area_length]
 
 	def get_min_max(a, b):
 		if a < b:
@@ -557,8 +561,8 @@ def get_viewing_min_max(cam):
 		else:
 			return b, a
 
-	pos_min = gs.Vector3(vecs[0])
-	pos_max = gs.Vector3(vecs[0])
+	pos_min = vec3(vecs[0])
+	pos_max = vec3(vecs[0])
 	for vec in vecs:
 		pos_min.x, temp = get_min_max(pos_min.x, vec.x)
 		temp, pos_max.x = get_min_max(pos_max.x, vec.x)
@@ -587,7 +591,7 @@ def update_block(cam):
 		big_block_thread = threading.Thread(target=load_big_block, args=(p_min, p_max))
 		big_block_thread.start()
 	else:
-		plus.Text2D(0, 5, "Updating blocks", 16, gs.Color.Red)
+		plus.Text2D(0, 5, "Updating blocks", 16, col.Red)
 
 
 def draw_block(renderable_system, cam, scene_simple_graphic):
@@ -605,7 +609,8 @@ def draw_block(renderable_system, cam, scene_simple_graphic):
 							with big_block["mutex"]:
 								for id_block, block in big_block["blocks"].items():
 									for geo, ms in block["array_geos_worlds"].items():
-										renderable_system.DrawGeometry(render_geos[geo]["g"], ms)
+										for m in ms:
+											renderable_system.DrawGeometry(render_geos[geo]["g"], m)
 										count_draw += 1
 
 								# for id, tile in block["tiles"].items():
@@ -613,12 +618,12 @@ def draw_block(renderable_system, cam, scene_simple_graphic):
 									# 	count_draw += 1
 
 						if use_iso_surface:
-							# helper_2d.draw_cube_from_mat(scene_simple_graphic, gs.Matrix4.TranslationMatrix(big_block["min_pos"]), gs.Color(len(big_block["blocks"]), 0, 1))
-							if big_block["new_iso_mesh"] is not None and big_block["new_iso_mesh"][0].IsReady():
+							# helper_2d.draw_cube_from_mat(scene_simple_graphic, mat4.TranslationMatrix(big_block["min_pos"]), col(len(big_block["blocks"]), 0, 1))
+							if big_block["new_iso_mesh"] is not None and big_block["new_iso_mesh"][0].IsReadyOrFailed():
 								big_block["iso_mesh"] = big_block["new_iso_mesh"]
 								big_block["new_iso_mesh"] = None
 
 							if big_block["iso_mesh"] is not None:
-								renderable_system.DrawGeometry(big_block["iso_mesh"][0], gs.Matrix4.TranslationMatrix(big_block["min_pos"]))
+								renderable_system.DrawGeometry(big_block["iso_mesh"][0], mat4.TranslationMatrix(big_block["min_pos"]))
 								count_draw += 1
 	return count_draw

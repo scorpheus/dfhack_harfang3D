@@ -1,10 +1,11 @@
-import gs
+import harfang as hg
+from harfang_shortcut import *
 import math
 import random
 import numpy as np
 import noise
 
-plus = gs.GetPlus()
+plus = hg.GetPlus()
 
 # [256]
 edgeTable = [0x0, 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
@@ -305,7 +306,7 @@ def get_index_to_create_it(vtx_array, normal_array, vtx):
 	# 		return i
 
 	# didn't found the vertx , so add it and s the new index
-	normal_array.append(gs.Vector3(random.random(), random.random(), random.random()))
+	normal_array.append(vec3(random.random(), random.random(), random.random()))
 	vtx_array.append(vtx)
 	return len(vtx_array) - 1
 
@@ -325,10 +326,10 @@ def Lerp2Vertex(isolevel, p1, p2, valp1, valp2):
 	return p1 + (p2 - p1) * mu
 
 half_size = 0.5
-cube_base_vtx = [gs.Vector3(-half_size, -half_size, -half_size), gs.Vector3(half_size, -half_size, -half_size),
-				 gs.Vector3(half_size, -half_size, half_size), gs.Vector3(-half_size, -half_size, half_size),
-				 gs.Vector3(-half_size, half_size, -half_size), gs.Vector3(half_size, half_size, -half_size),
-				 gs.Vector3(half_size, half_size, half_size), gs.Vector3(-half_size, half_size, half_size)]
+cube_base_vtx = [vec3(-half_size, -half_size, -half_size), vec3(half_size, -half_size, -half_size),
+				 vec3(half_size, -half_size, half_size), vec3(-half_size, -half_size, half_size),
+				 vec3(-half_size, half_size, -half_size), vec3(half_size, half_size, -half_size),
+				 vec3(half_size, half_size, half_size), vec3(-half_size, half_size, half_size)]
 
 
 def get_simple_voxel_triangle(cube_val, isolevel):
@@ -499,7 +500,7 @@ def CreateIsoFBO(array, width, height, length, isolevel, mats):
 			for z in range(length - 1):
 				cube_val = [array[x, y, z], array[x + 1, y, z], array[x + 1, y, z + 1], array[x, y, z + 1],
 							array[x, y + 1, z], array[x + 1, y + 1, z], array[x + 1, y + 1, z + 1],	array[x, y + 1, z + 1]]
-				offset = gs.Vector3(x, y, z)
+				offset = vec3(x, y, z)
 				nb_tri = IsoSurface(cube_val, cube_base_vtx, isolevel, index_array, vtx_array, normal_array, offset)
 				for i in range(int(nb_tri)):
 					material_array.append(find_valid_material_in_cube(x//resolution, 0, z//resolution, mats))
@@ -566,22 +567,22 @@ def create_iso_c(array, width, height, length, mats, isolevel=0.5, material_path
 	big_array[:, :, 0] = big_array[:, :, 1]
 	big_array[:, :, -1] = big_array[:, :, -2]
 
-	field = gs.BinaryBlob()
+	field = hg.BinaryData()
 
 	field.Grow((w+2)*(d+2)*(h+2))
 	field.WriteFloats(big_array.flatten('F').tolist())
 
-	inv_scale = gs.Vector3(16./w, 1/h, 16./d)
+	inv_scale = vec3(16./w, 1/h, 16./d)
 
-	iso = gs.IsoSurface()
+	iso = hg.IsoSurface()
 	gs.PolygoniseIsoSurface(w, h, d, field, isolevel, iso, inv_scale)
 
 	# mat = plus.LoadMaterial("assets/tree.mat")
 	mat = plus.LoadMaterial("@core/materials/default.mat")
-	geo = gs.RenderGeometry()
+	geo = hg.RenderGeometry()
 	gs.IsoSurfaceToRenderGeometry(plus.GetRenderSystem(), iso, geo, mat)
 
-	core_geo = gs.CoreGeometry()
+	core_geo = hg.Geometry()
 	gs.IsoSurfaceToCoreGeometry(iso, core_geo)
 
 	return geo, core_geo
@@ -602,7 +603,7 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 	# if geo is not None:
 	# 	return geo
 
-	geo = gs.CoreGeometry()
+	geo = hg.Geometry()
 	if material_path is None:
 		material_path = "@core/materials/default.mat"
 
@@ -610,12 +611,12 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 
 	if type(material_path) is not list:
 		geo.AllocateMaterialTable(1)
-		geo.SetMaterial(0, material_path, True)
+		geo.SetMaterial(0, material_path)
 	else:
 		geo.AllocateMaterialTable(len(material_path))
 		count = 0
 		for path in material_path:
-			geo.SetMaterial(count, path, True)
+			geo.SetMaterial(count, path)
 			count += 1
 
 	# increase size of the array by the resolution
@@ -664,7 +665,7 @@ def create_iso(array, width, height, length, mats, isolevel=0.5, material_path=N
 
 	# send the vertices to the geometry with scaling them down to the right size
 	count = 0
-	inv_scale = gs.Vector3(1/resolution, 1/(resolution_y*2-1), 1/resolution)
+	inv_scale = vec3(1/resolution, 1/(resolution_y*2-1), 1/resolution)
 	for vtx in vtx_array:
 		geo.SetVertex(count, vtx.x*inv_scale.x, vtx.y*inv_scale.y, vtx.z*inv_scale.z)
 		count += 1

@@ -8,7 +8,7 @@ https://www.mail-archive.com/search?l=protobuf@googlegroups.com&q=subject:%22%5C
 https://github.com/google/protobuf/commit/1858ac9b42c167ab6d89b929c075872d740eb0b5
 
 install protobuf and compile it
-from the mscv2015 command prompt shell
+from the mscv2017 command prompt shell (x64 Native Tools Command Prompt for VS 2017)
 https://github.com/google/protobuf/blob/master/cmake/README.md
 
 make the cmake
