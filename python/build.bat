@@ -1,0 +1,1 @@
+pyinstaller --distpath=./build --clean -y main.spec

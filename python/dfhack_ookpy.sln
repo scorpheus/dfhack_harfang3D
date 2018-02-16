@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2020
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "dfhack_ookpy", "dfhack_ookpy.pyproj", "{C9AC1AEB-76E4-4EFD-85D7-F3C23F22B70B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C9AC1AEB-76E4-4EFD-85D7-F3C23F22B70B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9AC1AEB-76E4-4EFD-85D7-F3C23F22B70B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {876FB737-0719-4A0B-8762-4C786A82C163}
+	EndGlobalSection
+EndGlobal
